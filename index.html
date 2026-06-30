@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loop Studio · 精品短剧剧本创作引擎</title>
+<title>云匠 · 智能短剧剧本创作引擎</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
 
@@ -102,7 +102,7 @@
     color: var(--text-muted);
   }
 
-  /* Alogon 引导员 */
+  /* 书雨 引导员 */
   .alogon-intro {
     display: flex;
     gap: 14px;
@@ -996,16 +996,16 @@
     <div class="onboarding-container">
       <div class="onboarding-logo">
         <div class="onboarding-logo-icon">∞</div>
-        <div class="onboarding-logo-title">Loop Studio</div>
+        <div class="onboarding-logo-title">云匠</div>
         <div class="onboarding-logo-sub">精品短剧剧本创作引擎</div>
       </div>
 
       <div class="alogon-intro" id="alogonBubble">
         <div class="alogon-avatar">🤖</div>
         <div class="alogon-bubble">
-          <div class="alogon-name">Alogon · 你的AI创作搭档</div>
+          <div class="alogon-name">书雨 · 你的AI创作搭档</div>
           <div class="alogon-text" id="alogonText">
-            你好呀～我是 Alogon，你的AI创作搭档<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+            你好呀～我是 书雨，你的AI创作搭档<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
           </div>
         </div>
       </div>
@@ -1062,7 +1062,7 @@
       <div class="logo-section">
         <div class="logo-icon">∞</div>
         <div class="logo-text">
-          <div class="logo-title">Loop Studio</div>
+          <div class="logo-title">云匠</div>
           <div class="logo-subtitle">精品短剧剧本创作引擎</div>
         </div>
       </div>
@@ -1171,7 +1171,7 @@
             </div>
             <div class="feature-item">
               <div class="feature-icon">🔄</div>
-              <div class="feature-text">Loop持续进化</div>
+              <div class="feature-text">云匠持续进化</div>
             </div>
           </div>
         </div>
@@ -1268,7 +1268,7 @@
         <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
             <div style="width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s infinite;"></div>
-            <span style="font-size: 12px; color: var(--accent-green); font-weight: 500;">Loop 运行中</span>
+            <span style="font-size: 12px; color: var(--accent-green); font-weight: 500;">云匠 运行中</span>
           </div>
           <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
             反馈闭环持续进化中<br>
@@ -1284,7 +1284,7 @@
     <div class="footer-left">
       <div class="footer-badge">
         <span>🏷️</span>
-        <span>Loop Engineering 先行实践</span>
+        <span>云匠 Engineering 先行实践</span>
       </div>
     </div>
     <div class="footer-right">
@@ -1319,10 +1319,10 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('creatorName').addEventListener('input', checkCanEnter);
     
-    // Alogon 对话序列
+    // 书雨 对话序列
     const alogonMessages = [
-      "你好呀～我是 Alogon，你的AI创作搭档",
-      "在 Loop Studio，一个想法就能变成完整的剧本",
+      "你好呀～我是 书雨，你的AI创作搭档",
+      "在 云匠，一个想法就能变成完整的剧本",
       "先告诉我你的名字，再选个你喜欢的创作风格吧～"
     ];
     
@@ -1664,9 +1664,69 @@
   };
 
   let isCreating = false;
+  let currentStep = 0;
+  let stepsCompleted = 0;
 
   function setIdea(text) {
     document.getElementById('ideaInput').value = text;
+  }
+
+  // 点击左侧步骤点击切换
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.step-item').forEach(item => {
+      item.addEventListener('click', () => {
+      const step = parseInt(item.dataset.step);
+      if (step <= stepsCompleted || step === currentStep) {
+        showStepContent(step);
+      }
+    });
+    });
+  });
+
+  function showStepContent(stepNum) {
+    const step = stepData[stepNum];
+    if (!step) return;
+    
+    // 更新左侧激活态
+    document.querySelectorAll('.step-item').forEach((item, i) => {
+      item.classList.remove('active');
+      if (i + 1 === stepNum - 1) {
+        item.classList.add('active');
+      }
+    });
+    document.querySelector(`.step-item[data-step="${stepNum}"]`).classList.add('active');
+    
+    // 更新右侧专家态
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.classList.remove('active', 'working');
+    });
+    document.querySelector(`.expert-item[data-expert="${step.expert}"]`).classList.add('active');
+    
+    // 显示步骤内容
+    const outputContainer = document.getElementById('outputContainer');
+    outputContainer.innerHTML = `
+      <div class="output-card">
+        <div class="output-header">
+          <div class="output-icon">${step.icon}</div>
+          <div>
+            <div class="output-title">${step.title}</div>
+            <div class="output-meta">${step.meta}</div>
+          </div>
+        </div>
+        <div class="output-body">
+          ${step.content}
+        </div>
+      </div>
+    `;
+    
+    if (stepNum === 6 && stepsCompleted >= 6) {
+      addFinalCard();
+    }
+    
+    const contentArea = document.getElementById('contentArea');
+    contentArea.scrollTop = 0;
+    
+    currentStep = stepNum;
   }
 
   async function startCreation() {
@@ -1679,6 +1739,8 @@
     }
     
     isCreating = true;
+    stepsCompleted = 0;
+    currentStep = 0;
     const btn = document.getElementById('generateBtn');
     btn.disabled = true;
     btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
@@ -1686,13 +1748,18 @@
     // 隐藏欢迎界面
     document.getElementById('welcomeScreen').style.display = 'none';
     
+    // 清空之前的输出
+    document.getElementById('outputContainer').innerHTML = '';
+    
     // 逐步执行每一步
     for (let step = 1; step <= 6; step++) {
       await runStep(step);
+      stepsCompleted = step;
     }
     
     // 完成
-    btn.innerHTML = '<span>创作完成</span><span>✓</span>';
+    btn.innerHTML = '<span>再来一版</span><span>↻</span>';
+    btn.disabled = false;
     isCreating = false;
     
     // 添加最终完成卡片
