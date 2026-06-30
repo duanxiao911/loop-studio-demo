@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云匠 · 智能短剧剧本创作引擎</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-tertiary: #1a2332;
+    --border-color: rgba(139, 92, 246, 0.2);
+    --border-active: rgba(139, 92, 246, 0.6);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-purple: #8b5cf6;
+    --accent-blue: #3b82f6;
+    --accent-gold: #f59e0b;
+    --accent-green: #10b981;
+    --accent-cyan: #06b6d4;
+    --accent-pink: #ec4899;
+    --glow-purple: rgba(139, 92, 246, 0.3);
+    --glow-blue: rgba(59, 130, 246, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* 注册页面 */
+  .onboarding-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .onboarding-screen.hide {
+    opacity: 0;
+    transform: scale(1.05);
+    pointer-events: none;
+  }
+
+  .onboarding-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 48px 40px;
+    position: relative;
+  }
+
+  .onboarding-logo {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .onboarding-logo-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 0 40px var(--glow-purple);
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .onboarding-logo-title {
+    font-size: 24px;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  .onboarding-logo-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* 书雨 引导员 */
+  .alogon-intro {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding: 16px;
+    background: rgba(139, 92, 246, 0.06);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-radius: 14px;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .alogon-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px var(--glow-purple);
+  }
+
+  .alogon-bubble {
+    flex: 1;
+  }
+
+  .alogon-name {
+    font-size: 12px;
+    color: var(--accent-purple);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .alogon-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .alogon-text .typing-dots {
+    display: inline-block;
+    margin-left: 2px;
+  }
+
+  .alogon-text .typing-dots span {
+    display: inline-block;
+    animation: dotBounce 1.4s infinite;
+    opacity: 0.4;
+  }
+
+  .alogon-text .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .alogon-text .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBounce {
+    0%, 60%, 100% { opacity: 0.4; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+  }
+
+  /* 表单区域 */
+  .form-group {
+    margin-bottom: 24px;
+    animation: fadeInUp 0.6s ease 0.2s both;
+  }
+
+  .form-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 500;
+  }
+
+  .form-label .label-hint {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+
+  .name-input-wrap {
+    position: relative;
+  }
+
+  .name-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  .name-input:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 20px var(--glow-purple);
+  }
+
+  .name-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .style-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .style-option {
+    padding: 14px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .style-option:hover {
+    border-color: rgba(139, 92, 246, 0.4);
+    background: rgba(139, 92, 246, 0.05);
+  }
+
+  .style-option.selected {
+    border-color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 20px var(--glow-purple);
+  }
+
+  .style-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .style-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .style-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .enter-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    animation: fadeInUp 0.6s ease 0.4s both;
+    font-family: inherit;
+  }
+
+  .enter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px var(--glow-purple);
+  }
+
+  .enter-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .onboarding-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--text-muted);
+    animation: fadeInUp 0.6s ease 0.5s both;
+  }
+
+  .onboarding-footer span {
+    color: var(--accent-purple);
+  }
+
+  /* 背景动效 */
+  .bg-gradient {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.15), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(59, 130, 246, 0.1), transparent),
+      radial-gradient(ellipse 50% 30% at 0% 80%, rgba(236, 72, 153, 0.08), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-grid {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 主布局 */
+  .app-container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 260px 1fr 300px;
+    grid-template-rows: 64px 1fr;
+    height: 100vh;
+    gap: 1px;
+    background: var(--border-color);
+  }
+
+  /* 顶栏 */
+  .top-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(17, 24, 39, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+    box-shadow: 0 0 20px var(--glow-purple);
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-title {
+    font-weight: 600;
+    font-size: 16px;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .stats-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--accent-green);
+  }
+
+  .stats-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+  }
+
+  /* 左侧流程面板 */
+  .left-panel {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .panel-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    padding-left: 8px;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    position: relative;
+  }
+
+  .step-item:hover {
+    background: rgba(139, 92, 246, 0.05);
+  }
+
+  .step-item.active {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: var(--border-active);
+    box-shadow: 0 0 20px var(--glow-purple);
+  }
+
+  .step-item.completed .step-icon {
+    background: var(--accent-green);
+    color: white;
+  }
+
+  .step-item.active .step-icon {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    color: white;
+    animation: iconPulse 2s infinite;
+  }
+
+  @keyframes iconPulse {
+    0%, 100% { box-shadow: 0 0 0 0 var(--glow-purple); }
+    50% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+  }
+
+  .step-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .step-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .step-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .step-status {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .step-item.active .step-status {
+    color: var(--accent-purple);
+  }
+
+  .step-item.completed .step-status {
+    color: var(--accent-green);
+  }
+
+  .step-num {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* 中间主创作区 */
+  .main-panel {
+    background: rgba(10, 14, 26, 0.4);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .greeting-section {
+    padding: 40px 48px 32px;
+    text-align: center;
+  }
+
+  .greeting-text {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--text-primary), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .greeting-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .greeting-sub .highlight {
+    color: var(--accent-gold);
+    font-weight: 500;
+  }
+
+  /* 创作内容区 */
+  .content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 48px 24px;
+  }
+
+  .content-area::-webkit-scrollbar { width: 6px; }
+  .content-area::-webkit-scrollbar-track { background: transparent; }
+  .content-area::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+  /* 输入区 */
+  .input-section {
+    padding: 24px 48px 32px;
+    border-top: 1px solid var(--border-color);
+    background: rgba(17, 24, 39, 0.4);
+  }
+
+  .input-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .input-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .input-box {
+    position: relative;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .input-box:focus-within {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 30px var(--glow-purple);
+  }
+
+  .input-box textarea {
+    width: 100%;
+    min-height: 80px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    line-height: 1.6;
+  }
+
+  .input-box textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  .input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .suggestion-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .chip:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.05);
+  }
+
+  .generate-btn {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .generate-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px var(--glow-purple);
+  }
+
+  .generate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* 生成的内容卡片 */
+  .output-card {
+    background: rgba(17, 24, 39, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.5s ease;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .output-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .output-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .output-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .output-body {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+
+  .output-body h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 16px 0 8px;
+  }
+
+  .output-body h4:first-child { margin-top: 0; }
+
+  .output-body ul {
+    padding-left: 20px;
+    margin: 8px 0;
+  }
+
+  .output-body li {
+    margin-bottom: 6px;
+  }
+
+  .typing-effect {
+    overflow: hidden;
+  }
+
+  .typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 16px;
+    background: var(--accent-purple);
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* 右侧专家面板 */
+  .right-panel {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 24px 16px;
+    overflow-y: auto;
+  }
+
+  .right-panel::-webkit-scrollbar { width: 4px; }
+  .right-panel::-webkit-scrollbar-track { background: transparent; }
+  .right-panel::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+
+  .expert-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .expert-item.active {
+    background: rgba(139, 92, 246, 0.08);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .expert-item.working .expert-avatar {
+    animation: expertWorking 1.5s infinite;
+  }
+
+  @keyframes expertWorking {
+    0%, 100% { box-shadow: 0 0 0 0 var(--glow-purple); }
+    50% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.2); }
+  }
+
+  .expert-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .expert-avatar.purple { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+  .expert-avatar.blue { background: linear-gradient(135deg, #3b82f6, #0ea5e9); }
+  .expert-avatar.cyan { background: linear-gradient(135deg, #06b6d4, #14b8a6); }
+  .expert-avatar.green { background: linear-gradient(135deg, #10b981, #22c55e); }
+  .expert-avatar.gold { background: linear-gradient(135deg, #f59e0b, #eab308); }
+  .expert-avatar.pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+
+  .expert-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .expert-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .expert-role {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .expert-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .expert-item.active .expert-status-dot {
+    background: var(--accent-purple);
+    animation: pulse 1.5s infinite;
+  }
+
+  .expert-item.done .expert-status-dot {
+    background: var(--accent-green);
+  }
+
+  /* 进度条 */
+  .progress-bar {
+    height: 2px;
+    background: var(--border-color);
+    margin: 16px 0 24px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px var(--glow-purple);
+  }
+
+  /* 数据指标小卡片 */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .metric-card {
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* 空状态欢迎 */
+  .welcome-illustration {
+    text-align: center;
+    padding: 60px 20px 40px;
+  }
+
+  .welcome-icon-large {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 24px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    border: 1px solid var(--border-active);
+    box-shadow: 0 0 60px var(--glow-purple);
+  }
+
+  .welcome-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .welcome-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .feature-item {
+    text-align: center;
+  }
+
+  .feature-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .feature-text {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* 底部小条 */
+  .footer-bar {
+    padding: 8px 16px;
+    background: rgba(17, 24, 39, 0.6);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .footer-left, .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+</style>
+</head>
+<body>
+  <!-- 注册页面 -->
+  <div class="onboarding-screen" id="onboardingScreen">
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="onboarding-container">
+      <div class="onboarding-logo">
+        <div class="onboarding-logo-icon">∞</div>
+        <div class="onboarding-logo-title">云匠</div>
+        <div class="onboarding-logo-sub">精品短剧剧本创作引擎</div>
+      </div>
+
+      <div class="alogon-intro" id="alogonBubble">
+        <div class="alogon-avatar">🤖</div>
+        <div class="alogon-bubble">
+          <div class="alogon-name">书雨 · 你的AI创作搭档</div>
+          <div class="alogon-text" id="alogonText">
+            你好呀～我是 书雨，你的AI创作搭档<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="stepName">
+        <label class="form-label">创作者昵称 <span class="label-hint">给自己起个名字吧</span></label>
+        <div class="name-input-wrap">
+          <input type="text" class="name-input" id="creatorName" placeholder="比如：段晓萱、墨白、阿皛..." maxlength="12">
+        </div>
+      </div>
+
+      <div class="form-group" id="stepStyle">
+        <label class="form-label">你的创作风格 <span class="label-hint">选一个最贴合你的</span></label>
+        <div class="style-options">
+          <div class="style-option" data-style="emotion" onclick="selectStyle(this, 'emotion')">
+            <div class="style-icon">💧</div>
+            <div class="style-name">情感流</div>
+            <div class="style-desc">细腻走心，共情力强</div>
+          </div>
+          <div class="style-option" data-style="rhythm" onclick="selectStyle(this, 'rhythm')">
+            <div class="style-icon">⚡</div>
+            <div class="style-name">节奏党</div>
+            <div class="style-desc">强反转，钩子密集</div>
+          </div>
+          <div class="style-option" data-style="culture" onclick="selectStyle(this, 'culture')">
+            <div class="style-icon">🏛️</div>
+            <div class="style-name">文化向</div>
+            <div class="style-desc">有底蕴，重质感</div>
+          </div>
+          <div class="style-option" data-style="twist" onclick="selectStyle(this, 'twist')">
+            <div class="style-icon">🌀</div>
+            <div class="style-name">反转王</div>
+            <div class="style-desc">烧脑悬疑，出人意料</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="enter-btn" id="enterBtn" onclick="enterStudio()" disabled>
+        进入创作工作室 →
+      </button>
+
+      <div class="onboarding-footer">
+        已有 <span>1,247</span> 位创作者在这里写出了他们的故事
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gradient"></div>
+  <div class="bg-grid"></div>
+
+  <div class="app-container">
+    <!-- 顶栏 -->
+    <div class="top-bar">
+      <div class="logo-section">
+        <div class="logo-icon">∞</div>
+        <div class="logo-text">
+          <div class="logo-title">云匠</div>
+          <div class="logo-subtitle">精品短剧剧本创作引擎</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="stats-badge">
+          <div class="stats-dot"></div>
+          <span>已创作 1,247 部剧本</span>
+        </div>
+        <div class="user-avatar">皛</div>
+      </div>
+    </div>
+
+    <!-- 左侧流程 -->
+    <div class="left-panel">
+      <div class="panel-title">创作流程</div>
+      
+      <div class="step-item" data-step="1">
+        <div class="step-icon">📋</div>
+        <div class="step-info">
+          <div class="step-name">大纲策划</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">01</div>
+      </div>
+
+      <div class="step-item" data-step="2">
+        <div class="step-icon">👤</div>
+        <div class="step-info">
+          <div class="step-name">人物塑造</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">02</div>
+      </div>
+
+      <div class="step-item" data-step="3">
+        <div class="step-icon">📈</div>
+        <div class="step-info">
+          <div class="step-name">节奏控制</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">03</div>
+      </div>
+
+      <div class="step-item" data-step="4">
+        <div class="step-icon">💬</div>
+        <div class="step-info">
+          <div class="step-name">对白润色</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">04</div>
+      </div>
+
+      <div class="step-item" data-step="5">
+        <div class="step-icon">🎭</div>
+        <div class="step-info">
+          <div class="step-name">文化植入</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">05</div>
+      </div>
+
+      <div class="step-item" data-step="6">
+        <div class="step-icon">✅</div>
+        <div class="step-info">
+          <div class="step-name">合规审查</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">06</div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value">32</div>
+          <div class="metric-label">功能模块</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">25min</div>
+          <div class="metric-label">单集耗时</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中间主创作区 -->
+    <div class="main-panel">
+      <div class="content-area" id="contentArea">
+        <!-- 欢迎界面 -->
+        <div class="welcome-illustration" id="welcomeScreen">
+          <div class="welcome-icon-large">✨</div>
+          <div class="welcome-title">你好，创作者</div>
+          <div class="welcome-desc">
+            只需一个想法，15位AI专家将为你打造<br>
+            完整的精品短剧剧本——从大纲到定稿，全链路托管
+          </div>
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">⚡</div>
+              <div class="feature-text">25分钟出稿</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🎯</div>
+              <div class="feature-text">过审率行业领先</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🏛️</div>
+              <div class="feature-text">文化知识库加持</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔄</div>
+              <div class="feature-text">云匠持续进化</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 输出内容会动态插入这里 -->
+        <div id="outputContainer"></div>
+      </div>
+
+      <!-- 输入区 -->
+      <div class="input-section">
+        <div class="input-wrapper">
+          <div class="input-label">
+            <span>💡</span>
+            <span>输入你的短剧想法，越具体越好</span>
+          </div>
+          <div class="input-box">
+            <textarea id="ideaInput" placeholder="比如：大理白族少女用扎染技艺拯救家族工坊的非遗故事，24集都市情感短剧..."></textarea>
+          </div>
+          <div class="input-footer">
+            <div class="suggestion-chips">
+              <div class="chip" onclick="setIdea('大理白族少女的扎染非遗传承故事，24集情感短剧')">🔵 非遗题材</div>
+              <div class="chip" onclick="setIdea('职场逆袭：从小透明到操盘手的成长之路，30集')">💼 职场逆袭</div>
+              <div class="chip" onclick="setIdea('悬疑推理：古镇密室连环案件，12集')">🔍 悬疑推理</div>
+            </div>
+            <button class="generate-btn" id="generateBtn" onclick="startCreation()">
+              <span>开始创作</span>
+              <span>▶</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧专家团 -->
+    <div class="right-panel">
+      <div class="panel-title">AI 专家团</div>
+      
+      <div class="expert-item" data-expert="planner">
+        <div class="expert-avatar purple">📋</div>
+        <div class="expert-info">
+          <div class="expert-name">策划师</div>
+          <div class="expert-role">大纲与故事架构</div>
+        </div>
+        <div class="expert-status-dot"></div>
+      </div>
+
+      <div class="expert-item" data-expert="character">
+        <div class="expert-avatar blue">👤</div>
+        <div class="expert-info">
+          <div class="expert-name">人设师</div>
+          <div class="expert-role">角色塑造与小传</div>
+        </div>
+        <div class="expert-status-dot"></div>
+      </div>
+
+      <div class="expert-item" data-expert="rhythm">
+        <div class="expert-avatar cyan">📈</div>
+        <div class="expert-info">
+          <div class="expert-name">节奏师</div>
+          <div class="expert-role">情节节奏与钩子设计</div>
+        </div>
+        <div class="expert-status-dot"></div>
+      </div>
+
+      <div class="expert-item" data-expert="dialogue">
+        <div class="expert-avatar green">💬</div>
+        <div class="expert-info">
+          <div class="expert-name">对白师</div>
+          <div class="expert-role">台词打磨与潜台词</div>
+        </div>
+        <div class="expert-status-dot"></div>
+      </div>
+
+      <div class="expert-item" data-expert="culture">
+        <div class="expert-avatar gold">🎭</div>
+        <div class="expert-info">
+          <div class="expert-name">文化顾问</div>
+          <div class="expert-role">非遗与文化植入</div>
+        </div>
+        <div class="expert-status-dot"></div>
+      </div>
+
+      <div class="expert-item" data-expert="compliance">
+        <div class="expert-avatar pink">✅</div>
+        <div class="expert-info">
+          <div class="expert-name">审核员</div>
+          <div class="expert-role">合规审查与过审优化</div>
+        </div>
+        <div class="expert-status-dot"></div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div class="panel-title">引擎状态</div>
+        <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <div style="width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s infinite;"></div>
+            <span style="font-size: 12px; color: var(--accent-green); font-weight: 500;">云匠 运行中</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+            反馈闭环持续进化中<br>
+            知识库 V1.2 · 32模块在线
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部状态栏 -->
+  <div class="footer-bar" style="position: fixed; bottom: 0; left: 261px; right: 301px; z-index: 10;">
+    <div class="footer-left">
+      <div class="footer-badge">
+        <span>🏷️</span>
+        <span>云匠 Engineering 先行实践</span>
+      </div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-badge">
+        <span>📊</span>
+        <span>过审率 A-B 级验证</span>
+      </div>
+      <div class="footer-badge">
+        <span>🎬</span>
+        <span>《蓝白吟》实战验证</span>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // 注册页面逻辑
+  let selectedStyle = null;
+
+  function selectStyle(el, style) {
+    document.querySelectorAll('.style-option').forEach(item => item.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedStyle = style;
+    checkCanEnter();
+  }
+
+  function checkCanEnter() {
+    const name = document.getElementById('creatorName').value.trim();
+    const btn = document.getElementById('enterBtn');
+    btn.disabled = !(name && selectedStyle);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('creatorName').addEventListener('input', checkCanEnter);
+    
+    // 书雨 对话序列
+    const alogonMessages = [
+      "你好呀～我是 书雨，你的AI创作搭档",
+      "在 云匠，一个想法就能变成完整的剧本",
+      "先告诉我你的名字，再选个你喜欢的创作风格吧～"
+    ];
+    
+    let msgIndex = 0;
+    const textEl = document.getElementById('alogonText');
+    
+    function showNextMessage() {
+      if (msgIndex >= alogonMessages.length) return;
+      textEl.innerHTML = alogonMessages[msgIndex] + '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
+      msgIndex++;
+      if (msgIndex < alogonMessages.length) {
+        setTimeout(showNextMessage, 2000);
+      } else {
+        setTimeout(() => {
+          textEl.innerHTML = alogonMessages[alogonMessages.length - 1];
+        }, 1500);
+      }
+    }
+    
+    setTimeout(showNextMessage, 800);
+  });
+
+  function enterStudio() {
+    const name = document.getElementById('creatorName').value.trim();
+    const styleMap = {
+      emotion: '情感流创作者',
+      rhythm: '节奏党',
+      culture: '文化向作者',
+      twist: '反转王'
+    };
+    const styleText = styleMap[selectedStyle] || '创作者';
+    
+    // 更新主界面的用户名显示
+    document.querySelector('.user-avatar').textContent = name.charAt(0);
+    document.querySelector('.welcome-title').textContent = `你好，${name}`;
+    document.querySelector('.greeting-text').textContent = `你好，${name}`;
+    
+    // 更新头像颜色
+    const avatarColors = {
+      emotion: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+      rhythm: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+      culture: 'linear-gradient(135deg, #10b981, #06b6d4)',
+      twist: 'linear-gradient(135deg, #8b5cf6, #6366f1)'
+    };
+    document.querySelector('.user-avatar').style.background = avatarColors[selectedStyle] || '';
+    
+    // 隐藏注册页
+    document.getElementById('onboardingScreen').classList.add('hide');
+  }
+
+  const stepData = {
+    1: {
+      icon: '📋',
+      title: '第一集 大纲策划',
+      meta: '策划师 · 3 分钟',
+      expert: 'planner',
+      content: `
+        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
+          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
+        </div>
+        
+        <h4>剧名：《蓝白吟》</h4>
+        <p style="margin-bottom:12px;">24集都市情感非遗题材短剧 · 单集2分钟</p>
+        
+        <h4>核心故事线</h4>
+        <ul>
+          <li><strong>主线：</strong>白族少女段晓萱回到大理，用创新设计拯救濒临倒闭的家族扎染工坊</li>
+          <li><strong>副线：</strong>与都市设计师陆远从互怼到相爱，两人碰撞出传统与现代的火花</li>
+          <li><strong>暗线：</strong>奶奶隐藏三十年的扎染秘方面世，揭开家族往事</li>
+        </ul>
+        
+        <h4>三幕结构</h4>
+        <ul>
+          <li><strong>第1-8集（固守→裂缝）：</strong>晓萱在城里实习想逃离周城，奶奶病危被迫回村，对扎染仍有抵触</li>
+          <li><strong>第9-18集（动摇→接受）：</strong>开始接触扎染，发现奶奶的秘密作坊，理解传承的重量，但已无力回天</li>
+          <li><strong>第19-24集（沉默）：</strong>作坊关了，晓萱带着扎染的记忆离开——蓝白之色，已刻进血脉</li>
+        </ul>
+        
+        <h4>核心冲突</h4>
+        <ul>
+          <li><strong>代际冲突：</strong>奶奶守了一辈子的技艺，孙女只想逃离</li>
+          <li><strong>生存困境：</strong>机械染取代手工扎染，年轻人不愿学</li>
+          <li><strong>自我认同：</strong>我是谁？我来自哪里？为什么要传承？</li>
+        </ul>
+      `
+    },
+    2: {
+      icon: '👤',
+      title: '人物塑造',
+      meta: '人设师 · 4 分钟',
+      expert: 'character',
+      content: `
+        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
+          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
+        </div>
+        
+        <h4>核心人物</h4>
+        
+        <div style="padding: 12px; background: rgba(139, 92, 246, 0.05); border-radius: 8px; margin-bottom: 12px;">
+          <div style="font-weight: 600; color: var(--accent-purple); margin-bottom: 4px;">段晓萱 · 24岁</div>
+          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+            白族扎染世家第三代传人，在城里做设计实习。外表倔强内心柔软，嘴上说不想接班，
+            其实比谁都在意奶奶的作坊。<br>
+            <strong>人物弧光：</strong>固守（我不要被困在村子里）→ 动摇（扎染也许没有那么讨厌）→ 接受（我爱它，但我救不了它）→ 沉默（算了，但它在我心里了）
+          </div>
+        </div>
+        
+        <div style="padding: 12px; background: rgba(245, 158, 11, 0.05); border-radius: 8px; margin-bottom: 12px;">
+          <div style="font-weight: 600; color: var(--accent-gold); margin-bottom: 4px;">段奶奶 · 72岁</div>
+          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+            扎染技艺非遗传承人，段氏作坊老掌柜。表面严厉话少，心里藏着一辈子的执念和秘密。
+            说话带白族口音，口头禅："布要慢慢染，才不会花。"<br>
+            <strong>不完美设定：</strong>她也有局限——固执、不肯变通、把传承当成了执念，反而害了自己。
+          </div>
+        </div>
+        
+        <h4>角色关系</h4>
+        <ul>
+          <li><strong>祖孙关系：</strong>不是简单的传承接班，是两个犟脾气的人互相较劲又彼此心疼</li>
+          <li><strong>互为镜像：</strong>奶奶年轻时也想逃离，晓萱老了会不会也变成她？</li>
+          <li><strong>换人测试：</strong>遮住角色名单看台词，必须能分辨出谁在说话</li>
+        </ul>
+      `
+    },
+    3: {
+      icon: '📈',
+      title: '节奏控制',
+      meta: '节奏师 · 3 分钟',
+      expert: 'rhythm',
+      content: `
+        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
+          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
+        </div>
+        
+        <h4>30集节奏曲线</h4>
+        <div style="text-align: center; padding: 20px 0;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding: 0 10px;">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 80%; height: 25%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+              <span style="font-size: 10px; color: var(--text-muted);">1-5<br>固守</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 80%; height: 45%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.8;"></div>
+              <span style="font-size: 10px; color: var(--text-muted);">6-10<br>裂缝</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 80%; height: 65%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.85;"></div>
+              <span style="font-size: 10px; color: var(--text-muted);">11-18<br>动摇</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 80%; height: 50%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.75;"></div>
+              <span style="font-size: 10px; color: var(--text-muted);">19-25<br>接受</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="width: 80%; height: 100%; background: linear-gradient(180deg, var(--accent-pink), var(--accent-gold)); border-radius: 4px 4px 0 0;"></div>
+              <span style="font-size: 10px; color: var(--text-muted);">26-30<br>沉默</span>
+            </div>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">悲剧弧光 · 下沉阶梯节奏 · 第26-30集达到情感顶点</div>
+        </div>
+        
+        <h4>节奏设计原则</h4>
+        <ul>
+          <li><strong>下沉阶梯：</strong>希望→失望→更大的希望→彻底破碎，每3集下一个台阶</li>
+          <li><strong>微光碾碎节点：</strong>奶奶偷偷为晓萱做了一件扎染衣服（微光）→ 被邻居小孩弄坏（碾碎）</li>
+          <li><strong>对照叙事：</strong>童年高光（祖孙一起浸染）vs 当下冷清（作坊只剩奶奶一人）</li>
+          <li><strong>不卖惨：</strong>用具体的人和选择呈现传承困境，不用抽象的社会批判</li>
+        </ul>
+      `
+    },
+    4: {
+      icon: '💬',
+      title: '对白润色',
+      meta: '对白师 · 5 分钟',
+      expert: 'dialogue',
+      content: `
+        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
+          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
+        </div>
+        
+        <h4>第一集 · 开场对白示例</h4>
+        
+        <div style="padding: 16px; background: var(--bg-tertiary); border-radius: 10px; font-size: 13px; line-height: 1.8;">
+          <div style="color: var(--accent-purple); margin-bottom: 4px;"><strong>【场景】大理周城 · 段氏扎染工坊 · 日</strong></div>
+          <br>
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--accent-blue); font-weight: 500;">段晓萱：</span>
+            <span style="color: var(--text-secondary);">（看着手机里的订单）这个月又是零单？奶奶，您就不能听听我的建议吗？</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--accent-gold); font-weight: 500;">段奶奶：</span>
+            <span style="color: var(--text-secondary);">（头也不抬地搅着染缸）急什么？布要慢慢染才不会花。</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--accent-blue); font-weight: 500;">段晓萱：</span>
+            <span style="color: var(--text-secondary);">可是再这样下去，工坊就要——</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span style="color: var(--accent-gold); font-weight: 500;">段奶奶：</span>
+            <span style="color: var(--text-secondary);">（猛地抬头）就要什么？我倒要看看，是工坊先倒，还是你先沉不住气。</span>
+          </div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 12px; font-style: italic;">
+            💭 潜台词：奶奶其实知道工坊的困境，但故意用激将法逼晓萱真正想清楚——她要的到底是拯救工坊，还是证明自己。
+          </div>
+        </div>
+        
+        <h4 style="margin-top: 16px;">对白原则</h4>
+        <ul>
+          <li><strong>潜台词占比 > 40%：</strong>每段对话至少一层言外之意</li>
+          <li><strong>人物语言差异化：</strong>6个主要角色各有独特口头禅和说话节奏</li>
+          <li><strong>短句优先：</strong>适配短剧快节奏，平均句长控制在15字以内</li>
+        </ul>
+      `
+    },
+    5: {
+      icon: '🎭',
+      title: '文化植入',
+      meta: '文化顾问 · 3 分钟',
+      expert: 'culture',
+      content: `
+        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
+          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
+        </div>
+        
+        <h4>白族扎染文化植入点</h4>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="padding: 12px; background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 8px;">
+            <div style="font-size: 20px; margin-bottom: 6px;">🧵</div>
+            <div style="font-weight: 600; font-size: 13px; color: var(--accent-gold); margin-bottom: 4px;">扎染工艺</div>
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+              完整展示绞缬、捆扎、浸染等传统工序，植入第3集教学段落
+            </div>
+          </div>
+          
+          <div style="padding: 12px; background: rgba(236, 72, 153, 0.05); border: 1px solid rgba(236, 72, 153, 0.15); border-radius: 8px;">
+            <div style="font-size: 20px; margin-bottom: 6px;">🏠</div>
+            <div style="font-weight: 600; font-size: 13px; color: var(--accent-pink); margin-bottom: 4px;">白族民居</div>
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+              三坊一照壁建筑格局，第7集晓萱带陆远参观时讲解
+            </div>
+          </div>
+          
+          <div style="padding: 12px; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.15); border-radius: 8px;">
+            <div style="font-size: 20px; margin-bottom: 6px;">🎵</div>
+            <div style="font-weight: 600; font-size: 13px; color: var(--accent-cyan); margin-bottom: 4px;">大本曲</div>
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+              白族传统说唱艺术，第15集奶奶用大本曲讲述家族往事
+            </div>
+          </div>
+          
+          <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 8px;">
+            <div style="font-size: 20px; margin-bottom: 6px;">🌸</div>
+            <div style="font-weight: 600; font-size: 13px; color: var(--accent-green); margin-bottom: 4px;">三月街</div>
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+              千年集市文化，第19-20集非遗博览会场景还原
+            </div>
+          </div>
+        </div>
+        
+        <h4 style="margin-top: 16px;">文化植入原则</h4>
+        <ul>
+          <li><strong>叙事融合：</strong>每个文化点都推动剧情或人物成长，不做知识堆砌</li>
+          <li><strong>准确度保障：</strong>基于中华优秀传统文化知识库V1.2，已完成术语校验</li>
+          <li><strong>情感共鸣：</strong>用文化承载人物情感，让非遗"活"在故事里</li>
+        </ul>
+      `
+    },
+    6: {
+      icon: '✅',
+      title: '合规审查',
+      meta: '审核员 · 2 分钟',
+      expert: 'compliance',
+      content: `
+        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
+          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
+        </div>
+        
+        <h4>剧本合规检测报告</h4>
+        
+        <div style="padding: 16px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <span style="font-weight: 600; color: var(--accent-green);">综合过审评级</span>
+            <span style="font-size: 24px; font-weight: 700; color: var(--accent-green);">A 级</span>
+          </div>
+          <div style="height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
+            <div style="width: 92%; height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); border-radius: 4px;"></div>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; text-align: right;">92% 概率通过平台审核 · 已通过红果短剧签约审核</div>
+        </div>
+        
+        <h4>检测维度</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+              <span style="color: var(--text-secondary);">价值观导向</span>
+              <span style="color: var(--accent-green);">✅ 通过</span>
+            </div>
+            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
+              <div style="width: 98%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+              <span style="color: var(--text-secondary);">内容合规性</span>
+              <span style="color: var(--accent-green);">✅ 通过</span>
+            </div>
+            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
+              <div style="width: 94%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+              <span style="color: var(--text-secondary);">敏感词过滤</span>
+              <span style="color: var(--accent-green);">✅ 通过</span>
+            </div>
+            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
+              <div style="width: 100%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+              <span style="color: var(--text-secondary);">文化准确性</span>
+              <span style="color: var(--accent-green);">✅ 通过</span>
+            </div>
+            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
+              <div style="width: 96%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <h4 style="margin-top: 16px;">优化建议（2项）</h4>
+        <ul>
+          <li>第18集祖孙和解戏可增加扎染动作细节，强化"用手艺说话"的表达</li>
+          <li>第26集结尾留白处可增加一个蓝印花布随风飘动的空镜头，余韵更足</li>
+        </ul>
+      `
+    }
+  };
+
+  let isCreating = false;
+  let currentStep = 0;
+  let stepsCompleted = 0;
+
+  function setIdea(text) {
+    document.getElementById('ideaInput').value = text;
+  }
+
+  // 点击左侧步骤点击切换
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.step-item').forEach(item => {
+      item.addEventListener('click', () => {
+      const step = parseInt(item.dataset.step);
+      if (step <= stepsCompleted || step === currentStep) {
+        showStepContent(step);
+      }
+    });
+    });
+  });
+
+  function showStepContent(stepNum) {
+    const step = stepData[stepNum];
+    if (!step) return;
+    
+    // 更新左侧激活态
+    document.querySelectorAll('.step-item').forEach((item, i) => {
+      item.classList.remove('active');
+      if (i + 1 === stepNum - 1) {
+        item.classList.add('active');
+      }
+    });
+    document.querySelector(`.step-item[data-step="${stepNum}"]`).classList.add('active');
+    
+    // 更新右侧专家态
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.classList.remove('active', 'working');
+    });
+    document.querySelector(`.expert-item[data-expert="${step.expert}"]`).classList.add('active');
+    
+    // 显示步骤内容
+    const outputContainer = document.getElementById('outputContainer');
+    outputContainer.innerHTML = `
+      <div class="output-card">
+        <div class="output-header">
+          <div class="output-icon">${step.icon}</div>
+          <div>
+            <div class="output-title">${step.title}</div>
+            <div class="output-meta">${step.meta}</div>
+          </div>
+        </div>
+        <div class="output-body">
+          ${step.content}
+        </div>
+      </div>
+    `;
+    
+    if (stepNum === 6 && stepsCompleted >= 6) {
+      addFinalCard();
+    }
+    
+    const contentArea = document.getElementById('contentArea');
+    contentArea.scrollTop = 0;
+    
+    currentStep = stepNum;
+  }
+
+  async function startCreation() {
+    if (isCreating) return;
+    
+    const idea = document.getElementById('ideaInput').value.trim();
+    if (!idea) {
+      alert('请输入你的短剧想法');
+      return;
+    }
+    
+    isCreating = true;
+    stepsCompleted = 0;
+    currentStep = 0;
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
+    
+    // 隐藏欢迎界面
+    document.getElementById('welcomeScreen').style.display = 'none';
+    
+    // 清空之前的输出
+    document.getElementById('outputContainer').innerHTML = '';
+    
+    // 逐步执行每一步
+    for (let step = 1; step <= 6; step++) {
+      await runStep(step);
+      stepsCompleted = step;
+    }
+    
+    // 完成
+    btn.innerHTML = '<span>再来一版</span><span>↻</span>';
+    btn.disabled = false;
+    isCreating = false;
+    
+    // 添加最终完成卡片
+    addFinalCard();
+  }
+
+  async function runStep(stepNum) {
+    const step = stepData[stepNum];
+    const contentArea = document.getElementById('contentArea');
+    const outputContainer = document.getElementById('outputContainer');
+    
+    // 激活左侧步骤
+    document.querySelectorAll('.step-item').forEach((item, i) => {
+      item.classList.remove('active');
+      if (i + 1 < stepNum) {
+        item.classList.add('completed');
+        item.querySelector('.step-status').textContent = '已完成';
+      }
+    });
+    const currentStep = document.querySelector(`.step-item[data-step="${stepNum}"]`);
+    currentStep.classList.add('active');
+    currentStep.querySelector('.step-status').textContent = '进行中';
+    
+    // 激活右侧专家
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.classList.remove('active', 'working');
+    });
+    const currentExpert = document.querySelector(`.expert-item[data-expert="${step.expert}"]`);
+    currentExpert.classList.add('active', 'working');
+    
+    // 创建输出卡片
+    const card = document.createElement('div');
+    card.className = 'output-card';
+    card.innerHTML = `
+      <div class="output-header">
+        <div class="output-icon">${step.icon}</div>
+        <div>
+          <div class="output-title">${step.title}</div>
+          <div class="output-meta">${step.meta}</div>
+        </div>
+      </div>
+      <div class="output-body typing-effect">
+        <span id="typing-${stepNum}"></span><span class="typing-cursor" id="cursor-${stepNum}"></span>
+      </div>
+    `;
+    outputContainer.appendChild(card);
+    
+    // 滚动到底部
+    contentArea.scrollTop = contentArea.scrollHeight;
+    
+    // 打字机效果
+    await typeContent(stepNum, step.content);
+    
+    // 移除光标
+    document.getElementById(`cursor-${stepNum}`).remove();
+    
+    // 专家完成状态
+    currentExpert.classList.remove('working', 'active');
+    currentExpert.classList.add('done');
+    
+    // 等待一小段时间
+    await sleep(500);
+  }
+
+  async function typeContent(stepNum, content) {
+    const target = document.getElementById(`typing-${stepNum}`);
+    // 简化：不逐字打，直接显示完整内容（避免HTML标签拆分问题）
+    // 但为了有"生成中"的感觉，分段显示
+    const paragraphs = content.split(/(?=<h4>|<div|<ul)/g).filter(p => p.trim());
+    
+    for (let i = 0; i < paragraphs.length; i++) {
+      target.innerHTML += paragraphs[i];
+      const contentArea = document.getElementById('contentArea');
+      contentArea.scrollTop = contentArea.scrollHeight;
+      await sleep(300 + Math.random() * 400);
+    }
+  }
+
+  function addFinalCard() {
+    const outputContainer = document.getElementById('outputContainer');
+    const card = document.createElement('div');
+    card.className = 'output-card';
+    card.style.borderColor = 'var(--accent-gold)';
+    card.style.boxShadow = '0 0 30px rgba(245, 158, 11, 0.15)';
+    card.innerHTML = `
+      <div class="output-header" style="border-bottom-color: rgba(245, 158, 11, 0.3);">
+        <div class="output-icon" style="background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink));">🎉</div>
+        <div>
+          <div class="output-title">剧本创作完成</div>
+          <div class="output-meta">总计 30 集 · 约 36,000 字 · 非遗题材 · 已通过红果短剧签约审核</div>
+        </div>
+      </div>
+      <div class="output-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">过审评级</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--accent-green);">A-</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">潜台词占比</div>
+            <div style="font-size: 24px; font-weight: 700; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">42%</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">文化植入点</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--accent-gold);">8 处</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">反转密度</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--accent-pink);">3.2集/次</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; border-radius: 8px; color: white; font-size: 13px; cursor: pointer;">📥 导出完整剧本</button>
+          <button style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">🔄 再创作一版</button>
+          <button style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">📝 人工微调</button>
+        </div>
+      </div>
+    `;
+    outputContainer.appendChild(card);
+    
+    const contentArea = document.getElementById('contentArea');
+    contentArea.scrollTop = contentArea.scrollHeight;
+    
+    // 所有步骤标记为完成
+    document.querySelectorAll('.step-item').forEach(item => {
+      item.classList.remove('active');
+      item.classList.add('completed');
+      item.querySelector('.step-status').textContent = '已完成';
+    });
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+</script>
+</body>
+</html>
