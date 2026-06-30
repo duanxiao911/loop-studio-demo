@@ -36,6 +36,134 @@
     overflow: hidden;
   }
 
+  /* 设置按钮 */
+  .settings-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+  .settings-btn:hover {
+    border-color: var(--border-active);
+    color: var(--text-primary);
+    transform: rotate(45deg);
+  }
+
+  /* 设置弹窗 */
+  .settings-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 300;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .settings-modal.show { display: flex; }
+  .settings-content {
+    width: 100%;
+    max-width: 500px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 32px;
+  }
+  .settings-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+  .settings-group {
+    margin-bottom: 20px;
+  }
+  .settings-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .settings-input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .settings-input:focus {
+    border-color: var(--border-active);
+  }
+  .settings-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .settings-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+  }
+  .settings-save {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .settings-cancel {
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* 错误提示 */
+  .error-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 400;
+    padding: 12px 20px;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+    animation: slideDown 0.3s ease;
+  }
+  .error-toast.show { display: block; }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
   /* 注册页面 */
   .onboarding-screen {
     position: fixed;
@@ -322,7 +450,7 @@
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 260px 1fr 300px;
+    grid-template-columns: 220px 1fr 260px;
     grid-template-rows: 64px 1fr;
     height: 100vh;
     gap: 1px;
@@ -774,13 +902,40 @@
   .right-panel {
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    padding: 24px 16px;
+    padding: 16px 14px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .right-panel::-webkit-scrollbar { width: 4px; }
   .right-panel::-webkit-scrollbar-track { background: transparent; }
   .right-panel::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+
+  .expert-group {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+  }
+
+  .expert-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .expert-item.sub-expert {
+    padding: 6px 8px;
+    margin-left: 6px;
+    opacity: 0.8;
+  }
+
+  .expert-item.sub-expert .expert-status-dot {
+    display: none;
+  }
 
   .expert-item {
     display: flex;
@@ -989,6 +1144,48 @@
 </style>
 </head>
 <body>
+  <!-- 设置按钮 -->
+  <button class="settings-btn" onclick="toggleSettings()" title="API 设置">⚙️</button>
+
+  <!-- 设置弹窗 -->
+  <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)toggleSettings()">
+    <div class="settings-content">
+      <div class="settings-title">API 设置</div>
+      
+      <div class="settings-group">
+        <label class="settings-label">API 接口地址</label>
+        <input type="text" class="settings-input" id="apiBaseUrl" placeholder="https://api.openai.com/v1" value="https://api.openai.com/v1">
+        <div class="settings-hint">兼容 OpenAI 格式的接口，国内可填中转/代理地址</div>
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">API Key</label>
+        <input type="password" class="settings-input" id="apiKey" placeholder="sk-...">
+        <div class="settings-hint">Key 仅保存在你本地浏览器，不上传任何服务器</div>
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">模型名称</label>
+        <input type="text" class="settings-input" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini">
+        <div class="settings-hint">默认 gpt-4o-mini，可根据接口支持的模型更换</div>
+      </div>
+
+      <div class="settings-group">
+        <label class="settings-label">集数</label>
+        <input type="number" class="settings-input" id="episodeCount" placeholder="24" value="24" min="12" max="100">
+        <div class="settings-hint">生成的短剧总集数，建议 24-30 集</div>
+      </div>
+
+      <div class="settings-actions">
+        <button class="settings-cancel" onclick="toggleSettings()">取消</button>
+        <button class="settings-save" onclick="saveSettings()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 错误提示 -->
+  <div class="error-toast" id="errorToast"></div>
+
   <!-- 注册页面 -->
   <div class="onboarding-screen" id="onboardingScreen">
     <div class="bg-gradient"></div>
@@ -1064,6 +1261,9 @@
         <div class="logo-text">
           <div class="logo-title">云匠</div>
           <div class="logo-subtitle">精品短剧剧本创作引擎</div>
+        </div>
+        <div style="margin-left: 12px; padding: 3px 10px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; font-size: 11px; color: var(--accent-gold); font-weight: 500;">
+          ⭐ 案例演示 · 《蓝白吟》
         </div>
       </div>
       <div class="top-actions">
@@ -1207,63 +1407,172 @@
 
     <!-- 右侧专家团 -->
     <div class="right-panel">
-      <div class="panel-title">AI 专家团</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div class="panel-title">AI 专家团</div>
+        <span style="font-size: 11px; color: var(--text-muted);">15位 · 6大模块</span>
+      </div>
       
-      <div class="expert-item" data-expert="planner">
-        <div class="expert-avatar purple">📋</div>
-        <div class="expert-info">
-          <div class="expert-name">策划师</div>
-          <div class="expert-role">大纲与故事架构</div>
+      <!-- 创意组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">💡 创意定位组 · 3人</div>
+        <div class="expert-item" data-expert="planner">
+          <div class="expert-avatar purple">🫧</div>
+          <div class="expert-info">
+            <div class="expert-name">§0 灵魂捕手</div>
+            <div class="expert-role">听懂想法，追问故事方向</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-status-dot"></div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar purple" style="width:28px;height:28px;font-size:12px;">🎬</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§8 项目配置师</div>
+            <div class="expert-role" style="font-size:10px;">方向拆解为项目设定</div>
+          </div>
+        </div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar purple" style="width:28px;height:28px;font-size:12px;">📊</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§10 商业分析师</div>
+            <div class="expert-role" style="font-size:10px;">平台适配与爆款评估</div>
+          </div>
+        </div>
       </div>
 
-      <div class="expert-item" data-expert="character">
-        <div class="expert-avatar blue">👤</div>
-        <div class="expert-info">
-          <div class="expert-name">人设师</div>
-          <div class="expert-role">角色塑造与小传</div>
+      <!-- 人设组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">👤 角色塑造组 · 2人</div>
+        <div class="expert-item" data-expert="character">
+          <div class="expert-avatar blue">🗿</div>
+          <div class="expert-info">
+            <div class="expert-name">§1 角色铸造师</div>
+            <div class="expert-role">人物灵魂卡+弧光追踪</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-status-dot"></div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar blue" style="width:28px;height:28px;font-size:12px;">✨</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§14 IP衍生师</div>
+            <div class="expert-role" style="font-size:10px;">人物IP跨媒介开发</div>
+          </div>
+        </div>
       </div>
 
-      <div class="expert-item" data-expert="rhythm">
-        <div class="expert-avatar cyan">📈</div>
-        <div class="expert-info">
-          <div class="expert-name">节奏师</div>
-          <div class="expert-role">情节节奏与钩子设计</div>
+      <!-- 结构组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">🏗️ 结构节奏组 · 3人</div>
+        <div class="expert-item" data-expert="rhythm">
+          <div class="expert-avatar cyan">🧱</div>
+          <div class="expert-info">
+            <div class="expert-name">§3 结构建筑师</div>
+            <div class="expert-role">全剧骨架与节拍表</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-status-dot"></div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar cyan" style="width:28px;height:28px;font-size:12px;">⚔️</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§7 实战指挥官</div>
+            <div class="expert-role" style="font-size:10px;">分集剧本逐集生成</div>
+          </div>
+        </div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar cyan" style="width:28px;height:28px;font-size:12px;">🔍</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§6 质量审计师</div>
+            <div class="expert-role" style="font-size:10px;">全维度质量评分</div>
+          </div>
+        </div>
       </div>
 
-      <div class="expert-item" data-expert="dialogue">
-        <div class="expert-avatar green">💬</div>
-        <div class="expert-info">
-          <div class="expert-name">对白师</div>
-          <div class="expert-role">台词打磨与潜台词</div>
+      <!-- 对白组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">💬 对白打磨组 · 3人</div>
+        <div class="expert-item" data-expert="dialogue">
+          <div class="expert-avatar green">🎭</div>
+          <div class="expert-info">
+            <div class="expert-name">§4 对白大师</div>
+            <div class="expert-role">个性化语料库与对白风格</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-status-dot"></div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar green" style="width:28px;height:28px;font-size:12px;">📄</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§5 格式工程师</div>
+            <div class="expert-role" style="font-size:10px;">剧本格式化平台适配</div>
+          </div>
+        </div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar green" style="width:28px;height:28px;font-size:12px;">✏️</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§9 改稿大师</div>
+            <div class="expert-role" style="font-size:10px;">反馈迭代优化</div>
+          </div>
+        </div>
       </div>
 
-      <div class="expert-item" data-expert="culture">
-        <div class="expert-avatar gold">🎭</div>
-        <div class="expert-info">
-          <div class="expert-name">文化顾问</div>
-          <div class="expert-role">非遗与文化植入</div>
+      <!-- 文化视觉组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">🎨 文化视觉组 · 3人</div>
+        <div class="expert-item" data-expert="culture">
+          <div class="expert-avatar gold">🏛️</div>
+          <div class="expert-info">
+            <div class="expert-name">§11 文化顾问</div>
+            <div class="expert-role">非遗/历史/地域文化</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-status-dot"></div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar gold" style="width:28px;height:28px;font-size:12px;">🎬</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§13 视觉导演</div>
+            <div class="expert-role" style="font-size:10px;">视觉基调和镜头系统</div>
+          </div>
+        </div>
+        <div class="expert-item sub-expert">
+          <div class="expert-avatar gold" style="width:28px;height:28px;font-size:12px;">🎵</div>
+          <div class="expert-info">
+            <div class="expert-name" style="font-size:12px;">§12 音效设计师</div>
+            <div class="expert-role" style="font-size:10px;">BGM音效配音建议</div>
+          </div>
+        </div>
       </div>
 
-      <div class="expert-item" data-expert="compliance">
-        <div class="expert-avatar pink">✅</div>
-        <div class="expert-info">
-          <div class="expert-name">审核员</div>
-          <div class="expert-role">合规审查与过审优化</div>
+      <!-- 审核组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">🛡️ 合规审查组 · 1人</div>
+        <div class="expert-item" data-expert="compliance">
+          <div class="expert-avatar pink">🛡️</div>
+          <div class="expert-info">
+            <div class="expert-name">§2 合规守门员</div>
+            <div class="expert-role">题材风险与审核红线</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-status-dot"></div>
       </div>
 
-      <div style="margin-top: 24px;">
+      <div style="margin-top: 16px;">
+        <div class="panel-title">文化知识库</div>
+        <div style="padding: 10px; background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 10px;">
+          <div style="font-size: 11px; color: var(--accent-gold); font-weight: 500; margin-bottom: 6px;">📚 中华优秀传统文化知识库 V1.2</div>
+          <div style="font-size: 10px; color: var(--text-muted); line-height: 1.6;">
+            双骨架结构：<br>
+            · 社会骨架：《乡土中国》14篇<br>
+            · 审美骨架：《美的历程》<br>
+            四大板块：民俗仪式 / 地域文化 / 审美体系 / 人物原型
+          </div>
+          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(245,158,11,0.1);">
+            <div style="display: flex; justify-content: space-between; font-size: 10px;">
+              <span style="color: var(--text-muted);">当前调用模块</span>
+              <span style="color: var(--accent-gold);">32 / 128</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
         <div class="panel-title">引擎状态</div>
         <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -1280,7 +1589,7 @@
   </div>
 
   <!-- 底部状态栏 -->
-  <div class="footer-bar" style="position: fixed; bottom: 0; left: 261px; right: 301px; z-index: 10;">
+  <div class="footer-bar" style="position: fixed; bottom: 0; left: 221px; right: 261px; z-index: 10;">
     <div class="footer-left">
       <div class="footer-badge">
         <span>🏷️</span>
@@ -1300,6 +1609,272 @@
   </div>
 
 <script>
+  // ====== API 配置相关 ======
+  const DEFAULT_SETTINGS = {
+    apiBaseUrl: 'https://api.openai.com/v1',
+    apiKey: '',
+    model: 'gpt-4o-mini',
+    episodeCount: 24
+  };
+
+  function loadSettings() {
+    try {
+      const saved = localStorage.getItem('yunjiang_settings');
+      if (saved) return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+    } catch (e) {}
+    return { ...DEFAULT_SETTINGS };
+  }
+
+  function saveSettings() {
+    const settings = {
+      apiBaseUrl: document.getElementById('apiBaseUrl').value.trim() || DEFAULT_SETTINGS.apiBaseUrl,
+      apiKey: document.getElementById('apiKey').value.trim(),
+      model: document.getElementById('apiModel').value.trim() || DEFAULT_SETTINGS.model,
+      episodeCount: parseInt(document.getElementById('episodeCount').value) || DEFAULT_SETTINGS.episodeCount
+    };
+    localStorage.setItem('yunjiang_settings', JSON.stringify(settings));
+    toggleSettings();
+    showToast('设置已保存');
+  }
+
+  function toggleSettings() {
+    const modal = document.getElementById('settingsModal');
+    if (modal.classList.contains('show')) {
+      modal.classList.remove('show');
+    } else {
+      const s = loadSettings();
+      document.getElementById('apiBaseUrl').value = s.apiBaseUrl;
+      document.getElementById('apiKey').value = s.apiKey;
+      document.getElementById('apiModel').value = s.model;
+      document.getElementById('episodeCount').value = s.episodeCount;
+      modal.classList.add('show');
+    }
+  }
+
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('errorToast');
+    toast.textContent = msg;
+    toast.style.background = isError ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // ====== 6步 Prompt 定义 ======
+  const stepPrompts = {
+    1: {
+      name: '大纲策划',
+      expert: 'planner',
+      systemPrompt: '你是一位资深短剧策划师，擅长从一个简单想法提炼出完整的短剧大纲。请用专业、精准的语言输出。',
+      userPrompt: (idea, style, episodes, prevResults) => `
+请基于以下创意，完成短剧的大纲策划：
+
+【创意】${idea}
+【创作风格】${style}
+【集数】${episodes}集
+
+请输出以下内容（用HTML格式，包含小标题）：
+1. <h4>核心定位</h4> - 一句话概括本剧核心卖点
+2. <h4>主题立意</h4> - 本剧想要表达的深层主题
+3. <h4>故事梗概</h4> - 300字左右的完整故事梗概
+4. <h4>核心冲突</h4> - 列出3-4个贯穿全剧的核心冲突点
+5. <h4>分集框架</h4> - 用列表列出每集的核心事件（${episodes}集，每集一句话）
+`
+    },
+    2: {
+      name: '人物塑造',
+      expert: 'character',
+      systemPrompt: '你是一位专业的人设师，擅长塑造立体、有记忆点的短剧角色。输出要具体、有画面感。',
+      userPrompt: (idea, style, episodes, prevResults) => `
+请基于已有的大纲，为这部短剧设计完整的人物设定：
+
+【创意】${idea}
+【创作风格】${style}
+【已完成的大纲】
+${prevResults[1] || '（暂无）'}
+
+请输出以下内容（用HTML格式，包含小标题）：
+1. <h4>主要人物</h4>
+   - 列出3-5个主要角色
+   - 每个角色包含：姓名、年龄、身份/职业、外貌特征、性格特点、核心动机、人物弧光
+2. <h4>人物关系图</h4> - 描述主要角色之间的关系
+3. <h4>配角设定</h4> - 列出3-4个重要配角及其作用
+4. <h4>反派/阻碍角色</h4> - 分析反派角色的塑造逻辑
+`
+    },
+    3: {
+      name: '节奏控制',
+      expert: 'rhythm',
+      systemPrompt: '你是一位短剧节奏大师，深谙短剧爽点设计和钩子布局之道。输出要专业、可落地。',
+      userPrompt: (idea, style, episodes, prevResults) => `
+请基于已有大纲和人设，完成这部短剧的节奏设计和分集大纲：
+
+【创意】${idea}
+【创作风格】${style}
+【集数】${episodes}集
+【已完成的大纲】
+${prevResults[1] || '（暂无）'}
+【已完成的人设】
+${prevResults[2] || '（暂无）'}
+
+请输出以下内容（用HTML格式，包含小标题）：
+1. <h4>整体节奏曲线</h4> - 描述全剧的节奏起伏设计，起承转合的节点
+2. <h4>爽点分布</h4> - 列出全剧的主要爽点/反转点及其所在集数
+3. <h4>钩子设计</h4> - 前5集每集结尾的钩子（悬念设置）
+4. <h4>分集大纲</h4>
+   <ul>
+   ${Array.from({length: Math.min(episodes, 30)}, (_, i) => `<li>第${i+1}集：</li>`).join('')}
+   </ul>
+   请为每集写一句话的核心事件和结尾钩子，按列表格式输出。
+`
+    },
+    4: {
+      name: '对白润色',
+      expert: 'dialogue',
+      systemPrompt: '你是一位资深对白编剧，擅长用精炼的台词展现人物性格和潜台词。输出要生动、有画面感。',
+      userPrompt: (idea, style, episodes, prevResults) => `
+请基于已有设定，选择前3集进行详细的场景和对白创作示范：
+
+【创意】${idea}
+【创作风格】${style}
+【已完成的节奏大纲】
+${prevResults[3] || '（暂无）'}
+【已完成的人设】
+${prevResults[2] || '（暂无）'}
+
+请输出以下内容（用HTML格式，包含小标题）：
+1. <h4>对白风格说明</h4> - 本剧的整体对白风格和语言特色
+2. <h4>第1集完整剧本</h4> - 写出第1集的完整场景+对白，包含场景描述、动作说明、角色台词，每集大约800-1200字
+3. <h4>第2集完整剧本</h4> - 同上
+4. <h4>第3集完整剧本</h4> - 同上
+5. <h4>潜台词设计说明</h4> - 举例说明台词中的潜台词运用
+`
+    },
+    5: {
+      name: '文化植入',
+      expert: 'culture',
+      systemPrompt: '你是一位文化顾问，擅长将传统文化、非遗元素自然融入短剧创作，做到润物细无声。',
+      userPrompt: (idea, style, episodes, prevResults) => `
+请基于这部短剧的设定，设计文化元素植入方案：
+
+【创意】${idea}
+【创作风格】${style}
+【已完成的剧本内容】
+${prevResults[4] || '（暂无）'}
+【已完成的大纲】
+${prevResults[1] || '（暂无）'}
+
+请输出以下内容（用HTML格式，包含小标题）：
+1. <h4>文化元素盘点</h4> - 列出本剧可以植入的传统文化/非遗/地域文化元素
+2. <h4>植入方案</h4> - 每个文化元素的具体植入方式和对应集数
+3. <h4>核心文化符号</h4> - 本剧的核心文化符号及其象征意义
+4. <h4>文化真实性说明</h4> - 确保文化内容准确的依据和注意事项
+5. <h4>文化彩蛋</h4> - 为懂的观众准备的隐藏文化细节
+`
+    },
+    6: {
+      name: '合规审查',
+      expert: 'compliance',
+      systemPrompt: '你是一位短剧合规审核员，熟悉各大短剧平台的审核规则，能精准识别风险并给出优化建议。',
+      userPrompt: (idea, style, episodes, prevResults) => `
+请对这部短剧进行全面的合规审查和过审优化：
+
+【创意】${idea}
+【创作风格】${style}
+【已完成的全部内容】
+${prevResults[1] || ''}
+${prevResults[2] || ''}
+${prevResults[3] || ''}
+${prevResults[4] || ''}
+${prevResults[5] || ''}
+
+请输出以下内容（用HTML格式，包含小标题）：
+1. <h4>整体过审评级</h4> - 给出A/B/C/D评级，并说明理由
+2. <h4>风险点识别</h4> - 列出所有可能的合规风险点，按严重程度排序
+3. <h4>优化建议</h4> - 针对每个风险点给出具体的修改建议
+4. <h4>平台适配建议</h4> - 针对主流短剧平台（红果、抖音、快手等）的适配建议
+5. <h4>送审版本调整清单</h4> - 一份可执行的调整清单
+`
+    }
+  };
+
+  // ====== 调用大模型 API ======
+  async function callLLM(systemPrompt, userPrompt) {
+    const settings = loadSettings();
+    if (!settings.apiKey) {
+      throw new Error('请先在设置中配置 API Key');
+    }
+
+    const url = settings.apiBaseUrl.replace(/\/$/, '') + '/chat/completions';
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + settings.apiKey
+      },
+      body: JSON.stringify({
+        model: settings.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.8,
+        stream: true
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text().catch(() => '');
+      throw new Error('API 调用失败：' + response.status + ' ' + errText.slice(0, 200));
+    }
+
+    // 流式输出
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let fullText = '';
+    let buffer = '';
+
+    return {
+      reader: reader,
+      decoder: decoder,
+      buffer: '',
+      fullText: '',
+      async readNext() {
+        const { value, done } = await reader.read();
+        if (done) return null;
+        
+        this.buffer += decoder.decode(value, { stream: true });
+        const lines = this.buffer.split('\n');
+        this.buffer = lines.pop() || '';
+        
+        let chunkText = '';
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data: ')) continue;
+          const data = trimmed.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            const json = JSON.parse(data);
+            const content = json.choices?.[0]?.delta?.content;
+            if (content) {
+              chunkText += content;
+              this.fullText += content;
+            }
+          } catch (e) {}
+        }
+        return chunkText;
+      }
+    };
+  }
+
+  // ====== 创作风格文本映射 ======
+  const styleTextMap = {
+    emotion: '情感流 - 细腻走心，共情力强，注重人物内心刻画',
+    rhythm: '节奏党 - 强反转，钩子密集，爽点不断',
+    culture: '文化向 - 有底蕴，重质感，文化元素自然融入',
+    twist: '反转王 - 烧脑悬疑，出人意料，层层反转'
+  };
+
   // 注册页面逻辑
   let selectedStyle = null;
 
@@ -1355,10 +1930,15 @@
     };
     const styleText = styleMap[selectedStyle] || '创作者';
     
-    // 更新主界面的用户名显示
-    document.querySelector('.user-avatar').textContent = name.charAt(0);
-    document.querySelector('.welcome-title').textContent = `你好，${name}`;
-    document.querySelector('.greeting-text').textContent = `你好，${name}`;
+    // 更新主界面的用户名显示（加容错，找不到元素不影响跳转）
+    const userAvatar = document.querySelector('.user-avatar');
+    if (userAvatar) userAvatar.textContent = name.charAt(0);
+    
+    const welcomeTitle = document.querySelector('.welcome-title');
+    if (welcomeTitle) welcomeTitle.textContent = `你好，${name}`;
+    
+    const greetingText = document.querySelector('.greeting-text');
+    if (greetingText) greetingText.textContent = `你好，${name}`;
     
     // 更新头像颜色
     const avatarColors = {
@@ -1367,7 +1947,7 @@
       culture: 'linear-gradient(135deg, #10b981, #06b6d4)',
       twist: 'linear-gradient(135deg, #8b5cf6, #6366f1)'
     };
-    document.querySelector('.user-avatar').style.background = avatarColors[selectedStyle] || '';
+    if (userAvatar) userAvatar.style.background = avatarColors[selectedStyle] || '';
     
     // 隐藏注册页
     document.getElementById('onboardingScreen').classList.add('hide');
@@ -1375,292 +1955,390 @@
 
   const stepData = {
     1: {
-      icon: '📋',
-      title: '第一集 大纲策划',
-      meta: '策划师 · 3 分钟',
+      icon: '💡',
+      title: '第一步 · 创意定位',
+      meta: '§0 灵魂捕手 + §8 项目配置师',
       expert: 'planner',
       content: `
-        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
-          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
-        </div>
-        
-        <h4>剧名：《蓝白吟》</h4>
-        <p style="margin-bottom:12px;">24集都市情感非遗题材短剧 · 单集2分钟</p>
-        
-        <h4>核心故事线</h4>
-        <ul>
-          <li><strong>主线：</strong>白族少女段晓萱回到大理，用创新设计拯救濒临倒闭的家族扎染工坊</li>
-          <li><strong>副线：</strong>与都市设计师陆远从互怼到相爱，两人碰撞出传统与现代的火花</li>
-          <li><strong>暗线：</strong>奶奶隐藏三十年的扎染秘方面世，揭开家族往事</li>
-        </ul>
-        
-        <h4>三幕结构</h4>
-        <ul>
-          <li><strong>第1-8集（固守→裂缝）：</strong>晓萱在城里实习想逃离周城，奶奶病危被迫回村，对扎染仍有抵触</li>
-          <li><strong>第9-18集（动摇→接受）：</strong>开始接触扎染，发现奶奶的秘密作坊，理解传承的重量，但已无力回天</li>
-          <li><strong>第19-24集（沉默）：</strong>作坊关了，晓萱带着扎染的记忆离开——蓝白之色，已刻进血脉</li>
-        </ul>
-        
-        <h4>核心冲突</h4>
-        <ul>
-          <li><strong>代际冲突：</strong>奶奶守了一辈子的技艺，孙女只想逃离</li>
-          <li><strong>生存困境：</strong>机械染取代手工扎染，年轻人不愿学</li>
-          <li><strong>自我认同：</strong>我是谁？我来自哪里？为什么要传承？</li>
-        </ul>
-      `
+
+<div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 16px; font-weight: 500;">
+  ⭐ 引擎真实产出 · 非遗题材 · 《蓝白吟》第一季
+</div>
+
+<h4>剧名：《蓝白吟》</h4>
+
+<h4>核心定位</h4>
+<p>大理白族扎染少女的百年宿命与传承之路 —— 以非遗文化为骨，以细腻情爱为魂，治愈系大女主年代短剧。</p>
+
+<h4>体量与题材</h4>
+<p>第一季 30 集 · 全剧共 90 集<br>
+年代爱情 · 大女主 · 非遗现实题材<br>
+受众：女性向</p>
+
+<h4>主题立意</h4>
+<p>当传统遭遇现代，当坚守遭遇诱惑，当宿命压上肩头——一个少女如何从"逃避"走向"担当"，在草木与人情之间，找到属于自己的答案。</p>
+
+<h4>故事梗概</h4>
+<p>大理白族扎染少女蓝瑛，身负家族靛缸百年宿命。蓝家先祖与苍山靛草定下共生之约，每一代染娘都要亲手复刻祖辈藏在纹样里的遗憾，消解郁结，靛缸才能保有灵气。家中留存半块"孤雁纹"残布，是解开困局的关键。</p>
+<p>在亲情（父亲劝她放弃手艺进城）、友情（发小阿月的网红化路线分歧）、爱情（人类学研究生文轩的观念摩擦）的三重温和考验中，蓝瑛从最初的逃避，到逐渐读懂古纹样背后的女性心事，最终在百年靛缸彻底枯竭之际，坦然扛起解开百年心结、守护扎染的重任。</p>
+
+<h4>核心冲突</h4>
+<ul>
+  <li><strong>传承 vs 现代</strong>：古法扎染与机器印染、商业化的对抗</li>
+  <li><strong>宿命 vs 自由</strong>：染娘是否必须背负祖辈的遗憾</li>
+  <li><strong>观念差异</strong>：学术效率派 vs 匠心坚守派的温和摩擦</li>
+  <li><strong>自我成长</strong>：从逃避到担当的女性心路蜕变</li>
+</ul>
+
+<h4>四大单元结构</h4>
+<ul>
+  <li><strong>第一单元 · 靛缸生异（1-5集）</strong>：童年铺垫，靛缸异象初现</li>
+  <li><strong>第二单元 · 初识与秘辛（6-20集）</strong>：相识相恋，宿命揭晓，多线观念冲突</li>
+  <li><strong>第三单元 · 情愫与相守（21-28集）</strong>：误会化解，传统婚礼，靛缸交付</li>
+  <li><strong>第四单元 · 靛缸枯竭（29-30集 季终）</strong>：新生命诞生，靛缸彻底失效，决心启航</li>
+</ul>
+
+`
     },
     2: {
-      icon: '👤',
-      title: '人物塑造',
-      meta: '人设师 · 4 分钟',
+      icon: '🗿',
+      title: '第二步 · 角色塑造',
+      meta: '§1 角色铸造师 + §14 IP衍生师',
       expert: 'character',
       content: `
-        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
-          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
-        </div>
-        
-        <h4>核心人物</h4>
-        
-        <div style="padding: 12px; background: rgba(139, 92, 246, 0.05); border-radius: 8px; margin-bottom: 12px;">
-          <div style="font-weight: 600; color: var(--accent-purple); margin-bottom: 4px;">段晓萱 · 24岁</div>
-          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
-            白族扎染世家第三代传人，在城里做设计实习。外表倔强内心柔软，嘴上说不想接班，
-            其实比谁都在意奶奶的作坊。<br>
-            <strong>人物弧光：</strong>固守（我不要被困在村子里）→ 动摇（扎染也许没有那么讨厌）→ 接受（我爱它，但我救不了它）→ 沉默（算了，但它在我心里了）
-          </div>
-        </div>
-        
-        <div style="padding: 12px; background: rgba(245, 158, 11, 0.05); border-radius: 8px; margin-bottom: 12px;">
-          <div style="font-weight: 600; color: var(--accent-gold); margin-bottom: 4px;">段奶奶 · 72岁</div>
-          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
-            扎染技艺非遗传承人，段氏作坊老掌柜。表面严厉话少，心里藏着一辈子的执念和秘密。
-            说话带白族口音，口头禅："布要慢慢染，才不会花。"<br>
-            <strong>不完美设定：</strong>她也有局限——固执、不肯变通、把传承当成了执念，反而害了自己。
-          </div>
-        </div>
-        
-        <h4>角色关系</h4>
-        <ul>
-          <li><strong>祖孙关系：</strong>不是简单的传承接班，是两个犟脾气的人互相较劲又彼此心疼</li>
-          <li><strong>互为镜像：</strong>奶奶年轻时也想逃离，晓萱老了会不会也变成她？</li>
-          <li><strong>换人测试：</strong>遮住角色名单看台词，必须能分辨出谁在说话</li>
-        </ul>
-      `
+
+<h4>核心主角</h4>
+
+<div style="padding: 12px; background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.2); border-radius: 10px; margin-bottom: 12px;">
+  <div style="font-weight: 600; color: var(--accent-blue); margin-bottom: 6px;">蓝瑛 · 女主 · 16岁</div>
+  <div style="font-size: 13px; line-height: 1.7; color: var(--text-secondary);">
+    白族扎染世家第十七代染娘。头戴白族传统头饰，指尖常年留有靛蓝痕迹。<br>
+    <strong>性格：</strong>外柔内韧、心思敏感，敬畏草木与家族传承，做事严谨守拙<br>
+    <strong>天赋：</strong>天生能读懂传统纹样中蕴藏的情绪<br>
+    <strong>人物弧光：</strong>从逃避宿命 → 被动接受 → 主动担当，完成"染娘不只是继承者，更是创造者"的认知蜕变<br>
+    <strong>核心矛盾：</strong>不想背负祖辈的悲情，却又放不下守护家族手艺的本能
+  </div>
+</div>
+
+<div style="padding: 12px; background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.2); border-radius: 10px; margin-bottom: 16px;">
+  <div style="font-weight: 600; color: var(--accent-purple); margin-bottom: 6px;">文轩 · 男主 · 24岁</div>
+  <div style="font-size: 13px; line-height: 1.7; color: var(--text-secondary);">
+    外地人类学研究生，书卷气十足，待人赤诚温和，深耕西南民俗研究。<br>
+    <strong>性格：</strong>木讷真诚，行事爱独自筹划，易产生小误会<br>
+    <strong>成长线：</strong>从"用学术理论解读文化" → "读懂民俗背后的精神内核" → "成为传承人最坚实的伴侣"<br>
+    <strong>与女主关系：</strong>因误会相识，被她坚守手艺的模样打动，一路陪伴寻访史料、对抗商业化诱惑
+  </div>
+</div>
+
+<h4>核心配角</h4>
+<ul>
+  <li><strong>阿婆（62岁）</strong>：蓝瑛祖母，上一代染娘，通透睿智，是技艺启蒙者，也是两代人心结的引路人</li>
+  <li><strong>阿爹</strong>：普通白族农户，心疼女儿想让她进城，后被打动默默支持</li>
+  <li><strong>阿月</strong>：发小，白族歌舞传承人，性格外向，支持民俗网红化，与蓝瑛产生理念分歧</li>
+  <li><strong>阿珍 & 阿秀</strong>：两位徒弟，天资高但急躁 vs 踏实钻研古法，传承路线分歧</li>
+  <li><strong>小雅</strong>：文轩师妹，开朗热忱，无意引发醋意，最终坦诚化解</li>
+  <li><strong>陈老板</strong>：外来商人，代表工业化、商业化冲击，仅观念对抗，无恶意打压</li>
+</ul>
+
+<h4>人物关系核心</h4>
+<p>所有冲突均为<strong>温和的观念差异</strong>，无狗血三角恋、无反派恶意打压。人物之间的矛盾来自立场与认知不同，最终都走向理解与和解——这是《蓝白吟》最独特的气质。</p>
+
+`
     },
     3: {
-      icon: '📈',
-      title: '节奏控制',
-      meta: '节奏师 · 3 分钟',
+      icon: '🧱',
+      title: '第三步 · 结构与节奏',
+      meta: '§3 结构建筑师 + §7 实战指挥官 + §6 质量审计师',
       expert: 'rhythm',
       content: `
-        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
-          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
-        </div>
-        
-        <h4>30集节奏曲线</h4>
-        <div style="text-align: center; padding: 20px 0;">
-          <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding: 0 10px;">
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
-              <div style="width: 80%; height: 25%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
-              <span style="font-size: 10px; color: var(--text-muted);">1-5<br>固守</span>
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
-              <div style="width: 80%; height: 45%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.8;"></div>
-              <span style="font-size: 10px; color: var(--text-muted);">6-10<br>裂缝</span>
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
-              <div style="width: 80%; height: 65%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.85;"></div>
-              <span style="font-size: 10px; color: var(--text-muted);">11-18<br>动摇</span>
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
-              <div style="width: 80%; height: 50%; background: linear-gradient(180deg, var(--accent-purple), var(--accent-blue)); border-radius: 4px 4px 0 0; opacity: 0.75;"></div>
-              <span style="font-size: 10px; color: var(--text-muted);">19-25<br>接受</span>
-            </div>
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
-              <div style="width: 80%; height: 100%; background: linear-gradient(180deg, var(--accent-pink), var(--accent-gold)); border-radius: 4px 4px 0 0;"></div>
-              <span style="font-size: 10px; color: var(--text-muted);">26-30<br>沉默</span>
-            </div>
-          </div>
-          <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">悲剧弧光 · 下沉阶梯节奏 · 第26-30集达到情感顶点</div>
-        </div>
-        
-        <h4>节奏设计原则</h4>
-        <ul>
-          <li><strong>下沉阶梯：</strong>希望→失望→更大的希望→彻底破碎，每3集下一个台阶</li>
-          <li><strong>微光碾碎节点：</strong>奶奶偷偷为晓萱做了一件扎染衣服（微光）→ 被邻居小孩弄坏（碾碎）</li>
-          <li><strong>对照叙事：</strong>童年高光（祖孙一起浸染）vs 当下冷清（作坊只剩奶奶一人）</li>
-          <li><strong>不卖惨：</strong>用具体的人和选择呈现传承困境，不用抽象的社会批判</li>
-        </ul>
-      `
+
+<h4>整体节奏曲线</h4>
+<p>治愈系慢节奏，层层递进。没有强反转、没有狗血冲突，靠细腻的人情与文化细节拉动观看。每5集一个小高潮，每10集一个大节点，季终留下开放式悬念。</p>
+
+<div style="margin: 16px 0; padding: 12px; background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.2); border-radius: 10px;">
+  <div style="font-size: 12px; color: var(--accent-cyan); margin-bottom: 8px; font-weight: 500;">四幕节奏结构</div>
+  <div style="display: flex; gap: 4px; align-items: flex-end; height: 80px;">
+    <div style="flex: 1; background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue)); border-radius: 4px 4px 0 0; height: 30%; opacity: 0.6;"></div>
+    <div style="flex: 3; background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue)); border-radius: 4px 4px 0 0; height: 70%;"></div>
+    <div style="flex: 1.6; background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue)); border-radius: 4px 4px 0 0; height: 55%; opacity: 0.8;"></div>
+    <div style="flex: 0.4; background: linear-gradient(180deg, var(--accent-gold), var(--accent-pink)); border-radius: 4px 4px 0 0; height: 95%;"></div>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--text-muted);">
+    <span>1-5 铺垫</span>
+    <span>6-20 发展</span>
+    <span>21-28 高潮</span>
+    <span>29-30 悬念</span>
+  </div>
+</div>
+
+<h4>核心钩子分布</h4>
+<ul>
+  <li><strong>第1集尾</strong>：靛缸发灰失色，阿婆说"来了，终于还是来了"——悬念开局</li>
+  <li><strong>第5集尾</strong>：阿婆决定将家族百年秘密告知蓝瑛——宿命线开启</li>
+  <li><strong>第10集尾</strong>：雨夜揭晓孤雁纹与共生之约的真相</li>
+  <li><strong>第15集尾</strong>：蓝瑛与文轩因理念爆发第一次大争吵</li>
+  <li><strong>第20集尾</strong>：蝴蝶会告白，确定恋爱关系</li>
+  <li><strong>第25集尾</strong>：找到曾祖母遗留的完整孤雁纹残布</li>
+  <li><strong>第28集尾</strong>：火把节婚礼，靛缸正式交付</li>
+  <li><strong>第30集尾（季终）</strong>：靛缸彻底枯竭，蓝瑛下定决心——为下一季埋线</li>
+</ul>
+
+<h4>30集分集大纲</h4>
+<ul style="font-size: 12px; line-height: 1.8;">
+<li><strong>第1集</strong>：人物：蓝瑛（7岁） 阿婆 △春日，阳光从木格窗棂漏进来，在青石板上投下斑驳的光影。蓝家染坊的蓝靛香飘满巷，一口百年老染缸...</li>
+<li><strong>第2集</strong>：人物：蓝瑛（10岁） 阿婆 △三年后。蓝瑛十岁了，手指已不像七岁时白嫩。她坐在矮凳上，面前摊着白布，手里捏着银针。 △阿...</li>
+<li><strong>第3集</strong>：人物：蓝瑛（15岁） 阿月（15岁） △五月，蝴蝶泉边开满合欢花。十五岁的蓝瑛和阿月坐在泉边青石上，脚浸在冰凉的泉水中。...</li>
+<li><strong>第4集</strong>：人物：蓝瑛（15岁） 阿婆 △苍山的半山腰，晨雾未散尽。阿婆背着巨大的竹篓，蓝瑛跟在后面，手里也提着篮子。 △阿婆在草丛...</li>
+<li><strong>第5集</strong>：人物：蓝瑛（15岁） 阿婆 阿爹 若干村民 △染坊中央，百年老染缸前围了一圈人。今天是"发缸"的日子——将发酵好的蓝靛泥...</li>
+<li><strong>第6集</strong>：人物：蓝瑛（15岁） 阿婆 阿爹 △清晨，染坊里光线昏暗。那口百年老靛缸被一层灰绿色的薄膜覆盖，像生了锈的铁锅。蓝瑛站在...</li>
+<li><strong>第7集</strong>：人物：蓝瑛（18岁） 阿月（18岁） 文轩 顾客若干 △三年后。蓝瑛十八岁了，长成了高挑的白族少女。三月街民族节，人山人...</li>
+<li><strong>第8集</strong>：人物：蓝瑛（18岁） 文轩 阿婆 △第二天上午，文轩又来了。他没有拿相机，而是拿着一本厚厚的笔记本，站在染坊门口，没有进...</li>
+<li><strong>第9集</strong>：人物：蓝瑛（18岁） 文轩 △第三天。文轩又来了，这次他手里没有相机，没有笔记本，只有一张学生证。 文轩：蓝瑛姑娘，我昨...</li>
+<li><strong>第10集</strong>：人物：蓝瑛（18岁） 文轩 阿婆 阿妈 △堂屋里，火塘里的炭火红彤彤的。阿妈摆出了白族三道茶：头道苦茶、二道甜茶、三道回...</li>
+<li><strong>第11集</strong>：人物：蓝瑛（18岁） 阿月（18岁） 顾客若干 △集市上突然多了一排鲜艳的摊位。红底黄花的桌布上，堆着成捆的扎染布，花色...</li>
+<li><strong>第12集</strong>：人物：蓝瑛（18岁） 阿爹 阿婆 文轩 △阿爹把一叠花花绿绿的传单拍在桌上。上面印着机器染布厂的图片，还有"日产三百匹"...</li>
+<li><strong>第13集</strong>：人物：蓝瑛（18岁） 文轩 △文轩拿着放大镜，仔细观察蓝瑛刚染好的一块手工布。蓝瑛站在一旁，手指紧张地绞着围裙。 △蓝瑛...</li>
+<li><strong>第14集</strong>：人物：蓝瑛（18岁） 文轩 △接下来的几天，蓝瑛和文轩每天在老宅偏房里翻找。灰尘把两人的头发和衣服都染成了灰白色。 △文...</li>
+<li><strong>第15集</strong>：人物：蓝瑛（18岁） 阿婆 △染缸前，蓝瑛正在学习反复浸染。她将一块扎好的白布缓缓浸入灰绿色的染液，提出来，氧化，再浸入...</li>
+<li><strong>第16集</strong>：人物：蓝瑛（18岁） 文轩 △文轩的笔记本摊在桌上，里面密密麻麻写满了整理好的资料。蓝瑛坐在对面，手里拿着那块半块孤雁布...</li>
+<li><strong>第17集</strong>：人物：文轩 阿婆 △蓝瑛去集市买线，染坊里只有文轩在整理资料。阿婆走进来，手里拿着一壶热茶。 △阿婆坐在他对面，看着他的...</li>
+<li><strong>第18集</strong>：人物：蓝瑛（18岁） 文轩 △五月，蝴蝶泉边的合欢花又开了。蓝瑛和文轩坐在当年的青石上，但两人之间不再隔着阿月。 △泉水...</li>
+<li><strong>第19集</strong>：人物：蓝瑛（18岁） 阿珍（18岁） 文轩 △染坊里，蓝瑛正在教阿秀——不，今天是一个陌生的女孩。她叫阿珍，十八九岁，穿...</li>
+<li><strong>第20集</strong>：人物：蓝瑛（18岁） 阿秀（17岁） 文轩 △三天后，阿珍没有来。但来了一个新姑娘。她叫阿秀，十七岁，穿着洗得发白的蓝布...</li>
+<li><strong>第21集</strong>：人物：蓝瑛（19岁） 文轩 阿爹 陈老板 △蓝瑛蹲在百年老靛缸前，从缸里提起一块布。布面是灰绿色的，湿漉漉地滴水。她把布...</li>
+<li><strong>第22集</strong>：人物：蓝瑛（19岁） 文轩 △夜里，蓝瑛睡不着。油灯的光把她的影子投在墙上，她坐在窗前，手里捏着银针，面前摊着半块孤雁布...</li>
+<li><strong>第23集</strong>：人物：蓝瑛（19岁） 阿婆 阿秀 △阿秀在院子里练习，扎的是最简单的直线。每一针都很慢，但不再歪了。 △阿婆坐在竹椅上，...</li>
+<li><strong>第24集</strong>：人物：蓝瑛（19岁） 文轩 文轩父母 △一辆长途客车在周城路口停下，下来一对衣着整洁的中年夫妇。文轩远远看见，迎了上去。...</li>
+<li><strong>第25集</strong>：人物：蓝瑛（20岁） 文轩 阿爹 阿妈 阿婆 阿月 阿秀 村民若干 △火把节，周城广场上火把林立，像一片红色的森林。蓝瑛...</li>
+<li><strong>第26集</strong>：人物：蓝瑛（21岁） 文轩 阿秀 △婚后一年。蓝家染坊恢复了平静的节奏。蓝瑛坐在矮凳上教阿秀扎蝴蝶纹，文轩在另一张桌前整...</li>
+<li><strong>第27集</strong>：人物：蓝瑛（22岁） 文轩 阿妈 阿爹 阿婆 △春日的光从雕花窗格漏进来。蓝瑛站在光斑中央，双手交叠放在小腹上。 △阿妈...</li>
+<li><strong>第28集</strong>：人物：蓝瑛（22岁） 文轩 阿妈 阿婆 △凌晨。蓝瑛满头是汗，湿发贴在额角。接生婆刚走，屋里还弥漫着艾草和血腥混合的气味...</li>
+<li><strong>第29集</strong>：人物：蓝瑛（23岁） 文轩 △若兰一岁。蓝瑛坐在账桌旁，翻着订单本，眉头越锁越紧。纸上只有寥寥几行，最后一条是三个月前的...</li>
+<li><strong>第30集</strong>：人物：蓝瑛（24岁） 阿爹 若兰（2岁） 阿秀 △若兰两岁生日。但蓝家染坊没有喜庆。阿爹蹲在门槛上，手指发抖，膝盖上摊着...</li>
+
+</ul>
+
+`
     },
     4: {
-      icon: '💬',
-      title: '对白润色',
-      meta: '对白师 · 5 分钟',
+      icon: '🎭',
+      title: '第四步 · 对白打磨',
+      meta: '§4 对白大师 + §5 格式工程师 + §9 改稿大师',
       expert: 'dialogue',
       content: `
-        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
-          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
-        </div>
-        
-        <h4>第一集 · 开场对白示例</h4>
-        
-        <div style="padding: 16px; background: var(--bg-tertiary); border-radius: 10px; font-size: 13px; line-height: 1.8;">
-          <div style="color: var(--accent-purple); margin-bottom: 4px;"><strong>【场景】大理周城 · 段氏扎染工坊 · 日</strong></div>
-          <br>
-          <div style="margin-bottom: 8px;">
-            <span style="color: var(--accent-blue); font-weight: 500;">段晓萱：</span>
-            <span style="color: var(--text-secondary);">（看着手机里的订单）这个月又是零单？奶奶，您就不能听听我的建议吗？</span>
-          </div>
-          <div style="margin-bottom: 8px;">
-            <span style="color: var(--accent-gold); font-weight: 500;">段奶奶：</span>
-            <span style="color: var(--text-secondary);">（头也不抬地搅着染缸）急什么？布要慢慢染才不会花。</span>
-          </div>
-          <div style="margin-bottom: 8px;">
-            <span style="color: var(--accent-blue); font-weight: 500;">段晓萱：</span>
-            <span style="color: var(--text-secondary);">可是再这样下去，工坊就要——</span>
-          </div>
-          <div style="margin-bottom: 8px;">
-            <span style="color: var(--accent-gold); font-weight: 500;">段奶奶：</span>
-            <span style="color: var(--text-secondary);">（猛地抬头）就要什么？我倒要看看，是工坊先倒，还是你先沉不住气。</span>
-          </div>
-          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 12px; font-style: italic;">
-            💭 潜台词：奶奶其实知道工坊的困境，但故意用激将法逼晓萱真正想清楚——她要的到底是拯救工坊，还是证明自己。
-          </div>
-        </div>
-        
-        <h4 style="margin-top: 16px;">对白原则</h4>
-        <ul>
-          <li><strong>潜台词占比 > 40%：</strong>每段对话至少一层言外之意</li>
-          <li><strong>人物语言差异化：</strong>6个主要角色各有独特口头禅和说话节奏</li>
-          <li><strong>短句优先：</strong>适配短剧快节奏，平均句长控制在15字以内</li>
-        </ul>
-      `
+
+<h4>对白风格说明</h4>
+<p>《蓝白吟》的对白走<strong>淡而有味</strong>的路线——没有金句堆砌，没有狗血咆哮。人物说话像真实的白族人，含蓄、委婉，话里有话但不说破。情绪藏在日常对话的缝隙里，像靛蓝慢慢渗进布里。</p>
+
+<div style="padding: 12px; background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; margin: 12px 0;">
+  <div style="font-size: 12px; color: var(--accent-green); margin-bottom: 6px; font-weight: 500;">潜台词密度：★★★★☆</div>
+  <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+    人物不说"我喜欢你"，说"你染的布，我都留着"；<br>
+    不说"我很难过"，说"今天的靛，好像没发好"；<br>
+    不说"我支持你"，说"饭给你留着，凉了自己热"。
+  </div>
+</div>
+
+<h4>第1集 · 完整剧本</h4>
+<div style="background: var(--bg-primary); padding: 16px; border-radius: 8px; font-family: 'Noto Serif SC', serif;">
+<div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--accent-cyan); font-weight: 500;">1-1 蓝家染坊 日/内</div>
+<p style="font-size: 11px; color: var(--text-muted); margin: 4px 0;">人物：蓝瑛（7岁） 阿婆</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△春日，阳光从木格窗棂漏进来，在青石板上投下斑驳的光影。蓝家染坊的蓝靛香飘满巷，一口百年老染缸立在院子中央，缸沿结着厚厚的靛蓝结晶，像一层蓝色的霜。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△七岁的蓝瑛被阿婆牵着小手，站在染缸前。她穿着白族小姑娘的绣花小褂，小脸上满是好奇。她踮起脚尖，也只能看到缸沿。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>阿婆，里面是什么？</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>是蓝。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>蓝是什么？</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>蓝……就是天的颜色，海的颜色，也是咱们白族人的颜色。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆从竹篮里取出一块白布，白得像苍山雪。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>来，瑛子，看好了。手别伸进去，染液会咬手的。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△蓝瑛赶紧把小手背到身后，眼睛瞪得圆圆的。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆将白布一角缓缓浸入染缸。白布像被水吞没的月亮，慢慢下沉，沉到靛蓝色的深处。然后——阿婆轻轻一提。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△白布浮出水面。但——不是深邃的靛蓝，而是发灰、发暗，像被雨水泡过的旧天空，边缘还泛着一层浑浊的绿。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>阿婆，蓝……怎么不蓝？</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆没有立刻回答。她盯着那块灰布，手指微微发抖。然后她抬头看缸，缸面上那层蓝色油光不见了，只剩浑浊的灰。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>（声音很轻）来了。终于还是来了。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>什么来了？</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆没有回答。她把灰布挂起来，阳光透过灰布，在地上投下一片暗淡的光，像一片阴云。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>今天不染了。瑛子，去阿妈那儿。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>可是……</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>（语气坚定）去。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△蓝瑛低下头，一步三回头地走了。她的脚尖踩在那片暗淡的光上，像踩着一片阴影。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆独自站在缸前，粗糙的手抚过缸沿。那口缸沉默着，像一个沉默了一百年的老人。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆os：</strong>第十六代了……难道，真的断在我手上？</p>
+<div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--accent-cyan); font-weight: 500;">1-2 蓝家染坊内室 傍晚/内</div>
+<p style="font-size: 11px; color: var(--text-muted); margin: 4px 0;">人物：蓝瑛（7岁） 阿妈</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△蓝瑛坐在门槛上，小手托着腮。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿妈：</strong>怎么了？今天不是去看染布吗？</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>染了。可是……不蓝。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿妈：</strong>不蓝？</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>灰灰的，像……像下雨天。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿妈的脸色变了，但很快恢复。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿妈：</strong>你阿婆年纪大了，眼神不好。下次就蓝了。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>阿婆说"来了，终于还是来了"。是什么来了？</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿妈正在切菜的手停了一下。刀落在砧板上，发出沉闷的响声。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿妈：</strong>没什么。大人的话，你不懂。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛：</strong>那什么时候懂？</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿妈：</strong>（勉强笑）等你……再长大一点。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△蓝瑛低下头，看着自己的手指。白白嫩嫩，还没有被针扎过，还没有被染液浸过。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛os：</strong>再长大一点……缸还会等我吗？</p>
+<div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--accent-cyan); font-weight: 500;">1-3 蓝瑛卧房 夜/内</div>
+<p style="font-size: 11px; color: var(--text-muted); margin: 4px 0;">人物：蓝瑛（7岁）</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△夜里，蓝瑛睡不着。她爬起来，走到门缝边。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△从门缝里看出去，院子里月光很亮。阿婆独自站在染缸前，背对着蓝瑛。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆从怀里掏出一块旧布，对着月光展开。那是一块半块扎染布，上面有一只只扎了一半的鸟——翅膀缺了一半。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆的手在抖。她把布贴在胸口，像抱着一个死去的婴儿。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">阿婆：</strong>（喃喃）曾祖母……我该怎么办……</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△蓝瑛不懂她在说什么。但她记住了那块布——半只鸟的翅膀。</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△阿婆把布收回怀里，又对着缸叹了口气。月光下，缸里的液体泛着灰绿色的光，像一潭死水。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛os：</strong>半只鸟……缸……不蓝的蓝……</p>
+<p style="color: var(--text-secondary); font-size: 13px; font-style: italic; margin: 8px 0;">△她悄悄回到床上，把被子蒙过头。</p>
+<p style="margin: 6px 0;"><strong style="color: var(--accent-green);">蓝瑛os：</strong>等我长大了，我要让缸变蓝。一定的。</p>
+
+</div>
+
+<p style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">—— 第1集完 · 全30集完整剧本已生成 ——</p>
+
+`
     },
     5: {
-      icon: '🎭',
-      title: '文化植入',
-      meta: '文化顾问 · 3 分钟',
+      icon: '🏛️',
+      title: '第五步 · 文化与视觉',
+      meta: '§11 文化顾问 + §13 视觉导演 + §12 音效设计师',
       expert: 'culture',
       content: `
-        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
-          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
-        </div>
-        
-        <h4>白族扎染文化植入点</h4>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div style="padding: 12px; background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 8px;">
-            <div style="font-size: 20px; margin-bottom: 6px;">🧵</div>
-            <div style="font-weight: 600; font-size: 13px; color: var(--accent-gold); margin-bottom: 4px;">扎染工艺</div>
-            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
-              完整展示绞缬、捆扎、浸染等传统工序，植入第3集教学段落
-            </div>
-          </div>
-          
-          <div style="padding: 12px; background: rgba(236, 72, 153, 0.05); border: 1px solid rgba(236, 72, 153, 0.15); border-radius: 8px;">
-            <div style="font-size: 20px; margin-bottom: 6px;">🏠</div>
-            <div style="font-weight: 600; font-size: 13px; color: var(--accent-pink); margin-bottom: 4px;">白族民居</div>
-            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
-              三坊一照壁建筑格局，第7集晓萱带陆远参观时讲解
-            </div>
-          </div>
-          
-          <div style="padding: 12px; background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.15); border-radius: 8px;">
-            <div style="font-size: 20px; margin-bottom: 6px;">🎵</div>
-            <div style="font-weight: 600; font-size: 13px; color: var(--accent-cyan); margin-bottom: 4px;">大本曲</div>
-            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
-              白族传统说唱艺术，第15集奶奶用大本曲讲述家族往事
-            </div>
-          </div>
-          
-          <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 8px;">
-            <div style="font-size: 20px; margin-bottom: 6px;">🌸</div>
-            <div style="font-weight: 600; font-size: 13px; color: var(--accent-green); margin-bottom: 4px;">三月街</div>
-            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
-              千年集市文化，第19-20集非遗博览会场景还原
-            </div>
-          </div>
-        </div>
-        
-        <h4 style="margin-top: 16px;">文化植入原则</h4>
-        <ul>
-          <li><strong>叙事融合：</strong>每个文化点都推动剧情或人物成长，不做知识堆砌</li>
-          <li><strong>准确度保障：</strong>基于中华优秀传统文化知识库V1.2，已完成术语校验</li>
-          <li><strong>情感共鸣：</strong>用文化承载人物情感，让非遗"活"在故事里</li>
-        </ul>
-      `
+
+<h4>文化元素盘点</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;">
+  <div style="padding: 10px; background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
+    <div style="font-size: 12px; color: var(--accent-gold); font-weight: 500; margin-bottom: 4px;">🏺 非遗技艺</div>
+    <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.6;">
+      古法扎染 · 板蓝根发酵制靛 · 捆扎/针缝/打结三大技法 · 反复浸染工艺
+    </div>
+  </div>
+  <div style="padding: 10px; background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
+    <div style="font-size: 12px; color: var(--accent-gold); font-weight: 500; margin-bottom: 4px;">🎭 白族民俗</div>
+    <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.6;">
+      三月街 · 蝴蝶会 · 火把节婚礼 · 白族服饰头饰 · 本主信仰
+    </div>
+  </div>
+  <div style="padding: 10px; background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
+    <div style="font-size: 12px; color: var(--accent-gold); font-weight: 500; margin-bottom: 4px;">🏔️ 地域文化</div>
+    <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.6;">
+      大理苍山洱海 · 周城扎染之乡 · 白族民居建筑 · 板蓝根种植
+    </div>
+  </div>
+  <div style="padding: 10px; background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
+    <div style="font-size: 12px; color: var(--accent-gold); font-weight: 500; margin-bottom: 4px;">✨ 神性暗线</div>
+    <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.6;">
+      靛缸共生之约 · 孤雁纹残布 · 染娘宿命 · 草木有灵
+    </div>
+  </div>
+</div>
+
+<h4>文化植入方式</h4>
+<ul>
+  <li><strong>融入剧情：</strong>扎染工艺不是背景板，每一道工序都推动情节发展</li>
+  <li><strong>细节真实：</strong>从采摘板蓝根到发酵制靛、从捆扎到浸染晾晒，全流程准确呈现</li>
+  <li><strong>情感载体：</strong>纹样是祖辈的心事，染布是情感的传递，靛缸是家族的纽带</li>
+  <li><strong>节庆自然：</strong>三月街、蝴蝶会、火把节不是硬塞的景点，而是剧情发生的场景</li>
+</ul>
+
+<h4>核心文化符号 — 孤雁纹</h4>
+<p>贯穿全剧的核心意象。半块残布上只有一只翅膀的孤雁，象征曾祖母未完成的遗憾、未说出口的心事。每一代染娘都要复刻这块纹样、读懂其中的情绪，靛缸才能恢复灵气。</p>
+<p>它既是文化符号，也是情感象征，更是推动主线的麦高芬。</p>
+
+<h4>视觉基调</h4>
+<p><strong>主色调：</strong>苍山蓝 + 靛青 + 米白 + 原木色<br>
+<strong>光影：</strong>自然柔光为主，染坊内的侧逆光营造质感，雨夜用冷蓝调衬托情绪<br>
+<strong>镜头语言：</strong>慢节奏、多留白，特写手部扎染动作与纹样细节，像一幅徐徐展开的蓝白画卷</p>
+
+<h4>声音设计</h4>
+<p>以白族民间音乐为基底，三弦、竹笛做点缀，染坊内加入布料翻动、染液滴落的环境声，营造沉浸式的非遗氛围。</p>
+
+<hr style="border: none; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+<h4>📚 文化知识库 V1.2 调用记录</h4>
+<div style="padding: 12px; background: var(--bg-primary); border-radius: 8px; font-family: monospace; font-size: 11px; line-height: 1.8;">
+<div style="color: var(--accent-gold); margin-bottom: 8px;">[文化顾问 §11] 正在调用中华优秀传统文化知识库...</div>
+<div style="color: var(--text-muted);">├── 双骨架匹配：</div>
+<div style="color: var(--text-secondary);">│   ├── 社会骨架：乡土中国 → 差序格局 + 礼俗社会 + 长老统治</div>
+<div style="color: var(--text-secondary);">│   └── 审美骨架：美的历程 → 乐感文化 + 宋人内省 + 线的艺术</div>
+<div style="color: var(--text-muted);">├── 民俗仪式库：</div>
+<div style="color: var(--text-secondary);">│   ├── 岁时节令：三月街 / 蝴蝶会 / 火把节</div>
+<div style="color: var(--text-secondary);">│   ├── 婚嫁礼俗：白族传统婚礼仪式</div>
+<div style="color: var(--text-secondary);">│   └── 技艺传承：师徒制 / 家族传承</div>
+<div style="color: var(--text-muted);">├── 地域文化模块：</div>
+<div style="color: var(--text-secondary);">│   ├── 大理白族扎染技艺（国家级非遗）</div>
+<div style="color: var(--text-secondary);">│   ├── 板蓝根发酵制靛古法工艺</div>
+<div style="color: var(--text-secondary);">│   ├── 白族服饰与头饰文化</div>
+<div style="color: var(--text-secondary);">│   └── 本主信仰与民间传说</div>
+<div style="color: var(--text-muted);">├── 审美适配：</div>
+<div style="color: var(--text-secondary);">│   └── 气质定位：乡土苦难 + 民族传承 + 日常诗意</div>
+<div style="color: var(--text-muted);">└── 共调用 32 个文化模块</div>
+<div style="color: var(--accent-green); margin-top: 8px;">✓ 文化真实性校验通过</div>
+</div>
+
+`
     },
     6: {
-      icon: '✅',
-      title: '合规审查',
-      meta: '审核员 · 2 分钟',
+      icon: '🛡️',
+      title: '第六步 · 合规审查',
+      meta: '§2 合规守门员',
       expert: 'compliance',
       content: `
-        <div style="display: inline-block; padding: 4px 12px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; font-size: 11px; color: var(--accent-gold); margin-bottom: 12px; font-weight: 500;">
-          ⭐ 引擎真实产出案例 · 非遗题材 · 已通过红果短剧签约审核
-        </div>
-        
-        <h4>剧本合规检测报告</h4>
-        
-        <div style="padding: 16px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; margin-bottom: 16px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-            <span style="font-weight: 600; color: var(--accent-green);">综合过审评级</span>
-            <span style="font-size: 24px; font-weight: 700; color: var(--accent-green);">A 级</span>
-          </div>
-          <div style="height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
-            <div style="width: 92%; height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); border-radius: 4px;"></div>
-          </div>
-          <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; text-align: right;">92% 概率通过平台审核 · 已通过红果短剧签约审核</div>
-        </div>
-        
-        <h4>检测维度</h4>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
-          <div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-              <span style="color: var(--text-secondary);">价值观导向</span>
-              <span style="color: var(--accent-green);">✅ 通过</span>
-            </div>
-            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
-              <div style="width: 98%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-              <span style="color: var(--text-secondary);">内容合规性</span>
-              <span style="color: var(--accent-green);">✅ 通过</span>
-            </div>
-            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
-              <div style="width: 94%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-              <span style="color: var(--text-secondary);">敏感词过滤</span>
-              <span style="color: var(--accent-green);">✅ 通过</span>
-            </div>
-            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
-              <div style="width: 100%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
-              <span style="color: var(--text-secondary);">文化准确性</span>
-              <span style="color: var(--accent-green);">✅ 通过</span>
-            </div>
-            <div style="height: 4px; background: var(--border-color); border-radius: 2px;">
-              <div style="width: 96%; height: 100%; background: var(--accent-green); border-radius: 2px;"></div>
-            </div>
-          </div>
-        </div>
-        
-        <h4 style="margin-top: 16px;">优化建议（2项）</h4>
-        <ul>
-          <li>第18集祖孙和解戏可增加扎染动作细节，强化"用手艺说话"的表达</li>
-          <li>第26集结尾留白处可增加一个蓝印花布随风飘动的空镜头，余韵更足</li>
-        </ul>
-      `
-    }
+
+<h4>整体过审评级</h4>
+<div style="padding: 16px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; margin: 12px 0; text-align: center;">
+  <div style="font-size: 36px; font-weight: 700; color: var(--accent-green); margin-bottom: 4px;">A-</div>
+  <div style="font-size: 12px; color: var(--text-secondary);">整体风险低 · 题材正向 · 价值导向正确</div>
+</div>
+
+<h4>合规优势</h4>
+<ul>
+  <li><strong>非遗传承</strong>主旋律正向，符合国家文化战略方向</li>
+  <li><strong>无狗血冲突</strong>：无恶女、无三角恋、无反派打压，价值观健康</li>
+  <li><strong>女性成长</strong>：大女主独立自强，不依附男性</li>
+  <li><strong>温情治愈</strong>：所有矛盾都走向理解和解，传递积极情绪</li>
+  <li><strong>文化自信</strong>：弘扬中华优秀传统文化，讲好地方故事</li>
+</ul>
+
+<h4>风险点识别与优化建议</h4>
+
+<div style="margin-top: 12px; padding: 10px; background: rgba(245,158,11,0.05); border-left: 3px solid var(--accent-gold); border-radius: 0 6px 6px 0;">
+  <div style="font-weight: 500; font-size: 13px; color: var(--accent-gold); margin-bottom: 4px;">⚠️ 风险1：神性设定的尺度</div>
+  <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+    "靛缸共生之约""草木有灵"等设定偏向民间信仰，需把握在"民俗传说""家族叙事"的框架内，避免过度玄幻化。<br>
+    <strong>建议：</strong>强化"蓝瑛心理解读"的比重，让"读懂纹样情绪"更多是天赋与匠心的结合，而非超自然能力。
+  </div>
+</div>
+
+<div style="margin-top: 10px; padding: 10px; background: rgba(245,158,11,0.05); border-left: 3px solid var(--accent-gold); border-radius: 0 6px 6px 0;">
+  <div style="font-weight: 500; font-size: 13px; color: var(--accent-gold); margin-bottom: 4px;">⚠️ 风险2：传统 vs 现代的表述</div>
+  <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+    机器印染、商业化等内容容易被解读为"否定现代化"。<br>
+    <strong>建议：</strong>陈老板的角色保持"观念不同"的中立性，不要脸谱化为反派；结尾可加入"传统+创新"的融合方向（如蓝瑛也在探索新的可能性）。
+  </div>
+</div>
+
+<div style="margin-top: 10px; padding: 10px; background: rgba(16,185,129,0.05); border-left: 3px solid var(--accent-green); border-radius: 0 6px 6px 0;">
+  <div style="font-weight: 500; font-size: 13px; color: var(--accent-green); margin-bottom: 4px;">✅ 低风险项</div>
+  <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+    爱情线：纯爱治愈，无尺度问题<br>
+    暴力：无<br>
+    三观：正向积极，传承主题明确<br>
+    地域文化：白族文化呈现准确尊重，无刻板印象
+  </div>
+</div>
+
+<h4>平台适配建议</h4>
+<ul>
+  <li><strong>红果短剧：</strong>适配度高，非遗题材符合千部计划方向，建议申报现实题材赛道</li>
+  <li><strong>抖音/快手短剧：</strong>节奏偏慢，建议前5集增加钩子密度，每集结尾悬念加强</li>
+  <li><strong>腾讯/优酷微短剧：</strong>文化质感是加分项，可走精品路线</li>
+</ul>
+
+`
+    },
   };
 
   let isCreating = false;
@@ -1702,22 +2380,43 @@
     });
     document.querySelector(`.expert-item[data-expert="${step.expert}"]`).classList.add('active');
     
-    // 显示步骤内容
+    // 判断显示真实生成内容还是预设内容
     const outputContainer = document.getElementById('outputContainer');
-    outputContainer.innerHTML = `
-      <div class="output-card">
-        <div class="output-header">
-          <div class="output-icon">${step.icon}</div>
-          <div>
-            <div class="output-title">${step.title}</div>
-            <div class="output-meta">${step.meta}</div>
+    const hasRealContent = generatedResults && generatedResults[stepNum];
+    
+    if (hasRealContent) {
+      // 显示真实生成的内容
+      outputContainer.innerHTML = `
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-icon">${step.icon}</div>
+            <div>
+              <div class="output-title">${step.title}</div>
+              <div class="output-meta">${step.meta}</div>
+            </div>
+          </div>
+          <div class="output-body">
+            ${generatedResults[stepNum]}
           </div>
         </div>
-        <div class="output-body">
-          ${step.content}
+      `;
+    } else {
+      // 显示预设内容
+      outputContainer.innerHTML = `
+        <div class="output-card">
+          <div class="output-header">
+            <div class="output-icon">${step.icon}</div>
+            <div>
+              <div class="output-title">${step.title}</div>
+              <div class="output-meta">${step.meta}</div>
+            </div>
+          </div>
+          <div class="output-body">
+            ${step.content}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
     
     if (stepNum === 6 && stepsCompleted >= 6) {
       addFinalCard();
@@ -1728,6 +2427,8 @@
     
     currentStep = stepNum;
   }
+
+  let generatedResults = {}; // 存储真实生成的结果
 
   async function startCreation() {
     if (isCreating) return;
@@ -1741,6 +2442,7 @@
     isCreating = true;
     stepsCompleted = 0;
     currentStep = 0;
+    generatedResults = {};
     const btn = document.getElementById('generateBtn');
     btn.disabled = true;
     btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
@@ -1751,10 +2453,26 @@
     // 清空之前的输出
     document.getElementById('outputContainer').innerHTML = '';
     
+    const settings = loadSettings();
+    const hasAPI = settings.apiKey && settings.apiKey.length > 0;
+    const styleText = styleTextMap[selectedStyle] || '情感流';
+    
     // 逐步执行每一步
     for (let step = 1; step <= 6; step++) {
-      await runStep(step);
-      stepsCompleted = step;
+      try {
+        if (hasAPI) {
+          await runStepReal(step, idea, styleText, settings.episodeCount);
+        } else {
+          await runStep(step); // 演示模式
+        }
+        stepsCompleted = step;
+      } catch (err) {
+        showToast(err.message || '生成失败', true);
+        // 出错后回退到演示模式继续完成剩余步骤
+        console.error('Step ' + step + ' failed:', err);
+        await runStep(step);
+        stepsCompleted = step;
+      }
     }
     
     // 完成
@@ -1766,6 +2484,81 @@
     addFinalCard();
   }
 
+  // 真实生成模式
+  async function runStepReal(stepNum, idea, styleText, episodes) {
+    const prompt = stepPrompts[stepNum];
+    const step = stepData[stepNum]; // 用 stepData 里的图标标题等UI信息
+    const contentArea = document.getElementById('contentArea');
+    const outputContainer = document.getElementById('outputContainer');
+    
+    // 激活左侧步骤
+    document.querySelectorAll('.step-item').forEach((item, i) => {
+      item.classList.remove('active');
+      if (i + 1 < stepNum) {
+        item.classList.add('completed');
+        item.querySelector('.step-status').textContent = '已完成';
+      }
+    });
+    const currentStepEl = document.querySelector(`.step-item[data-step="${stepNum}"]`);
+    currentStepEl.classList.add('active');
+    currentStepEl.querySelector('.step-status').textContent = '进行中';
+    
+    // 激活右侧专家
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.classList.remove('active', 'working');
+    });
+    const currentExpert = document.querySelector(`.expert-item[data-expert="${prompt.expert}"]`);
+    currentExpert.classList.add('active', 'working');
+    
+    // 创建输出卡片
+    const card = document.createElement('div');
+    card.className = 'output-card';
+    card.innerHTML = `
+      <div class="output-header">
+        <div class="output-icon">${step.icon}</div>
+        <div>
+          <div class="output-title">${step.title}</div>
+          <div class="output-meta">${step.meta}</div>
+        </div>
+      </div>
+      <div class="output-body">
+        <div id="stream-content-${stepNum}"></div>
+      </div>
+    `;
+    outputContainer.appendChild(card);
+    
+    // 滚动到底部
+    contentArea.scrollTop = contentArea.scrollHeight;
+    
+    // 调用 LLM 流式输出
+    const stream = await callLLM(
+      prompt.systemPrompt,
+      prompt.userPrompt(idea, styleText, episodes, generatedResults)
+    );
+    
+    const targetEl = document.getElementById(`stream-content-${stepNum}`);
+    let chunk;
+    while ((chunk = await stream.readNext()) !== null) {
+      if (chunk) {
+        targetEl.innerHTML += chunk;
+        contentArea.scrollTop = contentArea.scrollHeight;
+        // 避免阻塞UI
+        await new Promise(r => setTimeout(r, 10));
+      }
+    }
+    
+    // 保存结果供后续步骤使用
+    generatedResults[stepNum] = stream.fullText;
+    
+    // 专家完成状态
+    currentExpert.classList.remove('working', 'active');
+    currentExpert.classList.add('done');
+    
+    // 等待一小段时间
+    await sleep(500);
+  }
+
+  // 演示模式（原有逻辑）
   async function runStep(stepNum) {
     const step = stepData[stepNum];
     const contentArea = document.getElementById('contentArea');
