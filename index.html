@@ -33,7 +33,8 @@
     background: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
+    overflow-x: hidden;
   }
 
   /* 设置按钮 */
@@ -41,7 +42,7 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 200;
+    z-index: 1000;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -54,6 +55,7 @@
     justify-content: center;
     font-size: 18px;
     transition: all 0.3s ease;
+    pointer-events: auto;
   }
   .settings-btn:hover {
     border-color: var(--border-active);
@@ -170,10 +172,14 @@
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 100;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     background: var(--bg-primary);
     transition: opacity 0.8s ease, transform 0.8s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px 0;
+    /* Don't block clicks to higher-z-index elements like settings button */
   }
 
   .onboarding-screen.hide {
@@ -187,6 +193,7 @@
     max-width: 480px;
     padding: 48px 40px;
     position: relative;
+    margin: auto;
   }
 
   .onboarding-logo {
@@ -230,7 +237,7 @@
     color: var(--text-muted);
   }
 
-  /* 书雨 引导员 */
+  /* AI引导员 */
   .alogon-intro {
     display: flex;
     gap: 14px;
@@ -338,6 +345,10 @@
     color: var(--text-muted);
   }
 
+  #stepAiName {
+    animation: fadeInUp 0.6s ease 0.2s both;
+  }
+
   .style-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -382,6 +393,33 @@
     color: var(--text-muted);
   }
 
+  .style-custom-bar {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .style-custom-bar .style-icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .custom-style-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+  }
+
+  .custom-style-input::placeholder {
+    color: var(--text-muted);
+  }
+
   .enter-btn {
     width: 100%;
     padding: 14px;
@@ -393,12 +431,16 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 8px;
+    margin-top: 12px;
+    margin-bottom: 4px;
     animation: fadeInUp 0.6s ease 0.4s both;
     font-family: inherit;
+    pointer-events: auto;
+    position: relative;
+    z-index: 10;
   }
 
-  .enter-btn:hover {
+  .enter-btn:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px var(--glow-purple);
   }
@@ -408,6 +450,7 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+    pointer-events: none;
   }
 
   .onboarding-footer {
@@ -1141,6 +1184,44 @@
     align-items: center;
     gap: 4px;
   }
+
+  /* MVP Badge */
+  .mvp-badge {
+    display: inline-block;
+    font-size: 9px;
+    padding: 1px 5px;
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* Expert running status */
+  .expert-item.mvp .expert-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34,197,94,0.4);
+    flex-shrink: 0;
+  }
+  .expert-item.mvp.working .expert-status-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245,158,11,0.6);
+    animation: pulse-dot 1s infinite;
+  }
+  .expert-item.mvp.completed .expert-status-dot {
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34,197,94,0.4);
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
 </style>
 </head>
 <body>
@@ -1154,7 +1235,7 @@
       
       <div class="settings-group">
         <label class="settings-label">API 接口地址</label>
-        <input type="text" class="settings-input" id="apiBaseUrl" placeholder="https://api.openai.com/v1" value="https://api.openai.com/v1">
+        <input type="text" class="settings-input" id="apiBaseUrl" placeholder="https://api.deepseek.com" value="https://api.deepseek.com">
         <div class="settings-hint">兼容 OpenAI 格式的接口，国内可填中转/代理地址</div>
       </div>
 
@@ -1162,12 +1243,13 @@
         <label class="settings-label">API Key</label>
         <input type="password" class="settings-input" id="apiKey" placeholder="sk-...">
         <div class="settings-hint">Key 仅保存在你本地浏览器，不上传任何服务器</div>
+        <div id="keyDiagInfo" style="display:none;margin-top:6px;padding:6px 10px;background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.3);border-radius:6px;font-size:11px;color:#ffa500;font-family:monospace;"></div>
       </div>
 
       <div class="settings-group">
         <label class="settings-label">模型名称</label>
-        <input type="text" class="settings-input" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini">
-        <div class="settings-hint">默认 gpt-4o-mini，可根据接口支持的模型更换</div>
+        <input type="text" class="settings-input" id="apiModel" placeholder="deepseek-chat" value="deepseek-chat">
+        <div class="settings-hint">默认 deepseek-chat，可根据接口支持的模型更换</div>
       </div>
 
       <div class="settings-group">
@@ -1178,8 +1260,10 @@
 
       <div class="settings-actions">
         <button class="settings-cancel" onclick="toggleSettings()">取消</button>
+        <button class="settings-test" id="settingsTestBtn" onclick="testApiConnection()" style="background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.3);color:var(--accent-blue);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;margin-right:8px;">测试连接</button>
         <button class="settings-save" onclick="saveSettings()">保存</button>
       </div>
+      <div id="apiTestResult" style="margin-top:12px;font-size:12px;color:var(--text-tertiary);display:none;padding:8px;border-radius:8px;background:var(--bg-tertiary);"></div>
     </div>
   </div>
 
@@ -1198,11 +1282,11 @@
       </div>
 
       <div class="alogon-intro" id="alogonBubble">
-        <div class="alogon-avatar">🤖</div>
+        <div class="alogon-avatar"></div>
         <div class="alogon-bubble">
-          <div class="alogon-name">书雨 · 你的AI创作搭档</div>
+          <div class="alogon-name" style="display:none;"></div>
           <div class="alogon-text" id="alogonText">
-            你好呀～我是 书雨，你的AI创作搭档<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+            你好呀～我是 <span id="alogonNameInText">小云</span>，你的AI创作搭档<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
           </div>
         </div>
       </div>
@@ -1214,8 +1298,15 @@
         </div>
       </div>
 
+      <div class="form-group" id="stepAiName">
+        <label class="form-label">AI搭档昵称 <span class="label-hint">给你的创作搭档起个名字（默认：小云）</span></label>
+        <div class="name-input-wrap">
+          <input type="text" class="name-input" id="aiName" placeholder="比如：小云、书雨、小墨..." maxlength="10" value="小云">
+        </div>
+      </div>
+
       <div class="form-group" id="stepStyle">
-        <label class="form-label">你的创作风格 <span class="label-hint">选一个最贴合你的</span></label>
+        <label class="form-label">你的创作风格 <span class="label-hint">选一个最贴合你的（可不选）</span></label>
         <div class="style-options">
           <div class="style-option" data-style="emotion" onclick="selectStyle(this, 'emotion')">
             <div class="style-icon">💧</div>
@@ -1237,6 +1328,10 @@
             <div class="style-name">反转王</div>
             <div class="style-desc">烧脑悬疑，出人意料</div>
           </div>
+          <div class="style-option style-custom-bar" data-style="custom" onclick="selectStyle(this, 'custom')">
+            <div class="style-icon">✏️</div>
+            <input type="text" class="custom-style-input" placeholder="输入你想要的风格..." onclick="event.stopPropagation(); selectStyle(this.closest('.style-option'), 'custom'); this.focus();" oninput="handleCustomInput(this)">
+          </div>
         </div>
       </div>
 
@@ -1245,7 +1340,7 @@
       </button>
 
       <div class="onboarding-footer">
-        已有 <span>1,247</span> 位创作者在这里写出了他们的故事
+        已有 <span id="creatorCount">0</span> 位创作者在这里写出了他们的故事
       </div>
     </div>
   </div>
@@ -1269,7 +1364,7 @@
       <div class="top-actions">
         <div class="stats-badge">
           <div class="stats-dot"></div>
-          <span>已创作 1,247 部剧本</span>
+          <span>已创作 <span id="scriptCount">0</span> 部剧本</span>
         </div>
         <div class="user-avatar">皛</div>
       </div>
@@ -1279,64 +1374,55 @@
     <div class="left-panel">
       <div class="panel-title">创作流程</div>
       
-      <div class="step-item" data-step="1">
+      <div class="step-item" data-step="1" data-phase="1">
         <div class="step-icon">📋</div>
         <div class="step-info">
-          <div class="step-name">大纲策划</div>
+          <div class="step-name">剧本策划</div>
           <div class="step-status">待开始</div>
         </div>
         <div class="step-num">01</div>
       </div>
 
-      <div class="step-item" data-step="2">
-        <div class="step-icon">👤</div>
+      <div class="step-item" data-step="2" data-phase="2">
+        <div class="step-icon">📐</div>
         <div class="step-info">
-          <div class="step-name">人物塑造</div>
+          <div class="step-name">剧本大纲</div>
           <div class="step-status">待开始</div>
         </div>
         <div class="step-num">02</div>
       </div>
 
-      <div class="step-item" data-step="3">
-        <div class="step-icon">📈</div>
+      <div class="step-item" data-step="3" data-phase="3">
+        <div class="step-icon">👤</div>
         <div class="step-info">
-          <div class="step-name">节奏控制</div>
+          <div class="step-name">角色设定</div>
           <div class="step-status">待开始</div>
         </div>
         <div class="step-num">03</div>
       </div>
 
-      <div class="step-item" data-step="4">
-        <div class="step-icon">💬</div>
+      <div class="step-item" data-step="4" data-phase="4">
+        <div class="step-icon">🌍</div>
         <div class="step-info">
-          <div class="step-name">对白润色</div>
+          <div class="step-name">世界设定</div>
           <div class="step-status">待开始</div>
         </div>
         <div class="step-num">04</div>
       </div>
 
-      <div class="step-item" data-step="5">
-        <div class="step-icon">🎭</div>
+      <div class="step-item" data-step="5" data-phase="5">
+        <div class="step-icon">🎬</div>
         <div class="step-info">
-          <div class="step-name">文化植入</div>
+          <div class="step-name">1-30集剧本正文</div>
           <div class="step-status">待开始</div>
         </div>
         <div class="step-num">05</div>
       </div>
 
-      <div class="step-item" data-step="6">
-        <div class="step-icon">✅</div>
-        <div class="step-info">
-          <div class="step-name">合规审查</div>
-          <div class="step-status">待开始</div>
-        </div>
-        <div class="step-num">06</div>
-      </div>
-
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-value">32</div>
-          <div class="metric-label">功能模块</div>
+          <div class="metric-value">8/15</div>
+          <div class="metric-label">专家模块</div>
         </div>
         <div class="metric-card">
           <div class="metric-value">25min</div>
@@ -1396,6 +1482,10 @@
               <div class="chip" onclick="setIdea('职场逆袭：从小透明到操盘手的成长之路，30集')">💼 职场逆袭</div>
               <div class="chip" onclick="setIdea('悬疑推理：古镇密室连环案件，12集')">🔍 悬疑推理</div>
             </div>
+            <div class="api-status" id="apiStatus" onclick="toggleSettings()" style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);padding:6px 12px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
+              <span id="apiStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
+              <span id="apiStatusText">未配置API</span>
+            </div>
             <button class="generate-btn" id="generateBtn" onclick="startCreation()">
               <span>开始创作</span>
               <span>▶</span>
@@ -1409,147 +1499,101 @@
     <div class="right-panel">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div class="panel-title">AI 专家团</div>
-        <span style="font-size: 11px; color: var(--text-muted);">15位 · 6大模块</span>
+        <span style="font-size: 11px; color: var(--text-muted);">8/15 · MVP</span>
       </div>
       
-      <!-- 创意组 -->
+      <!-- MVP专家组 -->
       <div class="expert-group">
-        <div class="expert-group-title">💡 创意定位组 · 3人</div>
-        <div class="expert-item" data-expert="planner">
+        <div class="expert-group-title">💡 创意定位组</div>
+        <div class="expert-item mvp" data-expert="soul_catcher">
           <div class="expert-avatar purple">🫧</div>
           <div class="expert-info">
-            <div class="expert-name">§0 灵魂捕手</div>
-            <div class="expert-role">听懂想法，追问故事方向</div>
+            <div class="expert-name">§0 灵魂捕手 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">追问故事方向</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar purple" style="width:28px;height:28px;font-size:12px;">🎬</div>
+        <div class="expert-item mvp" data-expert="compliance_guard">
+          <div class="expert-avatar green">🛡️</div>
           <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§8 项目配置师</div>
-            <div class="expert-role" style="font-size:10px;">方向拆解为项目设定</div>
+            <div class="expert-name">§2 合规守门员 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">合规扫描</div>
           </div>
+          <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar purple" style="width:28px;height:28px;font-size:12px;">📊</div>
+        <div class="expert-item mvp" data-expert="project_configurator">
+          <div class="expert-avatar cyan">🎬</div>
           <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§10 商业分析师</div>
-            <div class="expert-role" style="font-size:10px;">平台适配与爆款评估</div>
+            <div class="expert-name">§8 项目配置师 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">项目设定</div>
           </div>
+          <div class="expert-status-dot"></div>
         </div>
       </div>
 
-      <!-- 人设组 -->
       <div class="expert-group">
-        <div class="expert-group-title">👤 角色塑造组 · 2人</div>
-        <div class="expert-item" data-expert="character">
-          <div class="expert-avatar blue">🗿</div>
+        <div class="expert-group-title">👤 角色塑造组</div>
+        <div class="expert-item mvp" data-expert="character_forger">
+          <div class="expert-avatar blue">👤</div>
           <div class="expert-info">
-            <div class="expert-name">§1 角色铸造师</div>
-            <div class="expert-role">人物灵魂卡+弧光追踪</div>
+            <div class="expert-name">§1 角色铸造师 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">人设卡片+弧光</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar blue" style="width:28px;height:28px;font-size:12px;">✨</div>
+        <div class="expert-item mvp" data-expert="dialogue_master">
+          <div class="expert-avatar pink">💬</div>
           <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§14 IP衍生师</div>
-            <div class="expert-role" style="font-size:10px;">人物IP跨媒介开发</div>
+            <div class="expert-name">§4 对白大师 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">语料库+风格卡</div>
           </div>
+          <div class="expert-status-dot"></div>
         </div>
       </div>
 
-      <!-- 结构组 -->
       <div class="expert-group">
-        <div class="expert-group-title">🏗️ 结构节奏组 · 3人</div>
-        <div class="expert-item" data-expert="rhythm">
-          <div class="expert-avatar cyan">🧱</div>
+        <div class="expert-group-title">🏗️ 结构节奏组</div>
+        <div class="expert-item mvp" data-expert="structure_architect">
+          <div class="expert-avatar gold">🏗️</div>
           <div class="expert-info">
-            <div class="expert-name">§3 结构建筑师</div>
-            <div class="expert-role">全剧骨架与节拍表</div>
+            <div class="expert-name">§3 结构建筑师 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">全剧骨架</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar cyan" style="width:28px;height:28px;font-size:12px;">⚔️</div>
+        <div class="expert-item mvp" data-expert="episode_writer">
+          <div class="expert-avatar purple">📝</div>
           <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§7 实战指挥官</div>
-            <div class="expert-role" style="font-size:10px;">分集剧本逐集生成</div>
+            <div class="expert-name">§5 分集编剧 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">专业剧本</div>
           </div>
-        </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar cyan" style="width:28px;height:28px;font-size:12px;">🔍</div>
-          <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§6 质量审计师</div>
-            <div class="expert-role" style="font-size:10px;">全维度质量评分</div>
-          </div>
+          <div class="expert-status-dot"></div>
         </div>
       </div>
 
-      <!-- 对白组 -->
       <div class="expert-group">
-        <div class="expert-group-title">💬 对白打磨组 · 3人</div>
-        <div class="expert-item" data-expert="dialogue">
-          <div class="expert-avatar green">🎭</div>
+        <div class="expert-group-title">🎥 视觉呈现组</div>
+        <div class="expert-item mvp" data-expert="visual_director">
+          <div class="expert-avatar cyan">🎥</div>
           <div class="expert-info">
-            <div class="expert-name">§4 对白大师</div>
-            <div class="expert-role">个性化语料库与对白风格</div>
+            <div class="expert-name">§13 视觉导演 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">光影+镜头+声音</div>
           </div>
           <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar green" style="width:28px;height:28px;font-size:12px;">📄</div>
-          <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§5 格式工程师</div>
-            <div class="expert-role" style="font-size:10px;">剧本格式化平台适配</div>
-          </div>
-        </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar green" style="width:28px;height:28px;font-size:12px;">✏️</div>
-          <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§9 改稿大师</div>
-            <div class="expert-role" style="font-size:10px;">反馈迭代优化</div>
-          </div>
         </div>
       </div>
 
-      <!-- 文化视觉组 -->
-      <div class="expert-group">
-        <div class="expert-group-title">🎨 文化视觉组 · 3人</div>
-        <div class="expert-item" data-expert="culture">
-          <div class="expert-avatar gold">🏛️</div>
-          <div class="expert-info">
-            <div class="expert-name">§11 文化顾问</div>
-            <div class="expert-role">非遗/历史/地域文化</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar gold" style="width:28px;height:28px;font-size:12px;">🎬</div>
-          <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§13 视觉导演</div>
-            <div class="expert-role" style="font-size:10px;">视觉基调和镜头系统</div>
-          </div>
-        </div>
-        <div class="expert-item sub-expert">
-          <div class="expert-avatar gold" style="width:28px;height:28px;font-size:12px;">🎵</div>
-          <div class="expert-info">
-            <div class="expert-name" style="font-size:12px;">§12 音效设计师</div>
-            <div class="expert-role" style="font-size:10px;">BGM音效配音建议</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 审核组 -->
-      <div class="expert-group">
-        <div class="expert-group-title">🛡️ 合规审查组 · 1人</div>
-        <div class="expert-item" data-expert="compliance">
-          <div class="expert-avatar pink">🛡️</div>
-          <div class="expert-info">
-            <div class="expert-name">§2 合规守门员</div>
-            <div class="expert-role">题材风险与审核红线</div>
-          </div>
-          <div class="expert-status-dot"></div>
+      <!-- V2.0 待开发专家 -->
+      <div class="expert-group" style="opacity: 0.5;">
+        <div class="expert-group-title">🔒 V2.0 待解锁 (7位)</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0;">
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§6 质量审计师</span>
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§7 实战指挥官</span>
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§9 知识库管家</span>
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§10 类型适配师</span>
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§11 文化顾问</span>
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§12 音效设计师</span>
+          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§14 IP衍生师</span>
         </div>
       </div>
 
@@ -1611,9 +1655,9 @@
 <script>
   // ====== API 配置相关 ======
   const DEFAULT_SETTINGS = {
-    apiBaseUrl: 'https://api.openai.com/v1',
+    apiBaseUrl: 'https://api.deepseek.com',
     apiKey: '',
-    model: 'gpt-4o-mini',
+    model: 'deepseek-chat',
     episodeCount: 24
   };
 
@@ -1623,6 +1667,83 @@
       if (saved) return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
     } catch (e) {}
     return { ...DEFAULT_SETTINGS };
+  }
+
+  async function testApiConnection() {
+    const baseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://api.deepseek.com';
+    const key = document.getElementById('apiKey').value.trim();
+    const model = document.getElementById('apiModel').value.trim() || 'deepseek-chat';
+    const resultEl = document.getElementById('apiTestResult');
+    const testBtn = document.getElementById('settingsTestBtn');
+
+    if (!key) {
+      resultEl.style.display = 'block';
+      resultEl.style.background = 'rgba(239,68,68,0.1)';
+      resultEl.style.color = '#ef4444';
+      resultEl.innerHTML = '请先输入 API Key';
+      return;
+    }
+
+    // Show key info (first 4 + last 4 chars)
+    const maskedKey = key.length > 8 ? key.substring(0, 4) + '****' + key.substring(key.length - 4) : '****';
+    const url = baseUrl.replace(/\/$/, '') + '/chat/completions';
+
+    resultEl.style.display = 'block';
+    resultEl.style.background = 'rgba(59,130,246,0.1)';
+    resultEl.style.color = 'var(--text-secondary)';
+    resultEl.innerHTML = '测试中...<br>URL: ' + url + '<br>模型: ' + model + '<br>Key: ' + maskedKey + ' (长度: ' + key.length + ')';
+    testBtn.disabled = true;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + key
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [{ role: 'user', content: '你好，请回复一个字：好' }],
+          max_tokens: 10,
+          stream: false
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        resultEl.style.background = 'rgba(16,185,129,0.1)';
+        resultEl.style.color = '#10b981';
+        resultEl.innerHTML = '连接成功！<br>URL: ' + url + '<br>模型: ' + model + '<br>Key: ' + maskedKey + '<br>回复: ' + (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content || '未知');
+      } else {
+        const errText = await response.text().catch(() => '');
+        resultEl.style.background = 'rgba(239,68,68,0.1)';
+        resultEl.style.color = '#ef4444';
+        resultEl.innerHTML = '连接失败 (HTTP ' + response.status + ')<br>URL: ' + url + '<br>模型: ' + model + '<br>Key: ' + maskedKey + ' (长度: ' + key.length + ')<br>错误: ' + errText.substring(0, 300);
+      }
+    } catch (e) {
+      resultEl.style.background = 'rgba(239,68,68,0.1)';
+      resultEl.style.color = '#ef4444';
+      resultEl.innerHTML = '网络错误: ' + e.message + '<br>URL: ' + url + '<br>可能是跨域(CORS)问题，请确保通过HTTP服务器访问而非file://协议';
+    }
+
+    testBtn.disabled = false;
+  }
+
+  function updateApiStatus() {
+    const settings = loadSettings();
+    const dot = document.getElementById('apiStatusDot');
+    const text = document.getElementById('apiStatusText');
+    if (dot && text) {
+      if (settings.apiKey && settings.apiKey.length > 0) {
+        dot.style.background = '#10b981';
+        text.textContent = 'API 已配置';
+        text.style.color = 'var(--text-secondary)';
+      } else {
+        dot.style.background = '#ef4444';
+        text.textContent = '未配置API，点击设置';
+        text.style.color = 'var(--text-tertiary)';
+      }
+    }
   }
 
   function saveSettings() {
@@ -1635,6 +1756,7 @@
     localStorage.setItem('yunjiang_settings', JSON.stringify(settings));
     toggleSettings();
     showToast('设置已保存');
+    updateApiStatus();
   }
 
   function toggleSettings() {
@@ -1647,6 +1769,15 @@
       document.getElementById('apiKey').value = s.apiKey;
       document.getElementById('apiModel').value = s.model;
       document.getElementById('episodeCount').value = s.episodeCount;
+      // Show key diagnostic info
+      if (s.apiKey && s.apiKey.length > 0) {
+        const k = s.apiKey;
+        const keyDiag = document.getElementById('keyDiagInfo');
+        if (keyDiag) {
+          keyDiag.textContent = '当前Key - 长度:' + k.length + ' | 前6位:' + k.substring(0,6) + '... | 末4位:...' + k.substring(k.length-4) + ' | URL:' + s.apiBaseUrl;
+          keyDiag.style.display = 'block';
+        }
+      }
       modal.classList.add('show');
     }
   }
@@ -1660,141 +1791,419 @@
   }
 
   // ====== 6步 Prompt 定义 ======
-  const stepPrompts = {
+    const stepPrompts = {
     1: {
-      name: '大纲策划',
-      expert: 'planner',
-      systemPrompt: '你是一位资深短剧策划师，擅长从一个简单想法提炼出完整的短剧大纲。请用专业、精准的语言输出。',
-      userPrompt: (idea, style, episodes, prevResults) => `
-请基于以下创意，完成短剧的大纲策划：
+      name: '灵魂捕手',
+      expert: 'soul_catcher',
+      systemPrompt: `你是一位专精精品短剧的资深编剧，代号§0灵魂捕手。
+
+你的核心能力：通过精准追问，将用户模糊的创作想法转化为清晰、可执行的故事方向。
+
+灵魂捕手工作流：
+1. 倾听用户原始想法（可能只是一句话、一个情绪、一个画面）
+2. 从以下6个维度发起追问：
+   - 核心人物：谁是这个故事的主角？他/她想要什么？
+   - 核心冲突：最大的矛盾是什么？谁在阻挡主角？
+   - 情感基调：这是一个悲伤的、温暖的、还是热血的故事？
+   - 真实来源：这个故事有真实素材吗？还是纯虚构？
+   - 目标受众：谁会来看这个故事？
+   - 类型偏好：悲剧/甜宠/现实主义/悬疑/非遗？
+
+3. 输出【故事方向确认】
+
+【故事方向确认】格式：
+故事方向：[一句话故事方向，含人物+核心冲突+情感基调]
+一句话前提：[主题+人物+冲突+结论]
+推荐类型：[悲剧/现实主义/甜宠/悬疑/非遗文化]
+核心情感锚点：[观众看完会产生的核心感受]
+
+铁律：
+- 追问要精准，触及故事的核心痛点
+- 严格遵守引擎§2六大审核红线和叙事因果铁律`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下创意，完成故事方向追问：
 
 【创意】${idea}
 【创作风格】${style}
 【集数】${episodes}集
 
-请输出以下内容（用HTML格式，包含小标题）：
-1. <h4>核心定位</h4> - 一句话概括本剧核心卖点
-2. <h4>主题立意</h4> - 本剧想要表达的深层主题
-3. <h4>故事梗概</h4> - 300字左右的完整故事梗概
-4. <h4>核心冲突</h4> - 列出3-4个贯穿全剧的核心冲突点
-5. <h4>分集框架</h4> - 用列表列出每集的核心事件（${episodes}集，每集一句话）
-`
+请输出【故事方向确认】，用HTML格式包含：
+<h4>故事方向</h4> - 一句话故事方向
+<h4>一句话前提</h4> - 主题+人物+冲突+结论
+<h4>推荐类型</h4> - 题材类型
+<h4>核心情感锚点</h4> - 观众核心感受
+<h4>目标受众</h4> - 谁会来看
+<h4>核心卖点</h4> - 这个故事最吸引人的点`
     },
     2: {
-      name: '人物塑造',
-      expert: 'character',
-      systemPrompt: '你是一位专业的人设师，擅长塑造立体、有记忆点的短剧角色。输出要具体、有画面感。',
-      userPrompt: (idea, style, episodes, prevResults) => `
-请基于已有的大纲，为这部短剧设计完整的人物设定：
+      name: '合规守门员',
+      expert: 'compliance_guard',
+      systemPrompt: `你是一位精通短剧审核规则的合规专家，代号§2合规守门员。
+
+你的职责：在创作开始前扫描故事方向的潜在风险，给出🟢/🟡/🔴风险评级和合规替代方案。
+
+【六大审核红线（2026年5月最新）】
+| 红线 | 禁止内容 | 合规替代 |
+| 超自然金手指 | 异能、修仙、血脉觉醒 | 退伍军人、持证运动员、专业行业技能 |
+| 暴力私刑 | 主角以暴制暴、个人复仇暴力 | 主角仅防御/躲闪，反派由法律制裁 |
+| 危险道具+血腥 | 匕首/毒针、出血特写 | 木棍轻微磕碰，无伤口无血迹 |
+| 人格羞辱+霸凌 | 扔钱踩人、逼迫下跪、校园霸凌 | 用侧面叙事：事后伤痕、旁观者视角 |
+| 低俗擦边 | 露骨画面、暧昧姿势 | 健康正向的情感表达 |
+| 封建迷信 | 宿命诅咒、宗教妖魔 | 用心理暗示、巧合、人性逻辑替代 |
+
+【题材禁区（碰即拒）】
+早恋、校园暴力正面展示、历史事件误写、美化出轨、宣扬拜金
+
+【侧面叙事5种模板】（敏感内容必须使用）
+1. 静物暗示：只拍物品/环境，人不在画面中
+2. 他人视角：通过第三者反应间接得知
+3. 时间跳切：跳过事件本身，只拍事件前和事件后
+4. 意象替代：用象征性画面替代真实画面
+5. 留白收束：不交代结果，让观众自己推导`,
+      userPrompt: (idea, style, episodes, prevResults) => `请对以下故事方向进行合规扫描：
 
 【创意】${idea}
 【创作风格】${style}
-【已完成的大纲】
-${prevResults[1] || '（暂无）'}
+【故事方向】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请输出以下内容（用HTML格式，包含小标题）：
-1. <h4>主要人物</h4>
-   - 列出3-5个主要角色
-   - 每个角色包含：姓名、年龄、身份/职业、外貌特征、性格特点、核心动机、人物弧光
-2. <h4>人物关系图</h4> - 描述主要角色之间的关系
-3. <h4>配角设定</h4> - 列出3-4个重要配角及其作用
-4. <h4>反派/阻碍角色</h4> - 分析反派角色的塑造逻辑
-`
+请输出以下内容（用HTML格式）：
+<h4>风险评级</h4> - 🟢绿色/🟡黄色/🔴红色
+<h4>风险项扫描</h4> - 逐条列出风险及触及的红线
+<h4>合规替代方案</h4> - 针对每个风险给出可执行替代方案
+<h4>侧面叙事建议</h4> - 敏感内容如何用侧面叙事处理
+<h4>平台适配建议</h4> - 红果/抖音/快手的尺度差异
+<h4>结论</h4> - 是否建议继续创作`
     },
     3: {
-      name: '节奏控制',
-      expert: 'rhythm',
-      systemPrompt: '你是一位短剧节奏大师，深谙短剧爽点设计和钩子布局之道。输出要专业、可落地。',
-      userPrompt: (idea, style, episodes, prevResults) => `
-请基于已有大纲和人设，完成这部短剧的节奏设计和分集大纲：
+      name: '项目配置师',
+      expert: 'project_configurator',
+      systemPrompt: `你是一位专精项目规划的资深编剧，代号§8项目配置师。
+
+你的核心能力：将故事方向拆解为可执行的项目设定，供后续所有专家使用。
+
+§8配置层包含：
+1. 核心原则：本项目独有的创作方向
+2. 禁止项：本项目明确不能出现的内容
+3. 对白差异化：本项目角色说话方式的特殊要求
+4. 侧面叙事规则：本项目处理敏感内容的特定方式
+5. 平台合规：本项目目标平台的特殊要求
+6. 素材约束：本项目素材的来源、偏好、真实度要求
+
+【素材铁律】
+1. 素材来源优先级：真实经历>新闻报道>田野调查>文献研究
+2. 改头换面：真实事件是原料，必须改头换面才能用
+3. 核心细节必须有出处：空间/行为/情感细节不能编造`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下故事方向和合规扫描，完成项目配置：
 
 【创意】${idea}
 【创作风格】${style}
 【集数】${episodes}集
-【已完成的大纲】
-${prevResults[1] || '（暂无）'}
-【已完成的人设】
-${prevResults[2] || '（暂无）'}
+【故事方向】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请输出以下内容（用HTML格式，包含小标题）：
-1. <h4>整体节奏曲线</h4> - 描述全剧的节奏起伏设计，起承转合的节点
-2. <h4>爽点分布</h4> - 列出全剧的主要爽点/反转点及其所在集数
-3. <h4>钩子设计</h4> - 前5集每集结尾的钩子（悬念设置）
-4. <h4>分集大纲</h4>
-   <ul>
-   ${Array.from({length: Math.min(episodes, 30)}, (_, i) => `<li>第${i+1}集：</li>`).join('')}
-   </ul>
-   请为每集写一句话的核心事件和结尾钩子，按列表格式输出。
-`
+请输出以下内容（用HTML格式）：
+<h4>项目名称</h4>
+<h4>一句话前提</h4>
+<h4>核心原则</h4> - 3-5条核心创作原则
+<h4>禁止项</h4> - 明确不能出现的内容
+<h4>对白风格</h4> - 本项目角色的语言特色
+<h4>平台适配</h4> - 目标平台及尺度说明
+<h4>素材来源</h4> - 素材来源及真实度要求`
     },
     4: {
-      name: '对白润色',
-      expert: 'dialogue',
-      systemPrompt: '你是一位资深对白编剧，擅长用精炼的台词展现人物性格和潜台词。输出要生动、有画面感。',
-      userPrompt: (idea, style, episodes, prevResults) => `
-请基于已有设定，选择前3集进行详细的场景和对白创作示范：
+      name: '角色铸造师',
+      expert: 'character_forger',
+      systemPrompt: `你是一位专精人物塑造的资深编剧，代号§1角色铸造师。
+
+你的核心能力：将抽象的故事方向铸造为有血有肉的真实角色。
+
+角色铸造三层四维度法（必须严格遵循）：
+
+【A. 人物三层结构】
+公共自我（面具）：社会身份、职业、外貌、谈吐习惯 - 小压力即可见
+私人自我（隐私）：亲密关系里的样子、脆弱、秘密 - 中压力才暴露
+核心自我（本性）：最深欲望、恐惧、价值观、底线 - 极限压力才逼出
+
+【B. 人物四维度清单】
+1. 生理维度：年龄、性别、外貌特征、健康/缺陷
+2. 社会维度：阶层、教育、家庭、职业
+3. 心理维度：欲望、执念、创伤、内疚、自尊/自卑
+4. 道德维度：是非观、底线、良心
+
+【C. 人物双驱动力】
+- 表层欲望（want）：角色明确追求的
+- 深层欲望（need）：角色真正需要的
+- 表层恐惧：角色害怕失去的
+- 深层恐惧：角色不敢面对的
+
+【D. 人物弧光三阶段】
+初始状态（有执念）-冲突考验-终极选择（彻底改变）
+
+【E. 人设卡片输出格式】
+每个角色必须输出：
+角色名：定位，年龄，身份
+面具：[公共自我]
+隐私：[私人自我]
+内核：[核心自我]
+驱力：want→need / 表层恐惧→深层恐惧
+弧光：[初始]-[考验]-[终极选择]
+四维度关键词：生理[ ] 社会[ ] 心理[ ] 道德[ ]
+
+铁律：
+- 人物不等于设定标签，人物=压力下的选择
+- 弧光必须通过选择完成，不能靠台词说"我变了"`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下项目设定，完成角色铸造：
 
 【创意】${idea}
 【创作风格】${style}
-【已完成的节奏大纲】
-${prevResults[3] || '（暂无）'}
-【已完成的人设】
-${prevResults[2] || '（暂无）'}
+【项目设定】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请输出以下内容（用HTML格式，包含小标题）：
-1. <h4>对白风格说明</h4> - 本剧的整体对白风格和语言特色
-2. <h4>第1集完整剧本</h4> - 写出第1集的完整场景+对白，包含场景描述、动作说明、角色台词，每集大约800-1200字
-3. <h4>第2集完整剧本</h4> - 同上
-4. <h4>第3集完整剧本</h4> - 同上
-5. <h4>潜台词设计说明</h4> - 举例说明台词中的潜台词运用
-`
+请输出以下内容（用HTML格式）：
+<h4>主要人物</h4> - 列出3-5个主要角色，每个包含完整人设卡片
+<h4>人物关系图</h4> - 描述主要角色之间的关系和张力
+<h4>人物弧光</h4> - 每个主要角色的变化轨迹
+<h4>配角设定</h4> - 3-4个重要配角及其作用
+<h4>反派/阻碍角色</h4> - 分析反派角色的塑造逻辑`
     },
     5: {
-      name: '文化植入',
-      expert: 'culture',
-      systemPrompt: '你是一位文化顾问，擅长将传统文化、非遗元素自然融入短剧创作，做到润物细无声。',
-      userPrompt: (idea, style, episodes, prevResults) => `
-请基于这部短剧的设定，设计文化元素植入方案：
+      name: '对白大师',
+      expert: 'dialogue_master',
+      systemPrompt: `你是一位专精对白的资深编剧，代号§4对白大师。
+
+你的核心能力：基于角色人设，生成个性化语料库和可执行的对白风格卡。
+
+【对白核心公式】
+对白 = 行动，不是对话。每句好对白同时完成三重使命：
+1. 表面说什么（文本）→ 传达信息
+2. 真正想干什么（行动）→ 说服/威胁/讨好/欺骗/推开/靠近
+3. 内心藏着什么（潜文本）→ 真实感受
+
+【台词五字诀】
+- 短：砍掉冗余，单句不超过15字
+- 狠：一针见血，戳中情绪痛点
+- 准：每句台词必须推动剧情或完成转折
+- 燃：引爆共情，带情绪起伏
+- 沉：有重量感，说完观众要停一下才能消化
+
+【对白冰山模型】
+- 已说：角色选择讲给别人的
+- 未说：角色内心只对自己说的
+- 不可说：潜意识驱动，角色说不出甚至对自己也说不出的
+
+【对白个性化速查表】
+| 人物类型 | 说话特征 | 口语标记 |
+| 知识分子 | 绕、理性、抽象 | 从逻辑上讲、你不觉得吗 |
+| 底层人 | 直、粗、短、狠 | 你算什么东西、别废话 |
+| 控制狂 | 命令、反问、压迫 | 我说了算、你什么意思 |
+| 缺爱的人 | 试探、卑微、反复 | 你是不是不想要我、我没事 |
+| 隐忍型 | 短句、回避、沉默比话多 | 嗯、没事、算了 |
+
+【对白节奏技巧】
+- 长短交替：长句铺垫，短句爆发
+- 问东答西：不要流水账问答，要回避/反问/攻击
+- 停顿的力量：没说出口的比说出口的更有力
+- os与台词相反：想的和说的相反=张力最强`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下角色设定，设计对白系统：
 
 【创意】${idea}
 【创作风格】${style}
-【已完成的剧本内容】
-${prevResults[4] || '（暂无）'}
-【已完成的大纲】
-${prevResults[1] || '（暂无）'}
+【角色设定】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请输出以下内容（用HTML格式，包含小标题）：
-1. <h4>文化元素盘点</h4> - 列出本剧可以植入的传统文化/非遗/地域文化元素
-2. <h4>植入方案</h4> - 每个文化元素的具体植入方式和对应集数
-3. <h4>核心文化符号</h4> - 本剧的核心文化符号及其象征意义
-4. <h4>文化真实性说明</h4> - 确保文化内容准确的依据和注意事项
-5. <h4>文化彩蛋</h4> - 为懂的观众准备的隐藏文化细节
-`
+请输出以下内容（用HTML格式）：
+<h4>对白风格总览</h4> - 本剧的整体对白风格和语言特色
+<h4>角色语料卡</h4> - 每个主要角色的说话方式、口头禅、语言习惯
+<h4>潜台词设计</h4> - 举例说明台词中的潜台词运用
+<h4>经典对白示范</h4> - 写出3-5段经典对白场景
+<h4>对白节奏指南</h4> - 不同场景的对白节奏控制`
     },
     6: {
-      name: '合规审查',
-      expert: 'compliance',
-      systemPrompt: '你是一位短剧合规审核员，熟悉各大短剧平台的审核规则，能精准识别风险并给出优化建议。',
-      userPrompt: (idea, style, episodes, prevResults) => `
-请对这部短剧进行全面的合规审查和过审优化：
+      name: '结构建筑师',
+      expert: 'structure_architect',
+      systemPrompt: `你是一位专精短剧结构的资深编剧，代号§3结构建筑师。
+
+你的核心能力：将角色和故事方向转化为可执行的全剧骨架。
+
+【救猫咪15节拍表（适配30集）】
+| # | 节拍 | 占比 | 功能 | 30集映射 |
+| 1 | 开场画面 | 0-1% | 展示改变前的世界 | 第1集开头 |
+| 2 | 点明主题 | ~5% | 次要角色暗示主题 | 第1-2集 |
+| 3 | 铺垫 | 1-10% | 介绍主角、缺陷 | 第1-3集 |
+| 4 | 催化事件 | ~10% | 打破平衡的变故 | 第3-4集 |
+| 5 | 争论 | 10-25% | 主角犹豫/拒绝 | 第4-7集 |
+| 6 | 进入第二幕 | 25% | 主角主动选择进入新世界 | 第7-8集 |
+| 7 | B故事 | ~22% | 情感线/副线，承载主题 | 第7-9集 |
+| 8 | 游戏时间 | 25-50% | 兑现前提承诺，爽点密集 | 第8-15集 |
+| 9 | 中点 | 50% | 伪胜利或伪失败 | 第15集 |
+| 10 | 坏蛋逼近 | 50-75% | 外部压力升级 | 第15-22集 |
+| 11 | 一无所有 | 75% | 最低谷，死亡气息 | 第22-23集 |
+| 12 | 灵魂黑夜 | 75-85% | 绝望→找到教训 | 第23-25集 |
+| 13 | 进入第三幕 | 85% | A+B故事交织 | 第25-26集 |
+| 14 | 终极对决 | 85-99% | 英雄应用所学 | 第26-29集 |
+| 15 | 终场画面 | 99-100% | 与开场对照 | 第30集 |
+
+【节拍铁律】
+- 每个节拍必须对应具体的集数和场景
+- 节拍之间的转折必须由人物选择驱动
+- 爽点密度：游戏时间阶段每2集至少1个爽点
+- 钩子设计：每集结尾必须有钩子，下集开头3秒内回应`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，设计全剧结构：
 
 【创意】${idea}
 【创作风格】${style}
-【已完成的全部内容】
-${prevResults[1] || ''}
-${prevResults[2] || ''}
-${prevResults[3] || ''}
-${prevResults[4] || ''}
-${prevResults[5] || ''}
+【集数】${episodes}集
+【完整设定】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请输出以下内容（用HTML格式，包含小标题）：
-1. <h4>整体过审评级</h4> - 给出A/B/C/D评级，并说明理由
-2. <h4>风险点识别</h4> - 列出所有可能的合规风险点，按严重程度排序
-3. <h4>优化建议</h4> - 针对每个风险点给出具体的修改建议
-4. <h4>平台适配建议</h4> - 针对主流短剧平台（红果、抖音、快手等）的适配建议
-5. <h4>送审版本调整清单</h4> - 一份可执行的调整清单
-`
+请输出以下内容（用HTML格式）：
+<h4>整体节奏曲线</h4> - 全剧节奏起伏设计
+<h4>救猫咪15节拍</h4> - 每个节拍对应的集数和事件
+<h4>爽点分布</h4> - 全剧主要爽点/反转点
+<h4>钩子设计</h4> - 每集结尾的钩子
+<h4>分集大纲</h4> - ${episodes}集的核心事件列表`
+    },
+    7: {
+      name: '分集编剧',
+      expert: 'episode_writer',
+      systemPrompt: `你是一位资深短剧编剧，代号§5分集编剧。
+
+你的核心能力：将故事大纲和角色设定展开为完整的、可拍摄的分场剧本。
+你的输出必须是【专业分场剧本格式】，不是概要、不是大纲、不是摘要。
+
+══════════════════════════════════════════
+【剧本格式规范 — 必须严格遵守】
+══════════════════════════════════════════
+
+每集剧本结构如下：
+
+═══════════════════════════════════
+第X集 《集名》
+核心事件：一句话概括本集核心冲突
+情感基调：关键词（如：压抑→爆发）
+时长：X分钟
+═══════════════════════════════════
+
+X-1 地点名 时间/内外
+人物：角色A 角色B
+△春日，阳光从木格窗棂漏进来，在青石板上投下斑驳的光影。
+△动作描写，用具体的画面建立空间感。
+角色A：（动作/情绪）台词内容
+角色B：台词内容
+△反应动作
+角色Aos：内心独白内容
+
+─────────────────────
+【格式要素详解】
+─────────────────────
+
+1. 集头信息（每集必须有）：
+   - 用"═══"包围
+   - 包含：集数、集名、核心事件、情感基调、时长
+
+2. 场景标记：
+   - 格式：X-Y 地点名 时间/内外
+   - X=集数，Y=场景序号（如 1-1, 1-2, 3-5）
+   - 时间：日/夜/晨/黄昏/深夜/傍晚
+   - 内外：内/外/内外
+   - 示例：1-1 蓝家染坊 日/内
+
+3. 动作行：以△开头，描述画面和动作
+
+4. 台词行：角色名：（动作/情绪）台词内容
+
+5. 内心独白：角色名os：内心独白内容
+
+【剧本质量铁律】
+- 每集800-1200字
+- 场景切换要有节奏感
+- 对白要符合角色人设
+- 动作描写要具体、有画面感`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，写出前3集的完整专业剧本：
+
+【创意】${idea}
+【创作风格】${style}
+【集数】${episodes}集
+【完整设定】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
+
+请严格按照专业分场剧本格式，输出第1集、第2集、第3集的完整剧本。
+
+每集包含：
+- 集头信息（集名、核心事件、情感基调、时长）
+- 3-5个场景
+- 每个场景：场景标记、人物行、动作描写、角色台词
+- 每集800-1200字
+
+注意：这是专业剧本格式，不是大纲、不是概要、不是摘要。必须是可直接用于拍摄的分场剧本。`
+    },
+    8: {
+      name: '视觉导演',
+      expert: 'visual_director',
+      systemPrompt: `你是一位专精视觉叙事的资深导演，代号§13视觉导演。
+
+你的核心能力：为短剧设计完整的视觉系统，包括光影、镜头和声音。
+
+【光影系统设计】
+| 场景类型 | 主色调 | 光影特征 | 情绪含义 |
+| 温馨日常 | 暖黄 | 自然光、柔光 | 安全、舒适 |
+| 压抑困境 | 冷灰蓝 | 顶光、侧影 | 孤独、无力 |
+| 冲突对抗 | 高对比 | 明暗分割、硬光 | 紧张、对立 |
+| 甜蜜时刻 | 柔粉 | 逆光、柔光箱 | 温暖、心动 |
+| 悲剧高潮 | 低饱和 | 暗调、压光 | 绝望、窒息 |
+| 希望微光 | 明暗对比 | 一束光、窗光 | 温暖、救赎 |
+
+【镜头系统设计】
+| 镜头类型 | 焦距/景别 | 使用场景 | 效果 |
+| 远景 | 全景/环境 | 开场建立 | 交代空间 |
+| 全景 | 人物全身 | 关系展示 | 展示人物间空间关系 |
+| 中景 | 膝盖以上 | 对话场景 | 平衡对话与肢体 |
+| 近景 | 胸部以上 | 情绪聚焦 | 捕捉微表情 |
+| 特写 | 面部/物体 | 关键细节 | 强调、放大情绪 |
+| 大特写 | 眼睛/手 | 极端情绪 | 冲击力最强 |
+
+镜头运动与情绪：
+- 推镜头（zoom in）：聚焦、逼近、压迫感
+- 拉镜头（zoom out）：退离、释放、孤独感
+- 摇镜头（pan）：扫视、跟随、紧张
+- 移镜头（track）：行走感、参与感、沉浸
+
+【声音系统设计】
+| 声音类型 | 功能 | 设计要点 |
+| 对白 | 传递信息 | 清晰、可辨、符合角色 |
+| 音效 | 增强真实感 | 环境标志性声音 |
+| 环境音 | 营造氛围 | 持续低频背景音 |
+| 音乐 | 情绪引导 | 符合场景情绪，不抢戏 |
+
+【短剧特规】
+- 前3秒用近景/特写建立情绪锚点
+- 每集至少有一个情绪性特写
+- 结尾钩子可用空镜头或延宕镜头`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整剧本，设计视觉系统：
+
+【创意】${idea}
+【创作风格】${style}
+【完整剧本】
+${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
+
+请输出以下内容（用HTML格式）：
+<h4>视觉基调</h4> - 本剧的整体视觉风格和色彩基调
+<h4>光影设计</h4> - 不同场景类型的光影方案
+<h4>镜头语言</h4> - 关键场景的镜头设计
+<h4>声音系统</h4> - BGM风格、音效设计、环境音方案
+<h4>视觉彩蛋</h4> - 为观众准备的视觉细节和隐喻`
     }
+  };
+
+
+  // Phase mapping: 8 expert steps → 5 visual phases
+  const stepToPhase = {1:1, 2:1, 3:2, 4:3, 5:4, 6:4, 7:5, 8:5};
+  const phaseExperts = {
+    1: ['soul_catcher', 'compliance_guard'],
+    2: ['project_configurator'],
+    3: ['character_forger'],
+    4: ['dialogue_master', 'structure_architect'],
+    5: ['episode_writer', 'visual_director']
   };
 
   // ====== 调用大模型 API ======
@@ -1825,7 +2234,11 @@ ${prevResults[5] || ''}
 
     if (!response.ok) {
       const errText = await response.text().catch(() => '');
-      throw new Error('API 调用失败：' + response.status + ' ' + errText.slice(0, 200));
+      // Diagnostic info: show key length and masked key for debugging
+      const k = settings.apiKey;
+      const keyInfo = '(长度:' + k.length + ',前6:' + k.substring(0,6) + ',末4:' + k.substring(k.length-4) + ')';
+      const urlInfo = '[URL:' + url + ']';
+      throw new Error('API 调用失败：' + response.status + ' ' + urlInfo + ' ' + keyInfo + ' ' + errText.slice(0, 200));
     }
 
     // 流式输出
@@ -1855,7 +2268,7 @@ ${prevResults[5] || ''}
           if (data === '[DONE]') continue;
           try {
             const json = JSON.parse(data);
-            const content = json.choices?.[0]?.delta?.content;
+            const content = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
             if (content) {
               chunkText += content;
               this.fullText += content;
@@ -1872,7 +2285,8 @@ ${prevResults[5] || ''}
     emotion: '情感流 - 细腻走心，共情力强，注重人物内心刻画',
     rhythm: '节奏党 - 强反转，钩子密集，爽点不断',
     culture: '文化向 - 有底蕴，重质感，文化元素自然融入',
-    twist: '反转王 - 烧脑悬疑，出人意料，层层反转'
+    twist: '反转王 - 烧脑悬疑，出人意料，层层反转',
+    get custom() { return customStyleName || '自定义风格'; }
   };
 
   // 注册页面逻辑
@@ -1888,17 +2302,40 @@ ${prevResults[5] || ''}
   function checkCanEnter() {
     const name = document.getElementById('creatorName').value.trim();
     const btn = document.getElementById('enterBtn');
-    btn.disabled = !(name && selectedStyle);
+    if (btn) btn.disabled = !name;
+  }
+
+  // AI name input syncs to bubble in real-time
+  function updateAiName() {
+    const aiName = document.getElementById('aiName');
+    if (!aiName) return;
+    const name = aiName.value.trim() || '小云';
+    const nameDisplay = document.getElementById('alogonNameDisplay');
+    const nameInText = document.getElementById('alogonNameInText');
+    if (nameDisplay) nameDisplay.textContent = name;
+    if (nameInText) nameInText.textContent = name;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('creatorName').addEventListener('input', checkCanEnter);
+    const aiNameInput = document.getElementById('aiName');
+    if (aiNameInput) aiNameInput.addEventListener('input', updateAiName);
+    updateAiName();
     
-    // 书雨 对话序列
+    // 随机头像 + 对话序列
+    const avatarEmojis = ['🤖','🎬','️','🌸','🎭','🦊','🐱','','⭐','🔮','','📖','💡','','🍃'];
+    const avatarEl = document.querySelector('.alogon-avatar');
+    if (avatarEl) {
+      const emoji = avatarEmojis[Math.floor(Math.random() * avatarEmojis.length)];
+      avatarEl.textContent = emoji;
+      avatarEl.style.cssText = 'width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);box-shadow:0 0 20px rgba(102,126,234,0.3);';
+    }
+
+    // 引导员对话序列
     const alogonMessages = [
-      "你好呀～我是 书雨，你的AI创作搭档",
+      "你好呀～我是 " + (document.getElementById('alogonNameInText')?.textContent || '小云') + "，你的AI创作搭档",
       "在 云匠，一个想法就能变成完整的剧本",
-      "先告诉我你的名字，再选个你喜欢的创作风格吧～"
+      "先告诉我你的名字，选个喜欢的风格，就可以开始创作了～"
     ];
     
     let msgIndex = 0;
@@ -1922,6 +2359,8 @@ ${prevResults[5] || ''}
 
   function enterStudio() {
     const name = document.getElementById('creatorName').value.trim();
+    const aiNameEl = document.getElementById('aiName');
+    const aiName = (aiNameEl && aiNameEl.value && aiNameEl.value.trim()) || '小云';
     const styleMap = {
       emotion: '情感流创作者',
       rhythm: '节奏党',
@@ -1929,6 +2368,9 @@ ${prevResults[5] || ''}
       twist: '反转王'
     };
     const styleText = styleMap[selectedStyle] || '创作者';
+
+    // 将AI搭档名字存储到全局，供后续使用
+    window.aiPartnerName = aiName;
     
     // 更新主界面的用户名显示（加容错，找不到元素不影响跳转）
     const userAvatar = document.querySelector('.user-avatar');
@@ -1951,13 +2393,16 @@ ${prevResults[5] || ''}
     
     // 隐藏注册页
     document.getElementById('onboardingScreen').classList.add('hide');
+    
+    // 更新API状态指示器
+    setTimeout(updateApiStatus, 300);
   }
 
   const stepData = {
     1: {
       icon: '💡',
-      title: '第一步 · 创意定位',
-      meta: '§0 灵魂捕手 + §8 项目配置师',
+      title: '第一步 · 剧本策划',
+      meta: '§0 灵魂捕手 + §2 合规守门员',
       expert: 'planner',
       content: `
 
@@ -2002,8 +2447,8 @@ ${prevResults[5] || ''}
     },
     2: {
       icon: '🗿',
-      title: '第二步 · 角色塑造',
-      meta: '§1 角色铸造师 + §14 IP衍生师',
+      title: '第一步 · 剧本策划',
+      meta: '§2 合规守门员 · 内容合规扫描',
       expert: 'character',
       content: `
 
@@ -2047,8 +2492,8 @@ ${prevResults[5] || ''}
     },
     3: {
       icon: '🧱',
-      title: '第三步 · 结构与节奏',
-      meta: '§3 结构建筑师 + §7 实战指挥官 + §6 质量审计师',
+      title: '第二步 · 剧本大纲',
+      meta: '§8 项目配置师 · 项目设定',
       expert: 'rhythm',
       content: `
 
@@ -2122,8 +2567,8 @@ ${prevResults[5] || ''}
     },
     4: {
       icon: '🎭',
-      title: '第四步 · 对白打磨',
-      meta: '§4 对白大师 + §5 格式工程师 + §9 改稿大师',
+      title: '第三步 · 角色设定',
+      meta: '§1 角色铸造师 · 人设卡片与弧光',
       expert: 'dialogue',
       content: `
 
@@ -2202,8 +2647,8 @@ ${prevResults[5] || ''}
     },
     5: {
       icon: '🏛️',
-      title: '第五步 · 文化与视觉',
-      meta: '§11 文化顾问 + §13 视觉导演 + §12 音效设计师',
+      title: '第四步 · 世界设定',
+      meta: '§4 对白大师 · 语料库与风格',
       expert: 'culture',
       content: `
 
@@ -2282,8 +2727,8 @@ ${prevResults[5] || ''}
     },
     6: {
       icon: '🛡️',
-      title: '第六步 · 合规审查',
-      meta: '§2 合规守门员',
+      title: '第四步 · 世界设定',
+      meta: '§3 结构建筑师 · 全剧骨架',
       expert: 'compliance',
       content: `
 
@@ -2339,6 +2784,22 @@ ${prevResults[5] || ''}
 
 `
     },
+
+    7: {
+      icon: '📝',
+      title: '第五步 · 1-30集剧本正文',
+      meta: '§5 分集编剧 · 专业分场剧本',
+      expert: 'episode_writer',
+      content: `<h4>专业分场剧本</h4><p>分集编剧正在生成完整的专业剧本...</p>`
+    },
+    8: {
+      icon: '🎥',
+      title: '第五步 · 1-30集剧本正文',
+      meta: '§13 视觉导演 · 视觉系统',
+      expert: 'visual_director',
+      content: `<h4>视觉系统设计</h4><p>视觉导演正在设计光影、镜头和声音系统...</p>`
+    }
+
   };
 
   let isCreating = false;
@@ -2372,13 +2833,16 @@ ${prevResults[5] || ''}
         item.classList.add('active');
       }
     });
-    document.querySelector(`.step-item[data-step="${stepNum}"]`).classList.add('active');
+    const phaseForStep = stepToPhase[stepNum] || stepNum;
+    const phaseEl = document.querySelector(`.step-item[data-step="${phaseForStep}"]`);
+    if (phaseEl) phaseEl.classList.add('active');
     
     // 更新右侧专家态
     document.querySelectorAll('.expert-item').forEach(item => {
       item.classList.remove('active', 'working');
     });
-    document.querySelector(`.expert-item[data-expert="${step.expert}"]`).classList.add('active');
+    const expertEl = document.querySelector(`.expert-item[data-expert="${step.expert}"]`);
+    if (expertEl) expertEl.classList.add('active');
     
     // 判断显示真实生成内容还是预设内容
     const outputContainer = document.getElementById('outputContainer');
@@ -2435,7 +2899,16 @@ ${prevResults[5] || ''}
     
     const idea = document.getElementById('ideaInput').value.trim();
     if (!idea) {
-      alert('请输入你的短剧想法');
+      showToast('请输入你的短剧想法', true);
+      return;
+    }
+    
+    // 检查 API Key 是否已配置
+    const settings = loadSettings();
+    const hasAPI = settings.apiKey && settings.apiKey.length > 0;
+    if (!hasAPI) {
+      showToast('请先点击右上角 ⚙️ 配置 API Key', true);
+      toggleSettings();
       return;
     }
     
@@ -2453,25 +2926,27 @@ ${prevResults[5] || ''}
     // 清空之前的输出
     document.getElementById('outputContainer').innerHTML = '';
     
-    const settings = loadSettings();
-    const hasAPI = settings.apiKey && settings.apiKey.length > 0;
     const styleText = styleTextMap[selectedStyle] || '情感流';
     
     // 逐步执行每一步
-    for (let step = 1; step <= 6; step++) {
+    for (let step = 1; step <= 8; step++) {
       try {
-        if (hasAPI) {
-          await runStepReal(step, idea, styleText, settings.episodeCount);
-        } else {
-          await runStep(step); // 演示模式
+        await runStepReal(step, idea, styleText, settings.episodeCount);
+        // Mark expert as completed
+        const completedExpert = document.querySelector(`.expert-item[data-expert="${stepPrompts[step].expert}"]`);
+        if (completedExpert) {
+          completedExpert.classList.remove('working');
+          completedExpert.classList.add('completed');
         }
         stepsCompleted = step;
       } catch (err) {
-        showToast(err.message || '生成失败', true);
-        // 出错后回退到演示模式继续完成剩余步骤
+        showToast(err.message || '生成失败，请检查API配置', true);
         console.error('Step ' + step + ' failed:', err);
-        await runStep(step);
-        stepsCompleted = step;
+        // 失败后停止，不再静默回退到演示模式
+        btn.innerHTML = '<span>重新开始</span><span>▶</span>';
+        btn.disabled = false;
+        isCreating = false;
+        return;
       }
     }
     
@@ -2491,24 +2966,28 @@ ${prevResults[5] || ''}
     const contentArea = document.getElementById('contentArea');
     const outputContainer = document.getElementById('outputContainer');
     
-    // 激活左侧步骤
-    document.querySelectorAll('.step-item').forEach((item, i) => {
+    // 激活左侧阶段
+    const currentPhase = stepToPhase[stepNum];
+    document.querySelectorAll('.step-item').forEach((item) => {
+      const phase = parseInt(item.dataset.phase || item.dataset.step);
       item.classList.remove('active');
-      if (i + 1 < stepNum) {
+      if (phase < currentPhase) {
         item.classList.add('completed');
         item.querySelector('.step-status').textContent = '已完成';
+      } else if (phase === currentPhase) {
+        item.classList.add('active');
+        item.querySelector('.step-status').textContent = '进行中';
       }
     });
-    const currentStepEl = document.querySelector(`.step-item[data-step="${stepNum}"]`);
-    currentStepEl.classList.add('active');
-    currentStepEl.querySelector('.step-status').textContent = '进行中';
     
     // 激活右侧专家
     document.querySelectorAll('.expert-item').forEach(item => {
       item.classList.remove('active', 'working');
     });
     const currentExpert = document.querySelector(`.expert-item[data-expert="${prompt.expert}"]`);
-    currentExpert.classList.add('active', 'working');
+    if (currentExpert) {
+      currentExpert.classList.add('active', 'working');
+    }
     
     // 创建输出卡片
     const card = document.createElement('div');
@@ -2564,24 +3043,26 @@ ${prevResults[5] || ''}
     const contentArea = document.getElementById('contentArea');
     const outputContainer = document.getElementById('outputContainer');
     
-    // 激活左侧步骤
-    document.querySelectorAll('.step-item').forEach((item, i) => {
+    // 激活左侧阶段
+    const currentPhase = stepToPhase[stepNum] || stepNum;
+    document.querySelectorAll('.step-item').forEach((item) => {
+      const phase = parseInt(item.dataset.phase || item.dataset.step);
       item.classList.remove('active');
-      if (i + 1 < stepNum) {
+      if (phase < currentPhase) {
         item.classList.add('completed');
         item.querySelector('.step-status').textContent = '已完成';
+      } else if (phase === currentPhase) {
+        item.classList.add('active');
+        item.querySelector('.step-status').textContent = '进行中';
       }
     });
-    const currentStep = document.querySelector(`.step-item[data-step="${stepNum}"]`);
-    currentStep.classList.add('active');
-    currentStep.querySelector('.step-status').textContent = '进行中';
     
     // 激活右侧专家
     document.querySelectorAll('.expert-item').forEach(item => {
       item.classList.remove('active', 'working');
     });
     const currentExpert = document.querySelector(`.expert-item[data-expert="${step.expert}"]`);
-    currentExpert.classList.add('active', 'working');
+    if (currentExpert) currentExpert.classList.add('active', 'working');
     
     // 创建输出卡片
     const card = document.createElement('div');
@@ -2676,7 +3157,7 @@ ${prevResults[5] || ''}
     const contentArea = document.getElementById('contentArea');
     contentArea.scrollTop = contentArea.scrollHeight;
     
-    // 所有步骤标记为完成
+    // 所有阶段标记为完成
     document.querySelectorAll('.step-item').forEach(item => {
       item.classList.remove('active');
       item.classList.add('completed');
@@ -2687,6 +3168,26 @@ ${prevResults[5] || ''}
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  // ========== 导出计数器 ==========
+  let exportedCount = parseInt(localStorage.getItem('dramaExportCount') || '0');
+  document.getElementById('scriptCount').textContent = exportedCount;
+  document.getElementById('creatorCount').textContent = exportedCount;
+  
+  function incrementExportCount() {
+    exportedCount++;
+    localStorage.setItem('dramaExportCount', exportedCount.toString());
+    document.getElementById('scriptCount').textContent = exportedCount;
+    document.getElementById('creatorCount').textContent = exportedCount;
+  }
+  
+  // Listen for export button clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.textContent && e.target.textContent.includes('导出完整剧本')) {
+      incrementExportCount();
+    }
+  });
+
 </script>
 </body>
 </html>
