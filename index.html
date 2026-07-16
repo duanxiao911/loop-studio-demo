@@ -27,52 +27,101 @@
   }
 
 
-  /* 浅色模式 */
+  /* 浅色模式 - 暖调柔和 */
   [data-theme="light"] {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #ffffff;
-    --bg-tertiary: #f1f5f9;
-    --border-color: rgba(139, 92, 246, 0.15);
-    --border-active: rgba(139, 92, 246, 0.5);
-    --text-primary: #1e293b;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
-    --glow-purple: rgba(139, 92, 246, 0.15);
-    --glow-blue: rgba(59, 130, 246, 0.1);
+    --bg-primary: #f5f0eb;
+    --bg-secondary: #faf7f4;
+    --bg-tertiary: #ede8e3;
+    --border-color: rgba(160, 140, 120, 0.15);
+    --border-active: rgba(160, 140, 120, 0.4);
+    --text-primary: #2c2418;
+    --text-secondary: #5a4e3f;
+    --text-muted: #9a8e7f;
+    --glow-purple: rgba(160, 120, 80, 0.12);
+    --glow-blue: rgba(100, 140, 180, 0.08);
   }
   [data-theme="light"] body {
     background: var(--bg-primary);
   }
+  /* 顶栏 */
+  [data-theme="light"] .top-bar {
+    background: rgba(250, 247, 244, 0.9);
+    border-bottom-color: var(--border-color);
+  }
+  /* 左面板 */
+  [data-theme="light"] .left-panel {
+    background: rgba(250, 247, 244, 0.7);
+  }
+  /* 右面板 */
+  [data-theme="light"] .right-panel {
+    background: rgba(250, 247, 244, 0.7);
+  }
+  /* 输入区 */
+  [data-theme="light"] .input-section {
+    background: rgba(250, 247, 244, 0.6);
+    border-top-color: var(--border-color);
+  }
+  [data-theme="light"] .input-wrapper input,
+  [data-theme="light"] .input-wrapper textarea {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  /* 底栏 */
+  [data-theme="light"] .footer-bar {
+    background: rgba(250, 247, 244, 0.8);
+    border-top-color: var(--border-color);
+    color: var(--text-secondary);
+  }
+  /* 卡片类 */
   [data-theme="light"] .card-surface,
   [data-theme="light"] .output-card,
   [data-theme="light"] .settings-content,
   [data-theme="light"] .expert-item,
   [data-theme="light"] .welcome-card,
   [data-theme="light"] .step-item {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.7);
     border-color: var(--border-color);
   }
   [data-theme="light"] .settings-modal {
-    background: rgba(255,255,255,0.4);
+    background: rgba(250, 247, 244, 0.6);
   }
-  [data-theme="light"] .left-panel,
-  [data-theme="light"] .right-panel {
-    background: rgba(255, 255, 255, 0.6);
-  }
+  /* 内容区 */
   [data-theme="light"] .content-area {
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
   }
+  /* 标签 */
   [data-theme="light"] .idea-chip {
-    background: rgba(139, 92, 246, 0.08);
-    border-color: rgba(139, 92, 246, 0.2);
-    color: var(--accent-purple);
+    background: rgba(160, 120, 80, 0.08);
+    border-color: rgba(160, 120, 80, 0.2);
+    color: #7a5c3a;
   }
+  /* 知识库/状态卡片 */
   [data-theme="light"] .knowledge-card,
   [data-theme="light"] .status-card {
-    background: rgba(248, 250, 252, 0.8);
+    background: rgba(255, 255, 255, 0.6);
+    border-color: var(--border-color);
   }
+  /* 按钮 */
   [data-theme="light"] .generate-btn {
-    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 4px 16px rgba(160, 120, 80, 0.15);
+  }
+  /* 专家模块分组标题 */
+  [data-theme="light"] .expert-group-title {
+    color: var(--text-secondary);
+  }
+  /* 步骤进度条 */
+  [data-theme="light"] .step-item.active {
+    background: rgba(160, 120, 80, 0.1);
+  }
+  /* 输出卡片编辑按钮 */
+  [data-theme="light"] .output-edit-btn {
+    background: rgba(160, 120, 80, 0.1);
+    color: #7a5c3a;
+  }
+  /* 输出头部 */
+  [data-theme="light"] .output-header {
+    border-bottom-color: var(--border-color);
   }
 
   /* 主题切换按钮 */
