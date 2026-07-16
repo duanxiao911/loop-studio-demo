@@ -922,6 +922,61 @@
     margin-bottom: 6px;
   }
 
+  .output-edit-btn {
+    margin-left: auto;
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .output-edit-btn:hover {
+    background: rgba(139,92,246,0.15);
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
+  }
+  .output-body[contenteditable="true"] {
+    outline: 2px solid var(--accent-purple);
+    outline-offset: 4px;
+    border-radius: 8px;
+    padding: 12px;
+    background: rgba(139,92,246,0.05);
+    min-height: 120px;
+  }
+  .output-edit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
+  }
+  .output-edit-actions button {
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .output-edit-actions .save-btn {
+    background: var(--accent-purple);
+    color: #fff;
+  }
+  .output-edit-actions .save-btn:hover {
+    background: #7c3aed;
+  }
+  .output-edit-actions .cancel-btn {
+    background: rgba(255,255,255,0.08);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+  .output-edit-actions .cancel-btn:hover {
+    background: rgba(255,255,255,0.12);
+  }
+
   .typing-effect {
     overflow: hidden;
   }
@@ -3046,8 +3101,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
               <div class="output-title">${step.title}</div>
               <div class="output-meta">${step.meta}</div>
             </div>
+            <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
           </div>
-          <div class="output-body">
+          <div class="output-body" id="output-body-${stepNum}">
             ${generatedResults[stepNum]}
           </div>
         </div>
@@ -3467,6 +3523,67 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     URL.revokeObjectURL(url);
 
     showToast('剧本已导出为 TXT 文件');
+  }
+
+
+  // ===== 编辑功能 =====
+  function toggleEditOutput(stepNum) {
+    const body = document.getElementById('output-body-' + stepNum);
+    if (!body) return;
+    
+    const btn = body.parentElement.querySelector('.output-edit-btn');
+    
+    if (body.contentEditable === 'true') {
+      // Already editing - show save/cancel
+      return;
+    }
+    
+    // Store original content for cancel
+    body.dataset.originalContent = body.innerHTML;
+    body.contentEditable = 'true';
+    body.focus();
+    
+    // Change button to save/cancel
+    btn.outerHTML = `
+      <div class="output-edit-actions">
+        <button class="cancel-btn" onclick="cancelEditOutput(${stepNum})">取消</button>
+        <button class="save-btn" onclick="saveOutput(${stepNum})">保存修改</button>
+      </div>
+    `;
+  }
+  
+  function saveOutput(stepNum) {
+    const body = document.getElementById('output-body-' + stepNum);
+    if (!body) return;
+    
+    // Update stored result
+    generatedResults[stepNum] = body.innerHTML;
+    body.contentEditable = 'false';
+    delete body.dataset.originalContent;
+    
+    // Restore edit button
+    const actions = body.parentElement.querySelector('.output-edit-actions');
+    if (actions) {
+      actions.outerHTML = `<button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>`;
+    }
+    
+    showToast('修改已保存');
+  }
+  
+  function cancelEditOutput(stepNum) {
+    const body = document.getElementById('output-body-' + stepNum);
+    if (!body) return;
+    
+    // Restore original content
+    body.innerHTML = body.dataset.originalContent || '';
+    body.contentEditable = 'false';
+    delete body.dataset.originalContent;
+    
+    // Restore edit button
+    const actions = body.parentElement.querySelector('.output-edit-actions');
+    if (actions) {
+      actions.outerHTML = `<button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>`;
+    }
   }
 
 </script>
