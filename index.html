@@ -1248,8 +1248,8 @@
 
       <div class="settings-group">
         <label class="settings-label">模型名称</label>
-        <input type="text" class="settings-input" id="apiModel" placeholder="deepseek-chat" value="deepseek-chat">
-        <div class="settings-hint">默认 deepseek-chat，可根据接口支持的模型更换</div>
+        <input type="text" class="settings-input" id="apiModel" placeholder="deepseek-v4-flash" value="deepseek-v4-flash">
+        <div class="settings-hint">默认 deepseek-v4-flash，可根据接口支持的模型更换</div>
       </div>
 
       <div class="settings-group">
@@ -1657,7 +1657,7 @@
   const DEFAULT_SETTINGS = {
     apiBaseUrl: 'https://api.deepseek.com',
     apiKey: '',
-    model: 'deepseek-chat',
+    model: 'deepseek-v4-flash',
     episodeCount: 24
   };
 
@@ -1672,7 +1672,7 @@
   async function testApiConnection() {
     const baseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://api.deepseek.com';
     const key = document.getElementById('apiKey').value.trim();
-    const model = document.getElementById('apiModel').value.trim() || 'deepseek-chat';
+    const model = document.getElementById('apiModel').value.trim() || 'deepseek-v4-flash';
     const resultEl = document.getElementById('apiTestResult');
     const testBtn = document.getElementById('settingsTestBtn');
 
