@@ -3120,8 +3120,27 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   };
 
   let isCreating = false;
+  let pauseRequested = false;
+  let resumeRequested = false;
   let currentStep = 0;
   let stepsCompleted = 0;
+
+  function togglePauseResume() {
+    const btn = document.getElementById('generateBtn');
+    if (!isCreating) return;
+    
+    if (!pauseRequested) {
+      // Pause
+      pauseRequested = true;
+      btn.innerHTML = '<span>已暂停</span><span>⏸</span>';
+    } else {
+      // Resume
+      pauseRequested = false;
+      resumeRequested = true;
+      btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
+    }
+  }
+
 
   function setIdea(text) {
     document.getElementById('ideaInput').value = text;
@@ -3231,11 +3250,14 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     }
     
     isCreating = true;
+    pauseRequested = false;
+    resumeRequested = false;
     stepsCompleted = 0;
     currentStep = 0;
     generatedResults = {};
     const btn = document.getElementById('generateBtn');
-    btn.disabled = true;
+    btn.disabled = false;
+    btn.onclick = togglePauseResume;
     btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
     
     // 隐藏欢迎界面
@@ -3249,7 +3271,12 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     // 逐步执行每一步
     for (let step = 1; step <= 15; step++) {
       // 跳过非生成步骤（实战指挥、商业操盘只输出规划，不影响剧本内容）
-      if (isCreating === false) return; // 支持暂停
+      // Pause check
+      while (pauseRequested && isCreating) {
+        if (resumeRequested) { resumeRequested = false; break; }
+        await new Promise(r => setTimeout(r, 300));
+      }
+      if (!isCreating) return;
       try {
         await runStepReal(step, idea, styleText, settings.episodeCount);
         // Mark expert as completed
@@ -3264,7 +3291,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
         console.error('Step ' + step + ' failed:', err);
         btn.innerHTML = '<span>重新开始</span><span>▶</span>';
         btn.disabled = false;
+        btn.onclick = startCreation;
         isCreating = false;
+        pauseRequested = false;
         return;
       }
     }
@@ -3272,7 +3301,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     // 完成
     btn.innerHTML = '<span>再来一版</span><span>↻</span>';
     btn.disabled = false;
+    btn.onclick = startCreation;
     isCreating = false;
+    pauseRequested = false;
     
     // 添加最终完成卡片
     addFinalCard();
