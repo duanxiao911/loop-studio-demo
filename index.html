@@ -3407,10 +3407,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       item.classList.remove('active');
       if (phase < currentPhase) {
         item.classList.add('completed');
-        item.querySelector('.step-status').textContent = '已完成';
+        const st = item.querySelector('.step-status'); if(st) st.textContent = '已完成';
       } else if (phase === currentPhase) {
         item.classList.add('active');
-        item.querySelector('.step-status').textContent = '进行中';
+        const st2 = item.querySelector('.step-status'); if(st2) st2.textContent = '进行中';
       }
     });
     
@@ -3484,10 +3484,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       item.classList.remove('active');
       if (phase < currentPhase) {
         item.classList.add('completed');
-        item.querySelector('.step-status').textContent = '已完成';
+        const st = item.querySelector('.step-status'); if(st) st.textContent = '已完成';
       } else if (phase === currentPhase) {
         item.classList.add('active');
-        item.querySelector('.step-status').textContent = '进行中';
+        const st2 = item.querySelector('.step-status'); if(st2) st2.textContent = '进行中';
       }
     });
     
@@ -3595,7 +3595,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     document.querySelectorAll('.step-item').forEach(item => {
       item.classList.remove('active');
       item.classList.add('completed');
-      item.querySelector('.step-status').textContent = '已完成';
+      const st = item.querySelector('.step-status'); if(st) st.textContent = '已完成';
     });
   }
 
