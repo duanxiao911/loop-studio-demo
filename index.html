@@ -123,6 +123,37 @@
   [data-theme="light"] .output-header {
     border-bottom-color: var(--border-color);
   }
+  /* 输入框阴影 - 浅色模式减淡 */
+  [data-theme="light"] .input-box:focus-within {
+    box-shadow: 0 0 12px rgba(160, 120, 80, 0.1);
+  }
+  /* 全局紫色发光阴影 - 浅色模式改为柔和暖光 */
+  [data-theme="light"] .logo-icon,
+  [data-theme="light"] .expert-item.active,
+  [data-theme="light"] .step-item.active {
+    box-shadow: 0 0 15px rgba(160, 120, 80, 0.12);
+  }
+  /* 卡片hover阴影 */
+  [data-theme="light"] .output-card:hover,
+  [data-theme="light"] .card-surface:hover {
+    box-shadow: 0 4px 12px rgba(160, 140, 120, 0.1);
+  }
+  /* 设置按钮阴影 */
+  [data-theme="light"] .theme-toggle {
+    box-shadow: 0 2px 6px rgba(160, 140, 120, 0.15);
+  }
+  /* 输入区底部分隔线 */
+  [data-theme="light"] .input-section {
+    border-top-color: var(--border-color);
+  }
+  /* 生成按钮紫色光晕改为暖色 */
+  [data-theme="light"] .generate-btn:hover {
+    box-shadow: 0 8px 20px rgba(160, 120, 80, 0.2);
+  }
+  /* 顶栏底部边框 */
+  [data-theme="light"] .top-bar {
+    box-shadow: 0 1px 4px rgba(160, 140, 120, 0.06);
+  }
 
   /* 主题切换按钮 */
   .theme-toggle {
