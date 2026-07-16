@@ -33,7 +33,7 @@
     --bg-secondary: #faf7f4;
     --bg-tertiary: #ede8e3;
     --border-color: rgba(160, 140, 120, 0.15);
-    --border-active: rgba(160, 140, 120, 0.4);
+    --border-active: rgba(160, 140, 120, 0.2);
     --text-primary: #2c2418;
     --text-secondary: #5a4e3f;
     --text-muted: #9a8e7f;
@@ -125,7 +125,8 @@
   }
   /* 输入框阴影 - 浅色模式减淡 */
   [data-theme="light"] .input-box:focus-within {
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    box-shadow: none !important;
+    border-color: var(--border-active);
   }
   /* 全局紫色发光阴影 - 浅色模式改为柔和暖光 */
   [data-theme="light"] .logo-icon,
