@@ -58,14 +58,16 @@
   }
   /* 输入区 */
   [data-theme="light"] .input-section {
-    background: rgba(250, 247, 244, 0.6);
-    border-top-color: var(--border-color);
+    background: rgba(250, 247, 244, 0.8);
+    border-top: none;
+    box-shadow: none !important;
   }
   [data-theme="light"] .input-wrapper input,
   [data-theme="light"] .input-wrapper textarea {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: var(--border-color);
+    background: #ffffff;
+    border-color: rgba(255,255,255,0);
     color: var(--text-primary);
+    box-shadow: none !important;
   }
   /* 底栏 */
   [data-theme="light"] .footer-bar {
@@ -124,9 +126,13 @@
     border-bottom-color: var(--border-color);
   }
   /* 输入框阴影 - 浅色模式减淡 */
-  [data-theme="light"] .input-box:focus-within {
+  [data-theme="light"] .input-box {
+    border-color: rgba(255,255,255,0.8);
     box-shadow: none !important;
-    border-color: var(--border-active);
+  }
+  [data-theme="light"] .input-box:focus-within {
+    border-color: rgba(160,140,120,0.2);
+    box-shadow: none !important;
   }
   /* 全局紫色发光阴影 - 浅色模式改为柔和暖光 */
   [data-theme="light"] .logo-icon,
