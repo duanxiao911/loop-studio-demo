@@ -3854,7 +3854,8 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       item.addEventListener('click', () => {
       const expertName = item.dataset.expert;
       const stepNum = expertToStep[expertName];
-      if (stepNum && (stepNum <= stepsCompleted || stepNum === currentStep)) {
+      // 允许点击的条件：步骤已完成 OR 是当前步骤 OR 有生成内容
+      if (stepNum && (stepNum <= stepsCompleted || stepNum === currentStep || (generatedResults && generatedResults[stepNum]))) {
         showStepContent(stepNum);
       }
     });
