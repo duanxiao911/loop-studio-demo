@@ -659,15 +659,15 @@
     display: grid;
     grid-template-columns: 220px 1fr 260px;
     grid-template-rows: 64px 1fr auto;
-    min-height: 100vh;
+    height: 100vh;
     gap: 1px;
     background: var(--border-color);
   }
 
   .top-bar { grid-column: 1 / -1; grid-row: 1; }
-  .left-panel { grid-column: 1; grid-row: 2; align-self: stretch; }
-  .main-panel { grid-column: 2; grid-row: 2; align-self: stretch; }
-  .right-panel { grid-column: 3; grid-row: 2; align-self: stretch; }
+  .left-panel { grid-column: 1 / 2; grid-row: 2 / 3; }
+  .main-panel { grid-column: 2 / 3; grid-row: 2 / 3; }
+  .right-panel { grid-column: 3 / 4; grid-row: 2 / 3; }
 
   /* 顶栏 */
   .top-bar {
@@ -872,6 +872,7 @@
     backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
   }
 
   .greeting-section {
@@ -1168,6 +1169,7 @@
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
     padding: 16px 14px;
+    overflow-y: auto;
   }
 
   .right-panel::-webkit-scrollbar { width: 4px; }
