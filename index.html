@@ -658,8 +658,8 @@
     z-index: 1;
     display: grid;
     grid-template-columns: 220px 1fr 260px;
-    grid-template-rows: 64px 1fr;
-    height: 100vh;
+    grid-template-rows: 64px 1fr auto;
+    min-height: 100vh;
     gap: 1px;
     background: var(--border-color);
   }
@@ -867,7 +867,6 @@
     backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
   .greeting-section {
@@ -899,8 +898,6 @@
   /* 创作内容区 */
   .content-area {
     flex: 1;
-    overflow-y: auto;
-    min-height: 200px;
     padding: 0 48px 24px;
   }
 
@@ -913,9 +910,6 @@
     padding: 24px 48px 32px;
     border-top: 1px solid var(--border-color);
     background: rgba(17, 24, 39, 0.4);
-    flex-shrink: 0;
-    max-height: 55vh;
-    overflow-y: auto;
   }
 
   .input-wrapper {
@@ -1169,8 +1163,6 @@
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
     padding: 16px 14px;
-    overflow-y: auto;
-    overflow-x: hidden;
   }
 
   .right-panel::-webkit-scrollbar { width: 4px; }
@@ -2019,10 +2011,9 @@
         </div>
       </div>
     </div>
-  </div>
 
   <!-- 底部状态栏 -->
-  <div class="footer-bar" style="position: fixed; bottom: 0; left: 221px; right: 261px; z-index: 10;">
+  <div class="footer-bar" style="grid-column: 1 / -1;">
     <div class="footer-left">
       <div class="footer-badge">
         <span>🏷️</span>
@@ -2039,6 +2030,7 @@
         <span>《蓝白吟》实战验证</span>
       </div>
     </div>
+  </div>
   </div>
 
 <script>
