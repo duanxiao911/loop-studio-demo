@@ -1441,6 +1441,114 @@
     50% { opacity: 0.5; transform: scale(1.3); }
   }
 
+
+  /* ===== 题材选择器 ===== */
+  .genre-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .genre-toggle-btn:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+  }
+  .genre-panel {
+    display: none;
+    margin-top: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 12px;
+  }
+  .genre-panel.open {
+    display: block;
+  }
+  .genre-category {
+    margin-bottom: 12px;
+  }
+  .genre-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    transition: background 0.2s;
+  }
+  .genre-category-header:hover {
+    background: rgba(139, 92, 246, 0.1);
+  }
+  .genre-category-header .arrow {
+    transition: transform 0.3s;
+    font-size: 10px;
+  }
+  .genre-category.collapsed .arrow {
+    transform: rotate(-90deg);
+  }
+  .genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    transition: all 0.3s;
+  }
+  .genre-category.collapsed .genre-tags {
+    max-height: 0;
+    padding: 0 8px;
+    overflow: hidden;
+  }
+  .genre-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .genre-tag:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.05);
+  }
+  .genre-tag.selected {
+    border-color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--accent-purple);
+  }
+  .genre-tag .count {
+    color: var(--text-muted);
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  [data-theme="light"] .genre-tag {
+    background: #f5f0eb;
+  }
+  [data-theme="light"] .genre-tag:hover,
+  [data-theme="light"] .genre-tag.selected {
+    border-color: #a07850;
+    color: #a07850;
+    background: rgba(160, 120, 80, 0.1);
+  }
+
 </style>
 </head>
 <body>
@@ -1695,7 +1803,17 @@
           </div>
           <div class="input-box">
             <textarea id="ideaInput" placeholder="比如：大理白族少女用扎染技艺拯救家族工坊的非遗故事，24集都市情感短剧..."></textarea>
+          
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <button class="genre-toggle-btn" onclick="toggleGenrePanel()">
+              <span></span>
+              <span>选择题材</span>
+              <span id="genreArrow">▼</span>
+            </button>
+            <span id="selectedGenres" style="font-size:11px;color:var(--text-muted);"></span>
           </div>
+          <div class="genre-panel" id="genrePanel"></div>
+
           <div class="input-footer">
             <div class="suggestion-chips">
               <div class="chip" onclick="setIdea('大理白族少女的扎染非遗传承故事，24集情感短剧')">🔵 非遗题材</div>
@@ -1706,7 +1824,7 @@
               <span id="apiStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
               <span id="apiStatusText">未配置API</span>
             </div>
-            <button class="generate-btn" id="generateBtn" onclick="startCreation()">
+            <button class="generate-btn" id="generateBtn" onclick="applyGenresToIdea();startCreation()">
               <span>开始创作</span>
               <span>▶</span>
             </button>
@@ -3836,6 +3954,129 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     if (actions) {
       actions.outerHTML = `<button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>`;
     }
+  }
+
+
+  // ===== 题材选择器 =====
+  const genreData = {
+    "热门推荐": [
+      ["全部", 17737], ["打脸虐渣", 1356], ["都市", 985], ["大女主", 854],
+      ["Revenge", 791], ["大男主", 760], ["商战", 512], ["Billionaire", 486],
+      ["先婚后爱", 390], ["甜宠", 390], ["Secret-Identity", 381], ["豪门", 349],
+      ["脑洞", 315], ["重生", 307], ["Underdog-Rise", 304]
+    ],
+    "情感关系": [
+      ["Enemies-to-Lovers", 282], ["双向救赎", 268], ["Toxic-Love/Dark-Romance", 255],
+      ["马甲", 246], ["Marriage-of-Convenience", 238], ["强者回归", 232],
+      ["Forbidden-Love", 214], ["追妻火葬场", 107], ["Divorce-Recovery", 95],
+      ["Sports-Romance", 90], ["Forced-Proximity", 88], ["Secret-Baby", 82],
+      ["Vampire", 80], ["神豪", 77], ["仙侠", 74], ["Fake-Relationship", 73],
+      ["Office-Romance", 73], ["High-Society", 71], ["虐恋", 70], ["Urban-Fantasy", 69],
+      ["职场", 66], ["Age-Gap", 64], ["逆袭", 62], ["Mythological/Gods", 62], ["Second-Chance", 59]
+    ],
+    "奇幻科幻": [
+      ["种田", 223], ["异能", 212], ["Werewolf", 209], ["系统", 195],
+      ["穿越", 194], ["科幻", 193], ["奇幻", 191], ["玄幻", 148],
+      ["Mafia", 144], ["Superpower", 124], ["High-Fantasy", 101],
+      ["Reincarnation", 100], ["年代", 95], ["赛博朋克", 8], ["末日", 6]
+    ],
+    "成长逆袭": [
+      ["女性成长", 189], ["现言", 185], ["Transformation/Glow-Up", 166],
+      ["喜剧", 165], ["Corporate-Warfare", 165], ["强强联合", 155],
+      ["古言", 152], ["神医", 123], ["求生", 118], ["古代", 115],
+      ["动作", 104], ["传承觉醒", 103], ["校园", 11], ["家庭伦理", 10],
+      ["无限流", 10], ["反派主角", 10], ["Face-Slapping", 9]
+    ],
+    "悬疑惊悚": [
+      ["悬疑", 172], ["Psychological-Thriller", 53], ["Dark-Romance", 25],
+      ["Dystopian", 25], ["Survival-Adventure", 26], ["Betrayal-Conspiracy", 19],
+      ["Mistaken-Identity", 17], ["白月光", 16], ["Flash-Marriage", 15],
+      ["荒岛", 15], ["Hidden-Identity", 14], ["战神", 13], ["娱乐圈", 12],
+      ["Murder-Mystery", 5], ["前世今生", 4], ["末日求生", 3], ["末世废土", 3]
+    ],
+    "古风历史": [
+      ["古言", 152], ["玄幻", 148], ["古代", 115], ["仙侠", 74],
+      ["High-Fantasy", 101], ["民国", 17], ["宫廷", 6], ["武侠", 6],
+      ["福宝", 6], ["非遗传承", 5], ["灵魂互换", 5], ["穿书", 5],
+      ["修仙", 1], ["种田基建", 2]
+    ],
+    "特色题材": [
+      ["Vampire", 80], ["神豪", 77], ["仙侠", 74], ["Superpower", 124],
+      ["Mafia", 144], ["High-Fantasy", 101], ["Reincarnation", 100],
+      ["Action", 104], ["传承觉醒", 103], ["求生", 118], ["追妻火葬场", 107],
+      ["战神", 13], ["Underground-Street-Empire", 13], ["校园", 11],
+      ["无限流", 10], ["Witchcraft-Coven", 10], ["Virtual-Reality", 10]
+    ]
+  };
+
+  let selectedGenreTags = [];
+
+  function toggleGenrePanel() {
+    const panel = document.getElementById('genrePanel');
+    const arrow = document.getElementById('genreArrow');
+    panel.classList.toggle('open');
+    arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+    if (panel.classList.contains('open') && !panel.children.length) {
+      renderGenrePanel();
+    }
+  }
+
+  function renderGenrePanel() {
+    const panel = document.getElementById('genrePanel');
+    panel.innerHTML = '';
+    for (const [category, genres] of Object.entries(genreData)) {
+      const catDiv = document.createElement('div');
+      catDiv.className = 'genre-category';
+      catDiv.innerHTML = `
+        <div class="genre-category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span>${category} <span style="font-weight:400;font-size:11px;color:var(--text-muted)">(${genres.length})</span></span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="genre-tags">
+          ${genres.map(([name, count]) => `
+            <span class="genre-tag${selectedGenreTags.includes(name) ? ' selected' : ''}" 
+                  onclick="toggleGenreTag(this, '${name.replace(/'/g, "\'")}')">
+              ${name}<span class="count">(${count})</span>
+            </span>
+          `).join('')}
+        </div>
+      `;
+      panel.appendChild(catDiv);
+    }
+  }
+
+  function toggleGenreTag(el, name) {
+    if (selectedGenreTags.includes(name)) {
+      selectedGenreTags = selectedGenreTags.filter(t => t !== name);
+      el.classList.remove('selected');
+    } else {
+      selectedGenreTags.push(name);
+      el.classList.add('selected');
+    }
+    updateSelectedGenresDisplay();
+  }
+
+  function updateSelectedGenresDisplay() {
+    const display = document.getElementById('selectedGenres');
+    if (selectedGenreTags.length === 0) {
+      display.textContent = '';
+    } else {
+      display.textContent = `已选 ${selectedGenreTags.length} 个题材`;
+    }
+  }
+
+  function applyGenresToIdea() {
+    if (selectedGenreTags.length === 0) return;
+    const ideaInput = document.getElementById('ideaInput');
+    const genreText = selectedGenreTags.join('、');
+    if (ideaInput.value.trim()) {
+      ideaInput.value += `，题材标签：${genreText}`;
+    } else {
+      ideaInput.value = `题材：${genreText}，`;
+    }
+    selectedGenreTags = [];
+    document.querySelectorAll('.genre-tag.selected').forEach(el => el.classList.remove('selected'));
+    updateSelectedGenresDisplay();
   }
 
 </script>
