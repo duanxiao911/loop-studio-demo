@@ -3809,13 +3809,18 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     document.getElementById('ideaInput').value = text;
   }
 
+  // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
+  const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
+
   // 点击左侧步骤点击切换
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.step-item').forEach(item => {
       item.addEventListener('click', () => {
-      const step = parseInt(item.dataset.step);
-      if (step <= stepsCompleted || step === currentStep) {
-        showStepContent(step);
+      const panelStep = parseInt(item.dataset.step);
+      // 用映射关系找到实际步骤
+      const realStep = panelToStep[panelStep] || panelStep;
+      if (realStep <= stepsCompleted || realStep === currentStep) {
+        showStepContent(realStep);
       }
     });
     });
@@ -3848,7 +3853,21 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     const hasRealContent = generatedResults && generatedResults[stepNum];
     
     if (hasRealContent) {
-      // 显示真实生成的内容
+      // 显示真实生成的内容（用 renderMarkdown 渲染，避免 Markdown 乱码）
+      let renderedContent = renderMarkdown(generatedResults[stepNum]);
+      // 后处理：剧本元素 CSS 类名（复用和生成时相同的规则）
+      renderedContent = renderedContent.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
+      renderedContent = renderedContent.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
+      renderedContent = renderedContent.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
+      renderedContent = renderedContent.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
+      // 字数统计（步骤7/8 专用）
+      if (stepNum === 7 || stepNum === 8) {
+        const charCount = generatedResults[stepNum].replace(/\s/g, '').length;
+        const episodeMatches = generatedResults[stepNum].match(/第\s*\d+\s*集/g) || [];
+        const epCount = episodeMatches.length;
+        const avg = epCount > 0 ? Math.round(charCount / epCount) : 0;
+        renderedContent += `<div class="script-stats">📊 <strong>剧本统计</strong>：共 <strong>${charCount.toLocaleString()}</strong> 字 · <strong>${epCount}</strong> 集 · 平均每集 <strong>${avg.toLocaleString()}</strong> 字</div>`;
+      }
       outputContainer.innerHTML = `
         <div class="output-card">
           <div class="output-header">
@@ -3860,7 +3879,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
             <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
           </div>
           <div class="output-body" id="output-body-${stepNum}">
-            ${generatedResults[stepNum]}
+            ${renderedContent}
           </div>
         </div>
       `;
