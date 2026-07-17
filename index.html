@@ -1713,7 +1713,136 @@
   color: #6ee7b7;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script>
+// 内嵌轻量 Markdown 渲染器（无外部 CDN 依赖，保证稳定运行）
+function renderMarkdown(md) {
+  if (!md) return '';
+  // 保护代码块
+  const codeBlocks = [];
+  md = md.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+    codeBlocks.push('<pre class="md-code-block"><code>' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;').trim() + '</code></pre>');
+    return '\x00CB' + (codeBlocks.length-1) + '\x00';
+  });
+  // 保护行内代码
+  const inlineCodes = [];
+  md = md.replace(/`([^`\n]+)`/g, function(m, code) {
+    inlineCodes.push('<code class="md-inline-code">' + code.replace(/</g,'&lt;') + '</code>');
+    return '\x00IC' + (inlineCodes.length-1) + '\x00';
+  });
+
+  var lines = md.split('\n');
+  var html = '';
+  var inList = false;
+  var inTable = false;
+  var tableSep = false;
+  var inBlockquote = false;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    // 代码块占位符
+    var cbMatch = line.match(/\x00CB(\d+)\x00/);
+    if (cbMatch) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (inTable) { html += '</tbody></table>'; inTable = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      html += codeBlocks[parseInt(cbMatch[1])];
+      continue;
+    }
+
+    // 空行 → 段落分隔
+    if (!line.trim()) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (inTable) { html += '</tbody></table>'; inTable = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      tableSep = false;
+      continue;
+    }
+
+    // 标题
+    var hMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    if (hMatch) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      var level = hMatch[1].length;
+      html += '<h' + level + ' class="md-h' + level + '">' + inlineFormat(hMatch[2]) + '</h' + level + '>';
+      continue;
+    }
+
+    // 表格分隔行
+    if (/^\|[\s\-:|]+\|$/.test(line.trim())) { tableSep = true; continue; }
+
+    // 表格行
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (!inTable) { html += '<table class="md-table"><tbody>'; inTable = true; tableSep = false; }
+      if (tableSep) continue; // skip separator
+      var cells = line.trim().slice(1, -1).split('|').map(function(c) { return c.trim(); });
+      var row = cells.map(function(c) { return '<td>' + inlineFormat(c) + '</td>'; }).join('');
+      html += '<tr>' + row + '</tr>';
+      continue;
+    } else if (inTable) {
+      html += '</tbody></table>'; inTable = false; tableSep = false;
+    }
+
+    // 引用块
+    if (line.match(/^>\s?/)) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (!inBlockquote) { html += '<blockquote class="md-quote">'; inBlockquote = true; }
+      html += '<p>' + inlineFormat(line.replace(/^>\s?/, '')) + '</p>';
+      continue;
+    } else if (inBlockquote) {
+      html += '</blockquote>'; inBlockquote = false;
+    }
+
+    // 无序列表
+    if (line.match(/^[\s]*[-*+]\s/)) {
+      if (!inList) { html += '<ul class="md-list">'; inList = true; }
+      html += '<li>' + inlineFormat(line.replace(/^[\s]*[-*+]\s/, '')) + '</li>';
+      continue;
+    }
+
+    // 有序列表
+    var olMatch = line.match(/^[\s]*(\d+)\.\s+(.+)$/);
+    if (olMatch) {
+      if (!inList) { html += '<ul class="md-list md-ol">'; inList = true; }
+      html += '<li>' + inlineFormat(olMatch[2]) + '</li>';
+      continue;
+    }
+
+    // 分隔线
+    if (line.match(/^[-*_]{3,}$/)) {
+      html += '<hr class="md-hr">';
+      continue;
+    }
+
+    // 普通段落
+    if (inList) { html += '</ul>'; inList = false; }
+    html += '<p>' + inlineFormat(line) + '</p>';
+  }
+
+  if (inList) html += '</ul>';
+  if (inTable) html += '</tbody></table>';
+  if (inBlockquote) html += '</blockquote>';
+
+  // 恢复内联代码
+  html = html.replace(/\x00IC(\d+)\x00/g, function(m, idx) { return inlineCodes[parseInt(idx)]; });
+
+  return html;
+
+  function inlineFormat(text) {
+    // 行内代码占位符保护
+    text = text.replace(/\x00IC(\d+)\x00/g, function(m, idx) { return inlineCodes[parseInt(idx)]; });
+    // 粗体
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // 斜体
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // 行内链接
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    return text;
+  }
+}
+</script>
 </head>
 <body>
   <!-- 设置按钮 -->
@@ -3909,31 +4038,26 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     while ((chunk = await stream.readNext()) !== null) {
       if (chunk) {
         rawText += chunk;
-        // 实时将 Markdown 渲染为 HTML
-        try {
-          let html = marked.parse(rawText);
-          // 后处理：给剧本元素加 CSS 类名
-          // 动作行 △ 开头的段落
-          html = html.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
-          // 场景标题（X-Y 地点名 日/内 格式的 bold 段落）
-          html = html.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
-          // 人物行
-          html = html.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
-          // 角色os 内心独白
-          html = html.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
-          // 字数统计区（步骤7专用）
-          if (stepNum === 7) {
-            const charCount = rawText.replace(/\s/g, '').length;
-            const episodeMatches = rawText.match(/第\s*\d+\s*集/g) || [];
-            const epCount = episodeMatches.length;
-            const avg = epCount > 0 ? Math.round(charCount / epCount) : 0;
-            html += `<div class="script-stats">📊 <strong>剧本统计</strong>：共 <strong>${charCount.toLocaleString()}</strong> 字 · <strong>${epCount}</strong> 集 · 平均每集 <strong>${avg.toLocaleString()}</strong> 字</div>`;
-          }
-          targetEl.innerHTML = html;
-        } catch (e) {
-          // marked 未加载时降级为纯文本
-          targetEl.innerHTML = rawText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+        // 实时将 Markdown 渲染为 HTML（使用内嵌 renderMarkdown，无需外部 CDN）
+        let html = renderMarkdown(rawText);
+        // 后处理：给剧本元素加 CSS 类名
+        // 动作行 △ 开头的段落
+        html = html.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
+        // 场景标题（X-Y 地点名 日/内 格式的 bold 段落）
+        html = html.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
+        // 人物行
+        html = html.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
+        // 角色os 内心独白
+        html = html.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
+        // 字数统计区（步骤7专用）
+        if (stepNum === 7) {
+          const charCount = rawText.replace(/\s/g, '').length;
+          const episodeMatches = rawText.match(/第\s*\d+\s*集/g) || [];
+          const epCount = episodeMatches.length;
+          const avg = epCount > 0 ? Math.round(charCount / epCount) : 0;
+          html += `<div class="script-stats">📊 <strong>剧本统计</strong>：共 <strong>${charCount.toLocaleString()}</strong> 字 · <strong>${epCount}</strong> 集 · 平均每集 <strong>${avg.toLocaleString()}</strong> 字</div>`;
         }
+        targetEl.innerHTML = html;
         contentArea.scrollTop = contentArea.scrollHeight;
         // 避免阻塞UI
         await new Promise(r => setTimeout(r, 10));
