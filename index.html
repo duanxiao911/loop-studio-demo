@@ -664,6 +664,11 @@
     background: var(--border-color);
   }
 
+  .top-bar { grid-column: 1 / -1; grid-row: 1; }
+  .left-panel { grid-column: 1; grid-row: 2; align-self: stretch; }
+  .main-panel { grid-column: 2; grid-row: 2; align-self: stretch; }
+  .right-panel { grid-column: 3; grid-row: 2; align-self: stretch; }
+
   /* 顶栏 */
   .top-bar {
     grid-column: 1 / -1;
@@ -1378,6 +1383,8 @@
 
   /* 底部小条 */
   .footer-bar {
+    grid-column: 1 / -1;
+    grid-row: 3;
     padding: 8px 16px;
     background: rgba(17, 24, 39, 0.6);
     border-top: 1px solid var(--border-color);
@@ -2013,7 +2020,7 @@
     </div>
 
   <!-- 底部状态栏 -->
-  <div class="footer-bar" style="grid-column: 1 / -1;">
+  <div class="footer-bar">
     <div class="footer-left">
       <div class="footer-badge">
         <span>🏷️</span>
