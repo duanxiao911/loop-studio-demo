@@ -1555,6 +1555,33 @@
   }
 
 </style>
+<style>
+/* Markdown 渲染样式 */
+.output-body h1, .output-body h2, .output-body h3, .output-body h4, .output-body h5, .output-body h6 {
+  margin: 12px 0 6px 0;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary, #e0e0e0);
+}
+.output-body h1 { font-size: 1.3em; border-bottom: 1px solid var(--border-color, #333); padding-bottom: 4px; }
+.output-body h2 { font-size: 1.15em; }
+.output-body h3 { font-size: 1.05em; color: var(--accent-color, #7c9df5); }
+.output-body h4 { font-size: 1em; color: var(--accent-color, #7c9df5); }
+.output-body p { margin: 6px 0; line-height: 1.6; }
+.output-body ul, .output-body ol { margin: 6px 0; padding-left: 20px; }
+.output-body li { margin: 3px 0; line-height: 1.5; }
+.output-body strong { color: var(--accent-color, #7c9df5); font-weight: 600; }
+.output-body em { font-style: italic; }
+.output-body table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 0.9em; }
+.output-body th, .output-body td { border: 1px solid var(--border-color, #333); padding: 5px 8px; text-align: left; }
+.output-body th { background: var(--bg-tertiary, #2a2a2a); font-weight: 600; }
+.output-body code { background: var(--bg-tertiary, #2a2a2a); padding: 1px 4px; border-radius: 3px; font-size: 0.9em; }
+.output-body pre { background: var(--bg-tertiary, #2a2a2a); padding: 10px; border-radius: 6px; overflow-x: auto; margin: 8px 0; }
+.output-body pre code { background: none; padding: 0; }
+.output-body blockquote { border-left: 3px solid var(--accent-color, #7c9df5); margin: 8px 0; padding: 4px 12px; color: var(--text-secondary, #aaa); }
+.output-body hr { border: none; border-top: 1px solid var(--border-color, #333); margin: 12px 0; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 </head>
 <body>
   <!-- 设置按钮 -->
@@ -3586,16 +3613,24 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     
     const targetEl = document.getElementById(`stream-content-${stepNum}`);
     let chunk;
+    let rawText = '';
     while ((chunk = await stream.readNext()) !== null) {
       if (chunk) {
-        targetEl.innerHTML += chunk;
+        rawText += chunk;
+        // 实时将 Markdown 渲染为 HTML
+        try {
+          targetEl.innerHTML = marked.parse(rawText);
+        } catch (e) {
+          // marked 未加载时降级为纯文本
+          targetEl.innerHTML = rawText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+        }
         contentArea.scrollTop = contentArea.scrollHeight;
         // 避免阻塞UI
         await new Promise(r => setTimeout(r, 10));
       }
     }
     
-    // 保存结果供后续步骤使用
+    // 保存结果供后续步骤使用（保存原始 Markdown 文本）
     generatedResults[stepNum] = stream.fullText;
     
     // 专家完成状态
