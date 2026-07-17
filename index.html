@@ -900,6 +900,7 @@
   .content-area {
     flex: 1;
     overflow-y: auto;
+    min-height: 200px;
     padding: 0 48px 24px;
   }
 
@@ -912,6 +913,9 @@
     padding: 24px 48px 32px;
     border-top: 1px solid var(--border-color);
     background: rgba(17, 24, 39, 0.4);
+    flex-shrink: 0;
+    max-height: 55vh;
+    overflow-y: auto;
   }
 
   .input-wrapper {
