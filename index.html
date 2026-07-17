@@ -4021,6 +4021,8 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     }
   }
 
+  const genreTranslations = {'Revenge': '复仇', 'Billionaire': '亿万富翁', 'Secret-Identity': '隐藏身份', 'Underdog-Rise': '逆袭崛起', 'Enemies-to-Lovers': '仇人变恋人', 'Toxic-Love/Dark-Romance': '暗黑恋爱', 'Marriage-of-Convenience': '契约婚姻', 'Forbidden-Love': '禁忌之恋', 'Divorce-Recovery': '离婚后挽回', 'Sports-Romance': '体育恋爱', 'Forced-Proximity': '被迫同居', 'Secret-Baby': '秘密宝宝', 'Vampire': '吸血鬼', 'Fake-Relationship': '假恋爱', 'Office-Romance': '办公室恋情', 'High-Society': '上流社会', 'Urban-Fantasy': '都市奇幻', 'Age-Gap': '年龄差', 'Mythological/Gods': '神话/神明', 'Second-Chance': '二次机会', 'Werewolf': '狼人', 'Mafia': '黑帮', 'Superpower': '超能力', 'High-Fantasy': '高奇幻', 'Reincarnation': '转世重生', 'Corporate-Warfare': '商战', 'Transformation/Glow-Up': '蜕变', 'Psychological-Thriller': '心理惊悚', 'Dark-Romance': '暗黑恋爱', 'Dystopian': '反乌托邦', 'Survival-Adventure': '生存冒险', 'Betrayal-Conspiracy': '背叛阴谋', 'Mistaken-Identity': '身份误认', 'Flash-Marriage': '闪婚', 'Hidden-Identity': '隐藏身份', 'Underground-Street-Empire': '地下帝国', 'Murder-Mystery': '谋杀悬疑', 'Concealed-Identity': '隐瞒身份', 'Revenge-Thriller': '复仇惊悚', 'Medical-Hospital': '医疗医院', 'Stolen-Identity': '身份盗用', 'Werewolf-Werewolves': '狼人', 'Historical-Period': '历史时期', 'Female-Empowerment': '女性赋权', 'Contract-Marriage': '契约婚姻', 'Mythological': '神话', 'Ancient-Romance': '古代恋爱', 'Fantasy': '奇幻', 'Urban-Romance': '都市恋爱', 'Rural-Ranch-Country': '乡村牧场', 'Billionaire-CEO': '亿万富翁CEO', 'Toxic-In-Laws': '恶毒公婆', 'Harem': '后宫', 'Modern': '现代', 'Fantasy-Paranormal': '奇幻超自然', 'Action': '动作', 'Music-Entertainment': '音乐娱乐', 'Sudden-Wealth': '突然暴富', 'Witchcraft-Coven': '女巫集会', 'Virtual-Reality': '虚拟现实', 'Modern-Romance': '现代恋爱', 'AI-Robot-Romance': 'AI机器人恋爱', 'Blended-Family': '重组家庭', 'Face-Slapping': '打脸', 'Amnesia-Lost-Memory': '失忆', 'Small-Town': '小镇', 'Suspense': '悬疑', 'Domestic-Drama': '家庭剧', 'Reverse-Harem': '逆后宫', 'Cyberpunk': '赛博朋克', 'Sci-Fi': '科幻'};
+
   function renderGenrePanel() {
     const panel = document.getElementById('genrePanel');
     panel.innerHTML = '';
@@ -4033,12 +4035,16 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
           <span class="arrow">▼</span>
         </div>
         <div class="genre-tags">
-          ${genres.map(([name, count]) => `
-            <span class="genre-tag${selectedGenreTags.includes(name) ? ' selected' : ''}" 
-                  onclick="toggleGenreTag(this, '${name.replace(/'/g, "\'")}')">
-              ${name}<span class="count">(${count})</span>
-            </span>
-          `).join('')}
+          ${genres.map(([name, count]) => {
+            const isEnglish = /[A-Z]/.test(name) && /[a-z]/.test(name);
+            const chineseNote = isEnglish && genreTranslations[name] ? ` (${genreTranslations[name]})` : '';
+            return `
+              <span class="genre-tag${selectedGenreTags.includes(name) ? ' selected' : ''}" 
+                    onclick="toggleGenreTag(this, '${name.replace(/'/g, "\'")}')">
+                ${name}${chineseNote}<span class="count">(${count})</span>
+              </span>
+            `;
+          }).join('')}
         </div>
       `;
       panel.appendChild(catDiv);
