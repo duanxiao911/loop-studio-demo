@@ -3528,6 +3528,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   async function runStepReal(stepNum, idea, styleText, episodes) {
     const prompt = stepPrompts[stepNum];
     const step = stepData[stepNum]; // 用 stepData 里的图标标题等UI信息
+    if (!step) {
+      // 步骤无UI数据，跳过渲染但仍执行API生成
+      console.log("Step " + stepNum + ": no stepData, skipping UI");
+    }
     const contentArea = document.getElementById('contentArea');
     const outputContainer = document.getElementById('outputContainer');
     
@@ -3559,10 +3563,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     card.className = 'output-card';
     card.innerHTML = `
       <div class="output-header">
-        <div class="output-icon">${step.icon}</div>
+        <div class="output-icon">${step ? step.icon : "🔧"}</div>
         <div>
-          <div class="output-title">${step.title}</div>
-          <div class="output-meta">${step.meta}</div>
+          <div class="output-title">${step ? step.title : "步骤 " + stepNum}</div>
+          <div class="output-meta">${step ? step.meta : ""}</div>
         </div>
       </div>
       <div class="output-body">
@@ -3605,6 +3609,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   // 演示模式（原有逻辑）
   async function runStep(stepNum) {
     const step = stepData[stepNum];
+    if (!step) {
+      console.log("Demo step " + stepNum + ": no stepData, skipping");
+      return Promise.resolve();
+    }
     const contentArea = document.getElementById('contentArea');
     const outputContainer = document.getElementById('outputContainer');
     
@@ -3634,10 +3642,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     card.className = 'output-card';
     card.innerHTML = `
       <div class="output-header">
-        <div class="output-icon">${step.icon}</div>
+        <div class="output-icon">${step ? step.icon : "🔧"}</div>
         <div>
-          <div class="output-title">${step.title}</div>
-          <div class="output-meta">${step.meta}</div>
+          <div class="output-title">${step ? step.title : "步骤 " + stepNum}</div>
+          <div class="output-meta">${step ? step.meta : ""}</div>
         </div>
       </div>
       <div class="output-body typing-effect">
