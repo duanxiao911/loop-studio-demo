@@ -1198,6 +1198,11 @@
     margin-bottom: 6px;
     transition: all 0.3s ease;
     border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .expert-item:hover {
+    background: rgba(124, 157, 245, 0.06);
+    border-color: rgba(124, 157, 245, 0.15);
   }
 
   .expert-item.active {
@@ -3812,6 +3817,25 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
   const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
 
+  // 专家名 → 步骤号映射
+  const expertToStep = {
+    'soul_catcher': 1,
+    'compliance_guard': 2,
+    'project_configurator': 3,
+    'character_forger': 4,
+    'dialogue_master': 5,
+    'structure_architect': 6,
+    'episode_writer': 7,
+    'visual_director': 8,
+    'format_craftsman': 9,
+    'quality_auditor': 10,
+    'scene_craftsman': 11,
+    'revision_editor': 12,
+    'mission_commander': 13,
+    'business_strategist': 14,
+    'quality_director': 15
+  };
+
   // 点击左侧步骤点击切换
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.step-item').forEach(item => {
@@ -3824,18 +3848,38 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       }
     });
     });
+
+    // 点击右侧专家步骤查看对应输出
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.addEventListener('click', () => {
+      const expertName = item.dataset.expert;
+      const stepNum = expertToStep[expertName];
+      if (stepNum && (stepNum <= stepsCompleted || stepNum === currentStep)) {
+        showStepContent(stepNum);
+      }
+    });
+    });
   });
 
   function showStepContent(stepNum) {
-    const step = stepData[stepNum];
+    // 获取步骤信息：优先用 stepData，否则从 stepPrompts 构建
+    let step = stepData[stepNum];
+    const prompt = stepPrompts[stepNum];
+    if (!step && prompt) {
+      // 为步骤 9-15 构建动态信息
+      step = {
+        icon: '🔧',
+        title: `步骤 ${stepNum} · ${prompt.name}`,
+        meta: prompt.expert,
+        expert: prompt.expert,
+        content: ''
+      };
+    }
     if (!step) return;
     
     // 更新左侧激活态
     document.querySelectorAll('.step-item').forEach((item, i) => {
       item.classList.remove('active');
-      if (i + 1 === stepNum - 1) {
-        item.classList.add('active');
-      }
     });
     const phaseForStep = stepToPhase[stepNum] || stepNum;
     const phaseEl = document.querySelector(`.step-item[data-step="${phaseForStep}"]`);
