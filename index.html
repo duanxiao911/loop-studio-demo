@@ -1934,6 +1934,59 @@
           </div>
           <div class="genre-panel" id="genrePanel"></div>
 
+          <!-- 角色性格标签 -->
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <button class="genre-toggle-btn" onclick="togglePersonalityPanel()">
+              <span>🧬</span>
+              <span>角色性格标签</span>
+              <span id="personalityArrow">▼</span>
+            </button>
+            <span id="selectedPersonalityTags" style="font-size:11px;color:var(--text-muted);"></span>
+          </div>
+          <div class="genre-panel" id="personalityPanel" style="display:none;padding:12px 14px;">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">为主角设定性格标签，AI 将自动转化为专业人物性格描写</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">星座</label>
+                <select id="charZodiac" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-input,#1a1a2e);color:var(--text-primary);font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="白羊座">白羊座</option><option value="金牛座">金牛座</option>
+                  <option value="双子座">双子座</option><option value="巨蟹座">巨蟹座</option>
+                  <option value="狮子座">狮子座</option><option value="处女座">处女座</option>
+                  <option value="天秤座">天秤座</option><option value="天蝎座">天蝎座</option>
+                  <option value="射手座">射手座</option><option value="摩羯座">摩羯座</option>
+                  <option value="水瓶座">水瓶座</option><option value="双鱼座">双鱼座</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">生肖</label>
+                <select id="charZodiacAnimal" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-input,#1a1a2e);color:var(--text-primary);font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="鼠">鼠</option><option value="牛">牛</option>
+                  <option value="虎">虎</option><option value="兔">兔</option>
+                  <option value="龙">龙</option><option value="蛇">蛇</option>
+                  <option value="马">马</option><option value="羊">羊</option>
+                  <option value="猴">猴</option><option value="鸡">鸡</option>
+                  <option value="狗">狗</option><option value="猪">猪</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">MBTI</label>
+                <select id="charMBTI" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-input,#1a1a2e);color:var(--text-primary);font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="INTJ">INTJ 建筑师</option><option value="INTP">INTP 逻辑学家</option>
+                  <option value="ENTJ">ENTJ 指挥官</option><option value="ENTP">ENTP 辩论家</option>
+                  <option value="INFJ">INFJ 提倡者</option><option value="INFP">INFP 调停者</option>
+                  <option value="ENFJ">ENFJ 主人公</option><option value="ENFP">ENFP 竞选者</option>
+                  <option value="ISTJ">ISTJ 物流师</option><option value="ISFJ">ISFJ 守卫者</option>
+                  <option value="ESTJ">ESTJ 总经理</option><option value="ESFJ">ESFJ 执政官</option>
+                  <option value="ISTP">ISTP 鉴赏家</option><option value="ISFP">ISFP 探险家</option>
+                  <option value="ESTP">ESTP 企业家</option><option value="ESFP">ESFP 表演者</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="input-footer">
             <div class="suggestion-chips">
               <div class="chip" onclick="setIdea('大理白族少女的扎染非遗传承故事，24集情感短剧')">🔵 非遗题材</div>
@@ -2458,19 +2511,41 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
 铁律：
 - 人物不等于设定标签，人物=压力下的选择
 - 弧光必须通过选择完成，不能靠台词说"我变了"`,
-      userPrompt: (idea, style, episodes, prevResults) => `请基于以下项目设定，完成角色铸造：
+      userPrompt: (idea, style, episodes, prevResults) => {
+        // 获取性格标签
+        const zodiac = document.getElementById('charZodiac').value;
+        const animal = document.getElementById('charZodiacAnimal').value;
+        const mbti = document.getElementById('charMBTI').value;
+        const tags = [];
+        if (zodiac) tags.push(zodiac);
+        if (animal) tags.push('属' + animal);
+        if (mbti) tags.push(mbti);
+        const tagStr = tags.length ? tags.join('、') : '（未指定）';
+
+        return `请基于以下项目设定，完成角色铸造：
 
 【创意】${idea}
 【创作风格】${style}
 【项目设定】
 ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
+【主角性格标签】${tagStr}
+
+【性格标签转化规则】
+当用户提供了星座/生肖/MBTI标签时，你必须将这些标签转化为专业的编剧性格描写，融入人设卡片：
+1. 星座 → 转化为性格底色与行为模式（如：天蝎座 = 表面沉静内敛，内心极度执着，对背叛零容忍，有强烈的掌控欲和洞察力，善于隐藏真实情绪）
+2. 生肖 → 转化为气质特征与行事风格（如：属虎 = 天生的领导气场，行事果断有魄力，但有时过于刚直，不善于迂回）
+3. MBTI → 转化为认知模式与决策风格（如：INFJ = 高度共情的理想主义者，洞察力极强，做决策时兼顾理性与价值观，内心有强烈的使命感但外表温和）
+4. 三者融合时，以MBTI为认知框架、星座为情绪底色、生肖为气质特征，综合输出为一段专业、连贯的性格描写
+5. 若未指定标签，则根据故事方向和角色定位自行设计合理性格
+
 请输出以下内容（用HTML格式）：
-<h4>主要人物</h4> - 列出3-5个主要角色，每个包含完整人设卡片
+<h4>主要人物</h4> - 列出3-5个主要角色，每个包含完整人设卡片（含性格描写、相貌、特技、弱点、口吻）
 <h4>人物关系图</h4> - 描述主要角色之间的关系和张力
 <h4>人物弧光</h4> - 每个主要角色的变化轨迹
 <h4>配角设定</h4> - 3-4个重要配角及其作用
 <h4>反派/阻碍角色</h4> - 分析反派角色的塑造逻辑`
+      }
     },
     5: {
       name: '对白大师',
@@ -4157,6 +4232,41 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       renderGenrePanel();
     }
   }
+
+  // 角色性格标签面板
+  function togglePersonalityPanel() {
+    const panel = document.getElementById('personalityPanel');
+    const arrow = document.getElementById('personalityArrow');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+      arrow.textContent = '▲';
+    } else {
+      panel.style.display = 'none';
+      arrow.textContent = '▼';
+    }
+  }
+
+  function getPersonalityTags() {
+    const tags = [];
+    const zodiac = document.getElementById('charZodiac').value;
+    const animal = document.getElementById('charZodiacAnimal').value;
+    const mbti = document.getElementById('charMBTI').value;
+    if (zodiac) tags.push(zodiac);
+    if (animal) tags.push('属' + animal);
+    if (mbti) tags.push(mbti);
+    return tags;
+  }
+
+  function updatePersonalityTags() {
+    const tags = getPersonalityTags();
+    const el = document.getElementById('selectedPersonalityTags');
+    el.textContent = tags.length ? '已选：' + tags.join(' / ') : '';
+  }
+
+  // 监听三个选择器变化
+  document.getElementById('charZodiac').addEventListener('change', updatePersonalityTags);
+  document.getElementById('charZodiacAnimal').addEventListener('change', updatePersonalityTags);
+  document.getElementById('charMBTI').addEventListener('change', updatePersonalityTags);
 
   const genreTranslations = {'Revenge': '复仇', 'Billionaire': '亿万富翁', 'Secret-Identity': '隐藏身份', 'Underdog-Rise': '逆袭崛起', 'Enemies-to-Lovers': '仇人变恋人', 'Toxic-Love/Dark-Romance': '暗黑恋爱', 'Marriage-of-Convenience': '契约婚姻', 'Forbidden-Love': '禁忌之恋', 'Divorce-Recovery': '离婚后挽回', 'Sports-Romance': '体育恋爱', 'Forced-Proximity': '被迫同居', 'Secret-Baby': '秘密宝宝', 'Vampire': '吸血鬼', 'Fake-Relationship': '假恋爱', 'Office-Romance': '办公室恋情', 'High-Society': '上流社会', 'Urban-Fantasy': '都市奇幻', 'Age-Gap': '年龄差', 'Mythological/Gods': '神话/神明', 'Second-Chance': '二次机会', 'Werewolf': '狼人', 'Mafia': '黑帮', 'Superpower': '超能力', 'High-Fantasy': '高奇幻', 'Reincarnation': '转世重生', 'Corporate-Warfare': '商战', 'Transformation/Glow-Up': '蜕变', 'Psychological-Thriller': '心理惊悚', 'Dark-Romance': '暗黑恋爱', 'Dystopian': '反乌托邦', 'Survival-Adventure': '生存冒险', 'Betrayal-Conspiracy': '背叛阴谋', 'Mistaken-Identity': '身份误认', 'Flash-Marriage': '闪婚', 'Hidden-Identity': '隐藏身份', 'Underground-Street-Empire': '地下帝国', 'Murder-Mystery': '谋杀悬疑', 'Concealed-Identity': '隐瞒身份', 'Revenge-Thriller': '复仇惊悚', 'Medical-Hospital': '医疗医院', 'Stolen-Identity': '身份盗用', 'Werewolf-Werewolves': '狼人', 'Historical-Period': '历史时期', 'Female-Empowerment': '女性赋权', 'Contract-Marriage': '契约婚姻', 'Mythological': '神话', 'Ancient-Romance': '古代恋爱', 'Fantasy': '奇幻', 'Urban-Romance': '都市恋爱', 'Rural-Ranch-Country': '乡村牧场', 'Billionaire-CEO': '亿万富翁CEO', 'Toxic-In-Laws': '恶毒公婆', 'Harem': '后宫', 'Modern': '现代', 'Fantasy-Paranormal': '奇幻超自然', 'Action': '动作', 'Music-Entertainment': '音乐娱乐', 'Sudden-Wealth': '突然暴富', 'Witchcraft-Coven': '女巫集会', 'Virtual-Reality': '虚拟现实', 'Modern-Romance': '现代恋爱', 'AI-Robot-Romance': 'AI机器人恋爱', 'Blended-Family': '重组家庭', 'Face-Slapping': '打脸', 'Amnesia-Lost-Memory': '失忆', 'Small-Town': '小镇', 'Suspense': '悬疑', 'Domestic-Drama': '家庭剧', 'Reverse-Harem': '逆后宫', 'Cyberpunk': '赛博朋克', 'Sci-Fi': '科幻'};
 
