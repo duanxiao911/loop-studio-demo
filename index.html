@@ -1668,6 +1668,50 @@
   border-top: 1px solid var(--border-color, #333);
   margin: 16px 0;
 }
+/* 剧本正文专属样式 */
+.output-body .script-episode {
+  margin: 20px 0 16px 0;
+  padding: 16px 18px;
+  background: rgba(124, 157, 245, 0.03);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-color, #7c9df5);
+}
+.output-body .script-scene {
+  margin: 14px 0 8px 0;
+}
+.output-body .script-scene-header {
+  font-weight: 600;
+  color: #a8bfe8;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+}
+.output-body .script-action {
+  color: var(--text-secondary, #bbb);
+  margin: 4px 0;
+  padding-left: 4px;
+  line-height: 1.8;
+}
+.output-body .script-dialogue {
+  margin: 4px 0;
+  line-height: 1.8;
+}
+.output-body .script-dialogue .char-name {
+  color: #c0d0f0;
+  font-weight: 600;
+}
+.output-body .script-dialogue .char-os {
+  color: #8fa0c0;
+  font-style: italic;
+}
+.output-body .script-stats {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  font-size: 0.9em;
+  color: #6ee7b7;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
 </head>
@@ -2629,13 +2673,41 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
 - 节拍之间的转折必须由人物选择驱动
 - 爽点密度：游戏时间阶段每2集至少1个爽点
 - 钩子设计：每集结尾必须有钩子，下集开头3秒内回应`,
-      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，设计全剧结构：
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，先构建世界设定，再设计全剧结构。
 
 【创意】${idea}
 【创作风格】${style}
 【集数】${episodes}集
 【完整设定】
 ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
+
+━━━━━━━━━━━━━━━━━━━
+第一部分：世界设定
+━━━━━━━━━━━━━━━━━━━
+
+请用以下6个板块构建故事世界（用HTML格式输出，每个板块用<h3>标题，正文用<p>段落）：
+
+<h3>🕐 时代坐标</h3>
+故事发生的时间与社会阶段。不只是年份，更要写出这个时代的核心张力——什么在膨胀、什么在崩塌、普通人身处其中的处境。
+
+<h3>️ 空间层级</h3>
+故事的主要舞台，以及空间中的权力分层（上层空间/中层空间/底层空间分别是什么样的物理环境，谁在其中）。
+
+<h3>⚖️ 权力图谱</h3>
+谁掌握资源和话语权？权力如何分配？阶层之间如何流动（或无法流动）？用2-3句话勾勒权力结构。
+
+<h3>📜 生存法则</h3>
+这个世界的明规则（法律/制度）和潜规则（实际运行的逻辑）。人们在这里如何生存、如何上升、如何被淘汰。
+
+<h3>🔣 符号系统</h3>
+3-5个贯穿全剧的核心符号/物件/仪式/语言习惯。每个符号用一句话说明它的叙事功能（不是装饰，要推动剧情或揭示人物）。
+
+<h3>🎨 视听基调</h3>
+色彩方案、光影风格、气候特征、声音关键词。用短句罗列，方便导演直接参考。
+
+━━━━━━━━━━━━━━━━━━━
+第二部分：全剧结构
+━━━━━━━━━━━━━━━━━━━
 
 请输出以下内容（用HTML格式）：
 <h4>整体节奏曲线</h4> - 全剧节奏起伏设计
@@ -2700,7 +2772,7 @@ X-1 地点名 时间/内外
 - 场景切换要有节奏感
 - 对白要符合角色人设
 - 动作描写要具体、有画面感`,
-      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，写出前3集的完整专业剧本：
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，按每5集一批输出完整的专业分场剧本。
 
 【创意】${idea}
 【创作风格】${style}
@@ -2708,15 +2780,57 @@ X-1 地点名 时间/内外
 【完整设定】
 ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请严格按照专业分场剧本格式，输出全部${episodes}集的完整剧本。
+━━━━━━━━━━━━━━━━━━━
+【输出格式要求 — 严格遵守】
+━━━━━━━━━━━━━━━━━━━
 
-由于篇幅限制，请尽可能多地输出完整集数（至少10集以上），每集包含：
-- 集头信息（集名、核心事件、情感基调、时长）
+请按每5集一批输出，每批之间用分割线隔开。每集格式如下：
+
+### 第X集 《集名》
+**核心事件：** 一句话概括
+**情感基调：** 关键词
+**时长：** X分钟
+
+---
+
+**X-1 地点名 日/内**
+**人物：** 角色A 角色B
+△动作描写，用具体画面建立空间感。
+△环境细节。
+角色A：（情绪）台词内容
+角色B：台词内容
+△反应动作
+角色Aos：内心独白
+
+**X-2 地点名 夜/外**
+...（同上格式）
+
+---
+
+每集要求：
 - 3-5个场景
-- 每个场景：场景标记、人物行、动作描写、角色台词
 - 每集800-1200字
+- 动作行以△开头
+- 台词行用"角色名：台词"格式
+- 内心独白用"角色名os：内容"格式
 
-注意：这是专业剧本格式，不是大纲、不是概要、不是摘要。必须是可直接用于拍摄的分场剧本。请从第1集开始，按顺序输出，不要跳过任何一集。`
+━━━━━━━━━━━━━━━━━━━
+【分批输出规则】
+━━━━━━━━━━━━━━━━━━━
+
+第1批：第1-5集
+（输出5集完整剧本后，在末尾加上字数统计）
+
+【本批统计】
+总字数：XXX字 | 共5集 | 平均每集XXX字
+
+---
+（然后继续输出第6-10集，以此类推，直到输出全部${episodes}集）
+
+注意：
+- 从第1集开始，按顺序输出，不跳过任何一集
+- 每批5集，每批末尾附字数统计
+- 这是专业分场剧本，不是大纲、不是概要`
     },
     8: {
       name: '视觉导演',
@@ -3782,7 +3896,25 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
         rawText += chunk;
         // 实时将 Markdown 渲染为 HTML
         try {
-          targetEl.innerHTML = marked.parse(rawText);
+          let html = marked.parse(rawText);
+          // 后处理：给剧本元素加 CSS 类名
+          // 动作行 △ 开头的段落
+          html = html.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
+          // 场景标题（X-Y 地点名 日/内 格式的 bold 段落）
+          html = html.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
+          // 人物行
+          html = html.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
+          // 角色os 内心独白
+          html = html.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
+          // 字数统计区（步骤7专用）
+          if (stepNum === 7) {
+            const charCount = rawText.replace(/\s/g, '').length;
+            const episodeMatches = rawText.match(/第\s*\d+\s*集/g) || [];
+            const epCount = episodeMatches.length;
+            const avg = epCount > 0 ? Math.round(charCount / epCount) : 0;
+            html += `<div class="script-stats">📊 <strong>剧本统计</strong>：共 <strong>${charCount.toLocaleString()}</strong> 字 · <strong>${epCount}</strong> 集 · 平均每集 <strong>${avg.toLocaleString()}</strong> 字</div>`;
+          }
+          targetEl.innerHTML = html;
         } catch (e) {
           // marked 未加载时降级为纯文本
           targetEl.innerHTML = rawText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
@@ -3795,6 +3927,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     
     // 保存结果供后续步骤使用（保存原始 Markdown 文本）
     generatedResults[stepNum] = stream.fullText;
+
     
     // 专家完成状态
     currentExpert.classList.remove('working', 'active');
