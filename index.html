@@ -2328,7 +2328,7 @@ function renderMarkdown(md) {
           <div class="expert-avatar" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">👑</div>
           <div class="expert-info">
             <div class="expert-name">§15 品控总监 <span class="mvp-badge" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">W2</span></div>
-            <div class="expert-desc">终审签发把关</div>
+            <div class="expert-desc">终审达标把关</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
@@ -3064,6 +3064,7 @@ ${prevResults[7] || prevResults[8] || '（暂无剧本）'}
 你的核心能力：6维度自动评分——剧情张力/角色深度/对白质量/节奏把控/视觉潜力/商业潜力。
 每项1-10分，逐集独立打分。低于7分标记为"需改稿"。
 改进建议必须具体可执行，不允许空话。
+评估边界：你的评估覆盖内容合规与剧本质量（对应平台过审环节），不涉及签约判定。签约取决于平台商务、市场等外部因素。
 铁律：评分基于文本证据，不凭主观感受。`,
       userPrompt: (idea, style, episodes, prevResults) => `请对以下剧本进行6维度质量评估：
 
@@ -3141,6 +3142,7 @@ ${prevResults[10] || '（暂无审计结果）'}
       systemPrompt: `你是§14商业操盘手，短剧商业分析师。
 核心能力：市场分析（题材热度/竞品/受众画像）、投放策略（平台/节奏/投流）、变现路径（付费/IP/衍生）、风险评估。
 数据必须有依据，变现预估给区间不给精确数字。
+分析边界：你提供的是商业策略建议和可行性评估，不代表实际签约或收益保证。最终商务合作由平台方决定。
 铁律：不给文艺题材推荐纯爽剧平台，风险提示必须诚实。`,
       userPrompt: (idea, style, episodes, prevResults) => `请为以下剧本进行商业分析：
 
@@ -3159,10 +3161,11 @@ ${prevResults[10] || '（暂无审计结果）'}
       name: '品控总监',
       expert: 'quality_director',
       systemPrompt: `你是§15品控总监，终审把关专家。
-核心能力：全剧一致性校验（角色/时间线/空间/情感）、终审质量关、签发权。
+核心能力：全剧一致性校验（角色/时间线/空间/情感）、终审质量关、达标判定。
 通过条件：总分≥7.0、单集≥6.0、0致命问题、≤2警告。
-判定：✅签发 / ⚠️有条件通过 / ❌退回改稿。
-铁律：拥有最终否决权，签发后不可再改，一致性逐集检查。`,
+判定：✅质量达标 / ⚠️有条件通过 / ❌退回改稿。
+注意：品控通过仅代表剧本内容合规且质量达标，不等于平台签约承诺。签约取决于平台商务评估、市场匹配等外部因素。
+铁律：拥有最终否决权，达标判定后不可再改，一致性逐集检查。`,
       userPrompt: (idea, style, episodes, prevResults) => `请对以下剧本进行终审：
 
 【创意】${idea}
@@ -3171,10 +3174,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
 【质量审计】${prevResults[10] || '（暂无）'}
 
 请输出：
-<h4>终审判定</h4> - ✅签发/⚠️有条件通过/❌退回
+<h4>终审判定</h4> - ✅质量达标/⚠️有条件通过/❌退回
 <h4>一致性校验</h4> - 角色/时间线/空间/情感检查结果
 <h4>最终评分</h4> - 综合得分和通过状态
-<h4>签发意见</h4> - 终审备注`
+<h4>终审意见</h4> - 终审备注`
     }
   };
 
@@ -4230,7 +4233,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
         <div class="output-icon" style="background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink));">🎉</div>
         <div>
           <div class="output-title">剧本创作完成</div>
-          <div class="output-meta">总计 30 集 · 约 36,000 字 · 非遗题材 · 已通过红果短剧签约审核</div>
+          <div class="output-meta">总计 30 集 · 约 36,000 字 · 非遗题材 · 已通过内容合规与质量终审</div>
         </div>
       </div>
       <div class="output-body">
@@ -4251,6 +4254,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
             <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">反转密度</div>
             <div style="font-size: 24px; font-weight: 700; color: var(--accent-pink);">3.2集/次</div>
           </div>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); background: rgba(var(--accent-purple-rgb, 139,92,246), 0.06); border-left: 2px solid var(--accent-purple); padding: 8px 12px; border-radius: 0 6px 6px 0; margin-bottom: 16px; line-height: 1.6;">
+          <strong style="color: var(--text-secondary);">评估范围说明：</strong>本引擎评估覆盖内容合规与剧本质量维度（对应平台过审环节）。签约与否还取决于平台商务评估、市场排期、受众匹配等外部因素，不在引擎评估范围内。
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; border-radius: 8px; color: white; font-size: 13px; cursor: pointer;" onclick="exportAsTxt()">📥 导出完整剧本 (TXT)</button>
@@ -4381,7 +4387,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       12: '§9 改稿编辑 · 智能改稿',
       13: '§10 实战指挥 · 执行计划',
       14: '§14 商业操盘 · 市场分析',
-      15: '§15 品控总监 · 终审签发'
+      15: '§15 品控总监 · 终审达标'
     };
 
     let txt = '═══════════════════════════════════════\n';
