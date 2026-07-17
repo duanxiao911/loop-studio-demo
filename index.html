@@ -1543,64 +1543,66 @@
 
 </style>
 <style>
-/* Markdown 渲染样式 — 专业剧本输出格式 */
+/* Markdown 渲染样式 — 专业剧本输出格式（清秀版） */
 .output-body {
-  font-size: 0.92em;
-  line-height: 1.7;
+  font-size: 1em;
+  line-height: 1.85;
   color: var(--text-primary, #e0e0e0);
+  letter-spacing: 0.3px;
 }
 .output-body h1 {
-  font-size: 1.25em;
+  font-size: 1.4em;
   font-weight: 700;
-  margin: 16px 0 10px 0;
-  padding-bottom: 6px;
+  margin: 20px 0 12px 0;
+  padding-bottom: 8px;
   border-bottom: 2px solid var(--accent-color, #7c9df5);
   color: var(--accent-color, #7c9df5);
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 .output-body h2 {
-  font-size: 1.12em;
+  font-size: 1.2em;
   font-weight: 600;
-  margin: 14px 0 8px 0;
-  padding-left: 8px;
+  margin: 18px 0 10px 0;
+  padding-left: 10px;
   border-left: 3px solid var(--accent-color, #7c9df5);
   color: var(--text-primary, #e0e0e0);
+  letter-spacing: 0.5px;
 }
 .output-body h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 14px 0 8px 0;
+  color: #b8ccf8;
+}
+.output-body h4 {
   font-size: 1.02em;
   font-weight: 600;
   margin: 10px 0 6px 0;
-  color: #b0c4f5;
+  color: #9ab0e8;
 }
-.output-body h4 {
+.output-body h5, .output-body h6 {
   font-size: 0.95em;
   font-weight: 600;
   margin: 8px 0 4px 0;
-  color: #8fa8e0;
-}
-.output-body h5, .output-body h6 {
-  font-size: 0.9em;
-  font-weight: 600;
-  margin: 6px 0 3px 0;
   color: var(--text-secondary, #aaa);
 }
 .output-body p {
-  margin: 6px 0;
-  line-height: 1.7;
+  margin: 10px 0;
+  line-height: 1.85;
 }
 .output-body ul, .output-body ol {
-  margin: 6px 0;
-  padding-left: 18px;
+  margin: 10px 0;
+  padding-left: 20px;
 }
 .output-body li {
-  margin: 3px 0;
-  line-height: 1.6;
+  margin: 6px 0;
+  line-height: 1.75;
 }
 .output-body li::marker {
   color: var(--accent-color, #7c9df5);
 }
 .output-body strong {
-  color: #c0d0ff;
+  color: #d0d8f5;
   font-weight: 600;
 }
 .output-body em {
@@ -1611,19 +1613,19 @@
 .output-body table {
   border-collapse: collapse;
   width: 100%;
-  margin: 10px 0;
-  font-size: 0.9em;
+  margin: 12px 0;
+  font-size: 0.95em;
 }
 .output-body th {
   background: var(--bg-tertiary, #2a2a2a);
   font-weight: 600;
   color: var(--accent-color, #7c9df5);
-  padding: 6px 10px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 2px solid var(--accent-color, #7c9df5);
 }
 .output-body td {
-  padding: 5px 10px;
+  padding: 7px 12px;
   border-bottom: 1px solid var(--border-color, #2a2a2a);
   color: var(--text-primary, #e0e0e0);
 }
@@ -1633,18 +1635,18 @@
 /* 代码块 */
 .output-body code {
   background: var(--bg-tertiary, #2a2a2a);
-  padding: 1px 5px;
+  padding: 2px 6px;
   border-radius: 3px;
-  font-size: 0.88em;
+  font-size: 0.9em;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   color: #a8d4a8;
 }
 .output-body pre {
   background: var(--bg-tertiary, #1a1a2e);
-  padding: 12px;
+  padding: 14px;
   border-radius: 6px;
   overflow-x: auto;
-  margin: 8px 0;
+  margin: 12px 0;
   border: 1px solid var(--border-color, #333);
 }
 .output-body pre code {
@@ -1655,8 +1657,8 @@
 /* 引用块 */
 .output-body blockquote {
   border-left: 3px solid var(--accent-color, #7c9df5);
-  margin: 8px 0;
-  padding: 6px 14px;
+  margin: 10px 0;
+  padding: 8px 16px;
   background: rgba(124, 157, 245, 0.05);
   color: var(--text-secondary, #bbb);
   border-radius: 0 4px 4px 0;
@@ -1664,12 +1666,7 @@
 .output-body hr {
   border: none;
   border-top: 1px solid var(--border-color, #333);
-  margin: 14px 0;
-}
-/* 题材标签 — 模拟参考图的标签徽章样式 */
-.output-body strong:has(+ em),
-.output-body p strong {
-  color: #d0d8f0;
+  margin: 16px 0;
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
