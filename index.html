@@ -22,8 +22,172 @@
     --accent-green: #10b981;
     --accent-cyan: #06b6d4;
     --accent-pink: #ec4899;
-    --glow-purple: rgba(139, 92, 246, 0.3);
+    --glow-purple: rgba(139, 92, 246, 0.25);
     --glow-blue: rgba(59, 130, 246, 0.2);
+  }
+
+
+  /* 浅色模式 - 暖调柔和 */
+  [data-theme="light"] {
+    --bg-primary: #f5f0eb;
+    --bg-secondary: #faf7f4;
+    --bg-tertiary: #ede8e3;
+    --border-color: rgba(160, 140, 120, 0.15);
+    --border-active: rgba(160, 140, 120, 0.2);
+    --text-primary: #2c2418;
+    --text-secondary: #5a4e3f;
+    --text-muted: #9a8e7f;
+    --glow-purple: rgba(160, 120, 80, 0.05);
+    --glow-blue: rgba(100, 140, 180, 0.04);
+  }
+  [data-theme="light"] body {
+    background: var(--bg-primary);
+  }
+  /* 顶栏 */
+  [data-theme="light"] .top-bar {
+    background: rgba(250, 247, 244, 0.9);
+    border-bottom-color: var(--border-color);
+  }
+  /* 左面板 */
+  [data-theme="light"] .left-panel {
+    background: rgba(250, 247, 244, 0.7);
+  }
+  /* 右面板 */
+  [data-theme="light"] .right-panel {
+    background: rgba(250, 247, 244, 0.7);
+  }
+  /* 输入区 */
+  [data-theme="light"] .input-section {
+    background: rgba(250, 247, 244, 0.8);
+    border-top: none;
+    box-shadow: none !important;
+  }
+  [data-theme="light"] .input-wrapper input,
+  [data-theme="light"] .input-wrapper textarea {
+    background: #ffffff;
+    border-color: rgba(255,255,255,0);
+    color: var(--text-primary);
+    box-shadow: none !important;
+  }
+  /* 底栏 */
+  [data-theme="light"] .footer-bar {
+    background: rgba(250, 247, 244, 0.8);
+    border-top-color: var(--border-color);
+    color: var(--text-secondary);
+  }
+  /* 卡片类 */
+  [data-theme="light"] .card-surface,
+  [data-theme="light"] .output-card,
+  [data-theme="light"] .settings-content,
+  [data-theme="light"] .expert-item,
+  [data-theme="light"] .welcome-card,
+  [data-theme="light"] .step-item {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: var(--border-color);
+  }
+  [data-theme="light"] .settings-modal {
+    background: rgba(250, 247, 244, 0.6);
+  }
+  /* 内容区 */
+  [data-theme="light"] .content-area {
+    background: var(--bg-secondary);
+  }
+  /* 标签 */
+  [data-theme="light"] .idea-chip {
+    background: rgba(160, 120, 80, 0.08);
+    border-color: rgba(160, 120, 80, 0.2);
+    color: #7a5c3a;
+  }
+  /* 知识库/状态卡片 */
+  [data-theme="light"] .knowledge-card,
+  [data-theme="light"] .status-card {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: var(--border-color);
+  }
+  /* 按钮 */
+  [data-theme="light"] .generate-btn {
+    box-shadow: 0 2px 8px rgba(160, 120, 80, 0.08);
+  }
+  /* 专家模块分组标题 */
+  [data-theme="light"] .expert-group-title {
+    color: var(--text-secondary);
+  }
+  /* 步骤进度条 */
+  [data-theme="light"] .step-item.active {
+    background: rgba(160, 120, 80, 0.1);
+  }
+  /* 输出卡片编辑按钮 */
+  [data-theme="light"] .output-edit-btn {
+    background: rgba(160, 120, 80, 0.1);
+    color: #7a5c3a;
+  }
+  /* 输出头部 */
+  [data-theme="light"] .output-header {
+    border-bottom-color: var(--border-color);
+  }
+  /* 输入框阴影 - 浅色模式减淡 */
+  [data-theme="light"] .input-box {
+    background: #ffffff !important;
+    border-color: rgba(255,255,255,0) !important;
+    box-shadow: none !important;
+  }
+  [data-theme="light"] .input-box:focus-within {
+    border-color: rgba(160,140,120,0.2);
+    box-shadow: none !important;
+  }
+  /* 全局紫色发光阴影 - 浅色模式改为柔和暖光 */
+  [data-theme="light"] .logo-icon,
+  [data-theme="light"] .expert-item.active,
+  [data-theme="light"] .step-item.active {
+    box-shadow: 0 0 8px rgba(160, 120, 80, 0.06);
+  }
+  /* 卡片hover阴影 */
+  [data-theme="light"] .output-card:hover,
+  [data-theme="light"] .card-surface:hover {
+    box-shadow: 0 2px 6px rgba(160, 140, 120, 0.05);
+  }
+  /* 设置按钮阴影 */
+  [data-theme="light"] .theme-toggle {
+    box-shadow: 0 2px 4px rgba(160, 140, 120, 0.08);
+  }
+  /* 输入区底部分隔线 */
+  [data-theme="light"] .input-section {
+    border-top-color: var(--border-color);
+  }
+  /* 生成按钮紫色光晕改为暖色 */
+  [data-theme="light"] .generate-btn:hover {
+    box-shadow: 0 4px 12px rgba(160, 120, 80, 0.1);
+  }
+  /* 顶栏底部边框 */
+  [data-theme="light"] .top-bar {
+    box-shadow: 0 1px 2px rgba(160, 140, 120, 0.04);
+  }
+
+  /* 主题切换按钮 */
+  .theme-toggle {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1001;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    border: 1.5px solid var(--border-active);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .theme-toggle:hover {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+    transform: scale(1.1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -260,6 +424,42 @@
     font-size: 20px;
     flex-shrink: 0;
     box-shadow: 0 0 20px var(--glow-purple);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  .alogon-avatar:hover {
+    box-shadow: 0 0 24px rgba(139,92,246,0.5);
+  }
+  .alogon-avatar .avatar-upload-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .alogon-avatar:hover .avatar-upload-hint {
+    opacity: 1;
+  }
+  .alogon-avatar .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: none;
+  }
+  .alogon-avatar .avatar-emoji {
+    font-size: 22px;
+    line-height: 1;
   }
 
   .alogon-bubble {
@@ -494,11 +694,16 @@
     z-index: 1;
     display: grid;
     grid-template-columns: 220px 1fr 260px;
-    grid-template-rows: 64px 1fr;
+    grid-template-rows: 64px 1fr auto;
     height: 100vh;
     gap: 1px;
     background: var(--border-color);
   }
+
+  .top-bar { grid-column: 1 / -1; grid-row: 1; }
+  .left-panel { grid-column: 1 / 2; grid-row: 2 / 3; }
+  .main-panel { grid-column: 2 / 3; grid-row: 2 / 3; }
+  .right-panel { grid-column: 3 / 4; grid-row: 2 / 3; }
 
   /* 顶栏 */
   .top-bar {
@@ -703,7 +908,7 @@
     backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
   }
 
   .greeting-section {
@@ -735,7 +940,6 @@
   /* 创作内容区 */
   .content-area {
     flex: 1;
-    overflow-y: auto;
     padding: 0 48px 24px;
   }
 
@@ -854,16 +1058,18 @@
 
   /* 生成的内容卡片 */
   .output-card {
-    background: rgba(17, 24, 39, 0.6);
+    background: var(--bg-card, rgba(17, 24, 39, 0.85));
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 24px 28px;
-    margin-bottom: 20px;
-    animation: fadeInUp 0.5s ease;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.4s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    backdrop-filter: blur(8px);
   }
 
   @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -871,55 +1077,95 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
   }
 
   .output-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 9px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
+    flex-shrink: 0;
   }
 
   .output-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
+    letter-spacing: 0.3px;
   }
 
   .output-meta {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-muted);
+    margin-top: 1px;
   }
 
   .output-body {
-    font-size: 14px;
-    line-height: 1.8;
+    font-size: 13.5px;
+    line-height: 1.75;
     color: var(--text-secondary);
   }
 
-  .output-body h4 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 16px 0 8px;
+  .output-edit-btn {
+    margin-left: auto;
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
   }
-
-  .output-body h4:first-child { margin-top: 0; }
-
-  .output-body ul {
-    padding-left: 20px;
-    margin: 8px 0;
+  .output-edit-btn:hover {
+    background: rgba(139,92,246,0.15);
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
   }
-
-  .output-body li {
-    margin-bottom: 6px;
+  .output-body[contenteditable="true"] {
+    outline: 2px solid var(--accent-purple);
+    outline-offset: 4px;
+    border-radius: 8px;
+    padding: 12px;
+    background: rgba(139,92,246,0.05);
+    min-height: 120px;
+  }
+  .output-edit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
+  }
+  .output-edit-actions button {
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .output-edit-actions .save-btn {
+    background: var(--accent-purple);
+    color: #fff;
+  }
+  .output-edit-actions .save-btn:hover {
+    background: #7c3aed;
+  }
+  .output-edit-actions .cancel-btn {
+    background: rgba(255,255,255,0.08);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+  .output-edit-actions .cancel-btn:hover {
+    background: rgba(255,255,255,0.12);
   }
 
   .typing-effect {
@@ -947,7 +1193,6 @@
     backdrop-filter: blur(10px);
     padding: 16px 14px;
     overflow-y: auto;
-    overflow-x: hidden;
   }
 
   .right-panel::-webkit-scrollbar { width: 4px; }
@@ -989,6 +1234,11 @@
     margin-bottom: 6px;
     transition: all 0.3s ease;
     border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .expert-item:hover {
+    background: rgba(124, 157, 245, 0.06);
+    border-color: rgba(124, 157, 245, 0.15);
   }
 
   .expert-item.active {
@@ -1163,6 +1413,8 @@
 
   /* 底部小条 */
   .footer-bar {
+    grid-column: 1 / -1;
+    grid-row: 3;
     padding: 8px 16px;
     background: rgba(17, 24, 39, 0.6);
     border-top: 1px solid var(--border-color);
@@ -1222,11 +1474,421 @@
     50% { opacity: 0.5; transform: scale(1.3); }
   }
 
+
+  /* ===== 题材选择器 ===== */
+  .genre-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .genre-toggle-btn:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+  }
+  .genre-panel {
+    display: none;
+    margin-top: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 12px;
+  }
+  .genre-panel.open {
+    display: block;
+  }
+  .genre-category {
+    margin-bottom: 12px;
+  }
+  .genre-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    transition: background 0.2s;
+  }
+  .genre-category-header:hover {
+    background: rgba(139, 92, 246, 0.1);
+  }
+  .genre-category-header .arrow {
+    transition: transform 0.3s;
+    font-size: 10px;
+  }
+  .genre-category.collapsed .arrow {
+    transform: rotate(-90deg);
+  }
+  .genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    transition: all 0.3s;
+  }
+  .genre-category.collapsed .genre-tags {
+    max-height: 0;
+    padding: 0 8px;
+    overflow: hidden;
+  }
+  .genre-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .genre-tag:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.05);
+  }
+  .genre-tag.selected {
+    border-color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--accent-purple);
+  }
+  .genre-tag .count {
+    color: var(--text-muted);
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  [data-theme="light"] .genre-tag {
+    background: #f5f0eb;
+  }
+  [data-theme="light"] .genre-tag:hover,
+  [data-theme="light"] .genre-tag.selected {
+    border-color: #a07850;
+    color: #a07850;
+    background: rgba(160, 120, 80, 0.1);
+  }
+
 </style>
+<style>
+/* Markdown 渲染样式 — 专业剧本输出格式（清秀版） */
+.output-body {
+  font-size: 1em;
+  line-height: 1.85;
+  color: var(--text-primary, #e0e0e0);
+  letter-spacing: 0.3px;
+}
+.output-body h1 {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 20px 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent-color, #7c9df5);
+  color: var(--accent-color, #7c9df5);
+  letter-spacing: 1px;
+}
+.output-body h2 {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 18px 0 10px 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent-color, #7c9df5);
+  color: var(--text-primary, #e0e0e0);
+  letter-spacing: 0.5px;
+}
+.output-body h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 14px 0 8px 0;
+  color: #b8ccf8;
+}
+.output-body h4 {
+  font-size: 1.02em;
+  font-weight: 600;
+  margin: 10px 0 6px 0;
+  color: #9ab0e8;
+}
+.output-body h5, .output-body h6 {
+  font-size: 0.95em;
+  font-weight: 600;
+  margin: 8px 0 4px 0;
+  color: var(--text-secondary, #aaa);
+}
+.output-body p {
+  margin: 10px 0;
+  line-height: 1.85;
+}
+.output-body ul, .output-body ol {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+.output-body li {
+  margin: 6px 0;
+  line-height: 1.75;
+}
+.output-body li::marker {
+  color: var(--accent-color, #7c9df5);
+}
+.output-body strong {
+  color: #d0d8f5;
+  font-weight: 600;
+}
+.output-body em {
+  font-style: italic;
+  color: var(--text-secondary, #bbb);
+}
+/* 表格 — 剧本参数风格 */
+.output-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 0.95em;
+}
+.output-body th {
+  background: var(--bg-tertiary, #2a2a2a);
+  font-weight: 600;
+  color: var(--accent-color, #7c9df5);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--accent-color, #7c9df5);
+}
+.output-body td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border-color, #2a2a2a);
+  color: var(--text-primary, #e0e0e0);
+}
+.output-body tr:hover td {
+  background: rgba(124, 157, 245, 0.05);
+}
+/* 代码块 */
+.output-body code {
+  background: var(--bg-tertiary, #2a2a2a);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: #a8d4a8;
+}
+.output-body pre {
+  background: var(--bg-tertiary, #1a1a2e);
+  padding: 14px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 12px 0;
+  border: 1px solid var(--border-color, #333);
+}
+.output-body pre code {
+  background: none;
+  padding: 0;
+  color: var(--text-primary, #e0e0e0);
+}
+/* 引用块 */
+.output-body blockquote {
+  border-left: 3px solid var(--accent-color, #7c9df5);
+  margin: 10px 0;
+  padding: 8px 16px;
+  background: rgba(124, 157, 245, 0.05);
+  color: var(--text-secondary, #bbb);
+  border-radius: 0 4px 4px 0;
+}
+.output-body hr {
+  border: none;
+  border-top: 1px solid var(--border-color, #333);
+  margin: 16px 0;
+}
+/* 剧本正文专属样式 */
+.output-body .script-episode {
+  margin: 20px 0 16px 0;
+  padding: 16px 18px;
+  background: rgba(124, 157, 245, 0.03);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-color, #7c9df5);
+}
+.output-body .script-scene {
+  margin: 14px 0 8px 0;
+}
+.output-body .script-scene-header {
+  font-weight: 600;
+  color: #a8bfe8;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+}
+.output-body .script-action {
+  color: var(--text-secondary, #bbb);
+  margin: 4px 0;
+  padding-left: 4px;
+  line-height: 1.8;
+}
+.output-body .script-dialogue {
+  margin: 4px 0;
+  line-height: 1.8;
+}
+.output-body .script-dialogue .char-name {
+  color: #c0d0f0;
+  font-weight: 600;
+}
+.output-body .script-dialogue .char-os {
+  color: #8fa0c0;
+  font-style: italic;
+}
+.output-body .script-stats {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  font-size: 0.9em;
+  color: #6ee7b7;
+}
+</style>
+<script>
+// 内嵌轻量 Markdown 渲染器（无外部 CDN 依赖，保证稳定运行）
+function renderMarkdown(md) {
+  if (!md) return '';
+  // 保护代码块
+  const codeBlocks = [];
+  md = md.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+    codeBlocks.push('<pre class="md-code-block"><code>' + code.replace(/</g,'&lt;').replace(/>/g,'&gt;').trim() + '</code></pre>');
+    return '\x00CB' + (codeBlocks.length-1) + '\x00';
+  });
+  // 保护行内代码
+  const inlineCodes = [];
+  md = md.replace(/`([^`\n]+)`/g, function(m, code) {
+    inlineCodes.push('<code class="md-inline-code">' + code.replace(/</g,'&lt;') + '</code>');
+    return '\x00IC' + (inlineCodes.length-1) + '\x00';
+  });
+
+  var lines = md.split('\n');
+  var html = '';
+  var inList = false;
+  var inTable = false;
+  var tableSep = false;
+  var inBlockquote = false;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    // 代码块占位符
+    var cbMatch = line.match(/\x00CB(\d+)\x00/);
+    if (cbMatch) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (inTable) { html += '</tbody></table>'; inTable = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      html += codeBlocks[parseInt(cbMatch[1])];
+      continue;
+    }
+
+    // 空行 → 段落分隔
+    if (!line.trim()) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (inTable) { html += '</tbody></table>'; inTable = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      tableSep = false;
+      continue;
+    }
+
+    // 标题
+    var hMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    if (hMatch) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      var level = hMatch[1].length;
+      html += '<h' + level + ' class="md-h' + level + '">' + inlineFormat(hMatch[2]) + '</h' + level + '>';
+      continue;
+    }
+
+    // 表格分隔行
+    if (/^\|[\s\-:|]+\|$/.test(line.trim())) { tableSep = true; continue; }
+
+    // 表格行
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (!inTable) { html += '<table class="md-table"><tbody>'; inTable = true; tableSep = false; }
+      if (tableSep) continue; // skip separator
+      var cells = line.trim().slice(1, -1).split('|').map(function(c) { return c.trim(); });
+      var row = cells.map(function(c) { return '<td>' + inlineFormat(c) + '</td>'; }).join('');
+      html += '<tr>' + row + '</tr>';
+      continue;
+    } else if (inTable) {
+      html += '</tbody></table>'; inTable = false; tableSep = false;
+    }
+
+    // 引用块
+    if (line.match(/^>\s?/)) {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (!inBlockquote) { html += '<blockquote class="md-quote">'; inBlockquote = true; }
+      html += '<p>' + inlineFormat(line.replace(/^>\s?/, '')) + '</p>';
+      continue;
+    } else if (inBlockquote) {
+      html += '</blockquote>'; inBlockquote = false;
+    }
+
+    // 无序列表
+    if (line.match(/^[\s]*[-*+]\s/)) {
+      if (!inList) { html += '<ul class="md-list">'; inList = true; }
+      html += '<li>' + inlineFormat(line.replace(/^[\s]*[-*+]\s/, '')) + '</li>';
+      continue;
+    }
+
+    // 有序列表
+    var olMatch = line.match(/^[\s]*(\d+)\.\s+(.+)$/);
+    if (olMatch) {
+      if (!inList) { html += '<ul class="md-list md-ol">'; inList = true; }
+      html += '<li>' + inlineFormat(olMatch[2]) + '</li>';
+      continue;
+    }
+
+    // 分隔线
+    if (line.match(/^[-*_]{3,}$/)) {
+      html += '<hr class="md-hr">';
+      continue;
+    }
+
+    // 普通段落
+    if (inList) { html += '</ul>'; inList = false; }
+    html += '<p>' + inlineFormat(line) + '</p>';
+  }
+
+  if (inList) html += '</ul>';
+  if (inTable) html += '</tbody></table>';
+  if (inBlockquote) html += '</blockquote>';
+
+  // 恢复内联代码
+  html = html.replace(/\x00IC(\d+)\x00/g, function(m, idx) { return inlineCodes[parseInt(idx)]; });
+
+  return html;
+
+  function inlineFormat(text) {
+    // 行内代码占位符保护
+    text = text.replace(/\x00IC(\d+)\x00/g, function(m, idx) { return inlineCodes[parseInt(idx)]; });
+    // 粗体
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // 斜体
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // 行内链接
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    return text;
+  }
+}
+</script>
 </head>
 <body>
   <!-- 设置按钮 -->
   <button class="settings-btn" onclick="toggleSettings()" title="API 设置">⚙️</button>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换到浅色模式">🌙</button>
 
   <!-- 设置弹窗 -->
   <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)toggleSettings()">
@@ -1248,8 +1910,8 @@
 
       <div class="settings-group">
         <label class="settings-label">模型名称</label>
-        <input type="text" class="settings-input" id="apiModel" placeholder="deepseek-chat" value="deepseek-chat">
-        <div class="settings-hint">默认 deepseek-chat，可根据接口支持的模型更换</div>
+        <input type="text" class="settings-input" id="apiModel" placeholder="deepseek-v4-flash" value="deepseek-v4-flash">
+        <div class="settings-hint">默认 deepseek-v4-flash，可根据接口支持的模型更换</div>
       </div>
 
       <div class="settings-group">
@@ -1282,7 +1944,12 @@
       </div>
 
       <div class="alogon-intro" id="alogonBubble">
-        <div class="alogon-avatar"></div>
+        <div class="alogon-avatar" id="alogonAvatar" onclick="document.getElementById('avatarUpload').click()" title="点击上传自定义头像">
+          <span class="avatar-emoji">🤖</span>
+          <img class="avatar-img" id="avatarImg" alt="avatar">
+          <div class="avatar-upload-hint">📷 换头像</div>
+        </div>
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
         <div class="alogon-bubble">
           <div class="alogon-name" style="display:none;"></div>
           <div class="alogon-text" id="alogonText">
@@ -1475,7 +2142,70 @@
           </div>
           <div class="input-box">
             <textarea id="ideaInput" placeholder="比如：大理白族少女用扎染技艺拯救家族工坊的非遗故事，24集都市情感短剧..."></textarea>
+          
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <button class="genre-toggle-btn" onclick="toggleGenrePanel()">
+              <span></span>
+              <span>选择题材</span>
+              <span id="genreArrow">▼</span>
+            </button>
+            <span id="selectedGenres" style="font-size:11px;color:var(--text-muted);"></span>
           </div>
+          <div class="genre-panel" id="genrePanel"></div>
+
+          <!-- 角色性格标签 -->
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <button class="genre-toggle-btn" onclick="togglePersonalityPanel()">
+              <span>🧬</span>
+              <span>角色性格标签</span>
+              <span id="personalityArrow">▼</span>
+            </button>
+            <span id="selectedPersonalityTags" style="font-size:11px;color:var(--text-muted);"></span>
+          </div>
+          <div class="genre-panel" id="personalityPanel" style="display:none;padding:12px 14px;">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">为主角设定性格标签，AI 将自动转化为专业人物性格描写</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">星座</label>
+                <select id="charZodiac" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-input,#1a1a2e);color:#f1f5f9;font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="白羊座">白羊座</option><option value="金牛座">金牛座</option>
+                  <option value="双子座">双子座</option><option value="巨蟹座">巨蟹座</option>
+                  <option value="狮子座">狮子座</option><option value="处女座">处女座</option>
+                  <option value="天秤座">天秤座</option><option value="天蝎座">天蝎座</option>
+                  <option value="射手座">射手座</option><option value="摩羯座">摩羯座</option>
+                  <option value="水瓶座">水瓶座</option><option value="双鱼座">双鱼座</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">生肖</label>
+                <select id="charZodiacAnimal" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-input,#1a1a2e);color:#f1f5f9;font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="鼠">鼠</option><option value="牛">牛</option>
+                  <option value="虎">虎</option><option value="兔">兔</option>
+                  <option value="龙">龙</option><option value="蛇">蛇</option>
+                  <option value="马">马</option><option value="羊">羊</option>
+                  <option value="猴">猴</option><option value="鸡">鸡</option>
+                  <option value="狗">狗</option><option value="猪">猪</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">MBTI</label>
+                <select id="charMBTI" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-input,#1a1a2e);color:#f1f5f9;font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="INTJ">INTJ 建筑师</option><option value="INTP">INTP 逻辑学家</option>
+                  <option value="ENTJ">ENTJ 指挥官</option><option value="ENTP">ENTP 辩论家</option>
+                  <option value="INFJ">INFJ 提倡者</option><option value="INFP">INFP 调停者</option>
+                  <option value="ENFJ">ENFJ 主人公</option><option value="ENFP">ENFP 竞选者</option>
+                  <option value="ISTJ">ISTJ 物流师</option><option value="ISFJ">ISFJ 守卫者</option>
+                  <option value="ESTJ">ESTJ 总经理</option><option value="ESFJ">ESFJ 执政官</option>
+                  <option value="ISTP">ISTP 鉴赏家</option><option value="ISFP">ISFP 探险家</option>
+                  <option value="ESTP">ESTP 企业家</option><option value="ESFP">ESFP 表演者</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="input-footer">
             <div class="suggestion-chips">
               <div class="chip" onclick="setIdea('大理白族少女的扎染非遗传承故事，24集情感短剧')">🔵 非遗题材</div>
@@ -1486,13 +2216,14 @@
               <span id="apiStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
               <span id="apiStatusText">未配置API</span>
             </div>
-            <button class="generate-btn" id="generateBtn" onclick="startCreation()">
+            <button class="generate-btn" id="generateBtn" onclick="applyGenresToIdea();startCreation()">
               <span>开始创作</span>
               <span>▶</span>
             </button>
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <!-- 右侧专家团 -->
@@ -1570,26 +2301,9 @@
           <div class="expert-status-dot"></div>
         </div>
       </div>
-        <div class="expert-item mvp" data-expert="format_craftsman">
-          <div class="expert-avatar orange" style="background: rgba(249, 115, 22, 0.15);">📐</div>
-          <div class="expert-info">
-            <div class="expert-name">§6 格式工匠 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">行业通用分场剧本格式</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-      </div>
 
       <div class="expert-group">
         <div class="expert-group-title">🎥 视觉呈现组</div>
-        <div class="expert-item mvp" data-expert="scene_craftsman">
-          <div class="expert-avatar" style="background: rgba(139, 92, 246, 0.15);">🎬</div>
-          <div class="expert-info">
-            <div class="expert-name">§11 场景工匠 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">场景描写+氛围营造</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
         <div class="expert-item mvp" data-expert="visual_director">
           <div class="expert-avatar cyan">🎥</div>
           <div class="expert-info">
@@ -1600,51 +2314,62 @@
         </div>
       </div>
 
-            <!-- 质量保障组 -->
+      <!-- Wave 2 新增专家 -->
       <div class="expert-group">
-        <div class="expert-group-title">📋 质量保障组</div>
-        <div class="expert-item mvp" data-expert="quality_auditor">
-          <div class="expert-avatar" style="background: rgba(239, 68, 68, 0.15);">🔍</div>
+        <div class="expert-group-title">🔥 Wave 2 新增 (7位)</div>
+        <div class="expert-item mvp" data-expert="format_craftsman">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📋</div>
           <div class="expert-info">
-            <div class="expert-name">§7 质量审计师 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">15维度评估+爆款漏斗</div>
+            <div class="expert-name">§6 格式工匠 <span class="mvp-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">W2</span></div>
+            <div class="expert-desc">剧本格式标准化</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="quality_auditor">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #ef4444, #dc2626);">📊</div>
+          <div class="expert-info">
+            <div class="expert-name">§7 质量审计 <span class="mvp-badge" style="background: linear-gradient(135deg, #ef4444, #dc2626);">W2</span></div>
+            <div class="expert-desc">6维度自动评分</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
         <div class="expert-item mvp" data-expert="revision_editor">
-          <div class="expert-avatar" style="background: rgba(34, 197, 94, 0.15);">✏️</div>
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">✏️</div>
           <div class="expert-info">
-            <div class="expert-name">§9 改稿编辑 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">针对性修改打磨</div>
+            <div class="expert-name">§9 改稿编辑 <span class="mvp-badge" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">W2</span></div>
+            <div class="expert-desc">智能迭代改稿</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-item mvp" data-expert="quality_director">
-          <div class="expert-avatar" style="background: rgba(168, 85, 247, 0.15);">👑</div>
-          <div class="expert-info">
-            <div class="expert-name">§15 品控总监 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">终稿品质把关</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-      </div>
-
-      <!-- 商业策略组 -->
-      <div class="expert-group">
-        <div class="expert-group-title">💼 商业策略组</div>
         <div class="expert-item mvp" data-expert="mission_commander">
-          <div class="expert-avatar" style="background: rgba(59, 130, 246, 0.15);">🎯</div>
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">🎯</div>
           <div class="expert-info">
-            <div class="expert-name">§10 实战指挥官 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">全链路调度编排</div>
+            <div class="expert-name">§10 实战指挥 <span class="mvp-badge" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">W2</span></div>
+            <div class="expert-desc">全流程编排调度</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="scene_craftsman">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">🌿</div>
+          <div class="expert-info">
+            <div class="expert-name">§11 场景工匠 <span class="mvp-badge" style="background: linear-gradient(135deg, #10b981, #059669);">W2</span></div>
+            <div class="expert-desc">五感氛围增强</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
         <div class="expert-item mvp" data-expert="business_strategist">
-          <div class="expert-avatar" style="background: rgba(245, 158, 11, 0.15);">💰</div>
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #ec4899, #db2777);">💰</div>
           <div class="expert-info">
-            <div class="expert-name">§14 商业操盘手 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">市场定位+变现策略</div>
+            <div class="expert-name">§14 商业操盘 <span class="mvp-badge" style="background: linear-gradient(135deg, #ec4899, #db2777);">W2</span></div>
+            <div class="expert-desc">市场分析+投放策略</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="quality_director">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">👑</div>
+          <div class="expert-info">
+            <div class="expert-name">§15 品控总监 <span class="mvp-badge" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">W2</span></div>
+            <div class="expert-desc">终审达标把关</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
@@ -1683,10 +2408,9 @@
         </div>
       </div>
     </div>
-  </div>
 
   <!-- 底部状态栏 -->
-  <div class="footer-bar" style="position: fixed; bottom: 0; left: 221px; right: 261px; z-index: 10;">
+  <div class="footer-bar">
     <div class="footer-left">
       <div class="footer-badge">
         <span>🏷️</span>
@@ -1704,13 +2428,14 @@
       </div>
     </div>
   </div>
+  </div>
 
 <script>
   // ====== API 配置相关 ======
   const DEFAULT_SETTINGS = {
     apiBaseUrl: 'https://api.deepseek.com',
     apiKey: '',
-    model: 'deepseek-chat',
+    model: 'deepseek-v4-flash',
     episodeCount: 24
   };
 
@@ -1725,7 +2450,7 @@
   async function testApiConnection() {
     const baseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://api.deepseek.com';
     const key = document.getElementById('apiKey').value.trim();
-    const model = document.getElementById('apiModel').value.trim() || 'deepseek-chat';
+    const model = document.getElementById('apiModel').value.trim() || 'deepseek-v4-flash';
     const resultEl = document.getElementById('apiTestResult');
     const testBtn = document.getElementById('settingsTestBtn');
 
@@ -2002,42 +2727,59 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
 弧光：[初始]-[考验]-[终极选择]
 四维度关键词：生理[ ] 社会[ ] 心理[ ] 道德[ ]
 
-【共情锚点机制】
-观众不会自动共情，共情必须被设计。每个角色必须有至少1个"观众会代入的瞬间"。
-四种类型：
-- 脆弱时刻：强者露出软肋（铁汉看到流浪猫时的停顿）
-- 不公遭遇：让观众替角色气愤（被冤枉、被轻视、被背叛）
-- "我也想这样"时刻：角色做了观众想做但不敢做的事
-- 熟悉感触发：角色身上有观众自己的影子（在外报喜不报忧）
-规则：主角至少2个锚点；必须出现在前5集；通过行为和画面传递，禁止旁白说"他很可怜"。
-
-【灵魂印记设计】
-每个角色一个标志性行为细节，不是怪癖而是人格的外化。
-三原则：①根源性（和核心心理动机挂钩）②一致性（不同场景反复出现）③压力触发（高压时越明显）
-示例：紧张时反复搓手指（童年罚站记忆）；说谎时摸耳朵（身体背叛嘴巴）。
-高潮场景中灵魂印记的变体可成为弧光标记——角色成长后，习惯消失/改变。
-
-【人设卡格式更新】
-在人设卡中新增两行：
-共情锚点：[类型] + [具体场景描述]
-灵魂印记：[标志性动作] + [心理根源] + [压力场景下的表现]
-
 铁律：
 - 人物不等于设定标签，人物=压力下的选择
 - 弧光必须通过选择完成，不能靠台词说"我变了"`,
-      userPrompt: (idea, style, episodes, prevResults) => `请基于以下项目设定，完成角色铸造：
+      userPrompt: (idea, style, episodes, prevResults) => {
+        // 获取性格标签
+        const zodiac = document.getElementById('charZodiac').value;
+        const animal = document.getElementById('charZodiacAnimal').value;
+        const mbti = document.getElementById('charMBTI').value;
+        const tags = [];
+        if (zodiac) tags.push(zodiac);
+        if (animal) tags.push('属' + animal);
+        if (mbti) tags.push(mbti);
+        const tagStr = tags.length ? tags.join('、') : '（未指定）';
+
+        return `请基于以下项目设定，完成角色铸造：
 
 【创意】${idea}
 【创作风格】${style}
 【项目设定】
 ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请输出以下内容（用HTML格式）：
-<h4>主要人物</h4> - 列出3-5个主要角色，每个包含完整人设卡片
-<h4>人物关系图</h4> - 描述主要角色之间的关系和张力
-<h4>人物弧光</h4> - 每个主要角色的变化轨迹
-<h4>配角设定</h4> - 3-4个重要配角及其作用
-<h4>反派/阻碍角色</h4> - 分析反派角色的塑造逻辑`
+【主角性格标签】${tagStr}
+
+【性格标签转化规则】
+当用户提供了星座/生肖/MBTI标签时，你必须将这些标签转化为专业的编剧性格描写，融入人设卡片：
+1. 星座 → 转化为性格底色与行为模式（如：天蝎座 = 表面沉静内敛，内心极度执着，对背叛零容忍，有强烈的掌控欲和洞察力，善于隐藏真实情绪）
+2. 生肖 → 转化为气质特征与行事风格（如：属虎 = 天生的领导气场，行事果断有魄力，但有时过于刚直，不善于迂回）
+3. MBTI → 转化为认知模式与决策风格（如：INFJ = 高度共情的理想主义者，洞察力极强，做决策时兼顾理性与价值观，内心有强烈的使命感但外表温和）
+4. 三者融合时，以MBTI为认知框架、星座为情绪底色、生肖为气质特征，综合输出为一段专业、连贯的性格描写
+5. 若未指定标签，则根据故事方向和角色定位自行设计合理性格
+
+请输出以下内容（用Markdown格式，每个板块用 ### 三级标题）：
+
+### 主要人物
+列出3-5个主要角色，每个包含完整人设卡片。每个角色需包含：
+- **性格描写**：综合星座/生肖/MBTI标签转化的专业性格描写
+- **相貌**：外貌特征
+- **特技**：擅长什么
+- **弱点**：致命短板
+- **口吻**：说话风格/口头禅
+
+### 人物关系图
+描述主要角色之间的关系和张力
+
+### 人物弧光
+每个主要角色的变化轨迹
+
+### 配角设定
+3-4个重要配角及其作用
+
+### 反派/阻碍角色
+分析反派角色的塑造逻辑`
+      }
     },
     5: {
       name: '对白大师',
@@ -2076,22 +2818,7 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
 - 长短交替：长句铺垫，短句爆发
 - 问东答西：不要流水账问答，要回避/反问/攻击
 - 停顿的力量：没说出口的比说出口的更有力
-- os与台词相反：想的和说的相反=张力最强
-
-【人话感校准】
-好台词应让观众觉得"这就是真人会说的话"，而不是"这段台词写得真好"。
-①菜市场测试：想象普通人站在菜市场里，会不会说出这样的话？太文艺/太刻意/太完美→改为日常表达
-②日常废话原则：每3句有效台词间必须有1句"废话"润滑（"吃了吗？""嗯，吃过了。"）
-③打断和不完整：话说一半被打断、改变话题、重复自我修正、用动作代替语言
-④人话感自检：有没有至少1句日常生活中普通人会说的？有没有人被打断或自己改口？
-
-【情感共振句设计】
-每集至少1句"截图级金句"——观众看完会截图发朋友圈的那种。
-金句三要素：短（10字以内）、准（戳中具体痛点）、留（有余味让人想一想）
-金句诞生于极端处境，不是角色突然演讲：
-✗ "我要逆袭！" → ✓ "我不是不怕，是怕也得去。"
-✗ "我终于自由了！" → ✓ "走了。不回了。"
-最佳位置：场景结尾（说完就切）；禁止位置：场景开头。`,
+- os与台词相反：想的和说的相反=张力最强`,
       userPrompt: (idea, style, episodes, prevResults) => `请基于以下角色设定，设计对白系统：
 
 【创意】${idea}
@@ -2135,32 +2862,42 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
 - 每个节拍必须对应具体的集数和场景
 - 节拍之间的转折必须由人物选择驱动
 - 爽点密度：游戏时间阶段每2集至少1个爽点
-- 钩子设计：每集结尾必须有钩子，下集开头3秒内回应
-
-【期待感引擎】
-观众追剧核心驱动力是"想知道后面会怎样"。期待感不是感觉，是工程。
-①信息差矩阵（三种类型）：
-  - 焦虑型：观众知道角色不知道→"你快醒醒啊！"（悬疑/危机/误会）
-  - 悬念型：角色知道观众不知道→"他到底藏着什么？"（揭秘/反转/身份）
-  - 共同探索型：观众和角色都不知道→"到底怎么回事？"（冒险/成长）
-  全剧至少维护3条信息差线，焦虑型每5集至少闭合1条。
-②承诺-延迟-兑现循环：
-  - 微循环（1-2集）：小承诺小兑现
-  - 中循环（3-5集）：中等承诺中等兑现
-  - 大循环（全剧）：终极承诺终极兑现
-  延迟手法：制造障碍/转移注意/提高赌注（假兑现全剧≤2次）
-
-【伏笔回收系统】
-伏笔三原则：①必收（10集内回收）②增值（回收时产生新含义）③双层回收（≥30%伏笔回收两次：表面+深层）
-伏笔类型：道具伏笔/台词伏笔/行为伏笔
-密度控制：前10集每2集至少埋入1个，中10集回收高峰，后10集大伏笔终极回收。`,
-      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，设计全剧结构：
+- 钩子设计：每集结尾必须有钩子，下集开头3秒内回应`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，先构建世界设定，再设计全剧结构。
 
 【创意】${idea}
 【创作风格】${style}
 【集数】${episodes}集
 【完整设定】
 ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
+
+━━━━━━━━━━━━━━━━━━━
+第一部分：世界设定
+━━━━━━━━━━━━━━━━━━━
+
+请用以下6个板块构建故事世界（用Markdown格式，每个板块用 ### 三级标题，正文正常段落）：
+
+### 时代坐标
+故事发生的时间与社会阶段。不只是年份，更要写出这个时代的核心张力——什么在膨胀、什么在崩塌、普通人身处其中的处境。
+
+### 空间层级
+故事的主要舞台，以及空间中的权力分层（上层空间/中层空间/底层空间分别是什么样的物理环境，谁在其中）。
+
+### 权力图谱
+谁掌握资源和话语权？权力如何分配？阶层之间如何流动（或无法流动）？用2-3句话勾勒权力结构。
+
+### 生存法则
+这个世界的明规则（法律/制度）和潜规则（实际运行的逻辑）。人们在这里如何生存、如何上升、如何被淘汰。
+
+### 符号系统
+3-5个贯穿全剧的核心符号/物件/仪式/语言习惯。每个符号用一句话说明它的叙事功能（不是装饰，要推动剧情或揭示人物）。
+
+### 视听基调
+色彩方案、光影风格、气候特征、声音关键词。用短句罗列，方便导演直接参考。
+
+━━━━━━━━━━━━━━━━━━━
+第二部分：全剧结构
+━━━━━━━━━━━━━━━━━━━
 
 请输出以下内容（用HTML格式）：
 <h4>整体节奏曲线</h4> - 全剧节奏起伏设计
@@ -2224,26 +2961,8 @@ X-1 地点名 时间/内外
 - 每集800-1200字
 - 场景切换要有节奏感
 - 对白要符合角色人设
-- 动作描写要具体、有画面感
-
-【故事化写作4规则】
-不要写"发生了什么事"，要写"这个角色经历了什么"。观众记住的永远不是事件，是感受。
-①场景优先于事件：用角色的身体和感官经历每个事件
-  ✗ "林砚被公司开除" → ✓ "林砚抱着纸箱走出大门，保安在身后锁上了玻璃门"
-②感官优先于叙述：关键场景必须包含至少2种感官细节（不只是看到，还有听到/闻到/摸到）
-③角色视角写作：用角色的眼睛看世界，不用上帝视角旁白
-④情绪传染写法：不描述情绪，写出让观众自己感受到情绪的物理细节
-  ✗ "他很伤心" → ✓ "他把手机翻过来扣在桌上，盯着天花板发了很久的呆"
-  写完检查：有没有直接写出情绪词？如果有，换成物理细节。
-
-【沉浸密度分级】
-| 级别 | 适用场景 | 感官要求 | 描写重点 |
-| S级 | 高潮/转折/告别/生死 | 五感全开 | 情绪传染+环境共振+灵魂印记触发 |
-| A级 | 冲突/对峙/揭秘 | 至少3种感官 | 感官细节+动作张力+潜文本 |
-| B级 | 过渡/日常/铺垫 | 至少2种感官 | 保留一个记忆点 |
-| C级 | 纯功能推进 | 至少1种感官 | 最短路径完成信息传递 |
-写完每个场景后在标记处标注级别，如"1-1 老屋 日/内 S级"。`,
-      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，写出前3集的完整专业剧本：
+- 动作描写要具体、有画面感`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下完整设定，按每5集一批输出完整的专业分场剧本。
 
 【创意】${idea}
 【创作风格】${style}
@@ -2251,15 +2970,57 @@ X-1 地点名 时间/内外
 【完整设定】
 ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n') || '（暂无）'}
 
-请严格按照专业分场剧本格式，输出第1集、第2集、第3集的完整剧本。
+━━━━━━━━━━━━━━━━━━━
+【输出格式要求 — 严格遵守】
+━━━━━━━━━━━━━━━━━━━
 
-每集包含：
-- 集头信息（集名、核心事件、情感基调、时长）
+请按每5集一批输出，每批之间用分割线隔开。每集格式如下：
+
+### 第X集 《集名》
+**核心事件：** 一句话概括
+**情感基调：** 关键词
+**时长：** X分钟
+
+---
+
+**X-1 地点名 日/内**
+**人物：** 角色A 角色B
+△动作描写，用具体画面建立空间感。
+△环境细节。
+角色A：（情绪）台词内容
+角色B：台词内容
+△反应动作
+角色Aos：内心独白
+
+**X-2 地点名 夜/外**
+...（同上格式）
+
+---
+
+每集要求：
 - 3-5个场景
-- 每个场景：场景标记、人物行、动作描写、角色台词
 - 每集800-1200字
+- 动作行以△开头
+- 台词行用"角色名：台词"格式
+- 内心独白用"角色名os：内容"格式
 
-注意：这是专业剧本格式，不是大纲、不是概要、不是摘要。必须是可直接用于拍摄的分场剧本。`
+━━━━━━━━━━━━━━━━━━━
+【分批输出规则】
+━━━━━━━━━━━━━━━━━━━
+
+第1批：第1-5集
+（输出5集完整剧本后，在末尾加上字数统计）
+
+【本批统计】
+总字数：XXX字 | 共5集 | 平均每集XXX字
+
+---
+（然后继续输出第6-10集，以此类推，直到输出全部${episodes}集）
+
+注意：
+- 从第1集开始，按顺序输出，不跳过任何一集
+- 每批5集，每批末尾附字数统计
+- 这是专业分场剧本，不是大纲、不是概要`
     },
     8: {
       name: '视觉导演',
@@ -2316,18 +3077,162 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
 <h4>镜头语言</h4> - 关键场景的镜头设计
 <h4>声音系统</h4> - BGM风格、音效设计、环境音方案
 <h4>视觉彩蛋</h4> - 为观众准备的视觉细节和隐喻`
+    },
+    // ===== Wave 2 新增专家 =====
+    9: {
+      name: '格式工匠',
+      expert: 'format_craftsman',
+      systemPrompt: `你是§6格式工匠，资深影视剧本格式专家。
+你的工作：将剧本对齐目标平台的专业格式规范（红果/咪咕/抖音/快手）。
+输出规范：场景标题用【】包裹，动作描写用△标记，对白用：分隔，内心独白用（OS）标注。
+每集控制在1500-2000字，必须包含场景元数据（地点/时间/人物）。
+铁律：只改格式不改内容，保留原始对白和情节。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请将以下剧本按专业格式标准化：
+
+【创意】${idea}
+【剧本内容】
+${prevResults[7] || prevResults[8] || '（暂无剧本）'}
+
+请输出格式化后的完整剧本，包含：
+<h4>格式规范</h4> - 采用的平台格式标准
+<h4>格式化剧本</h4> - 标准化后的剧本内容
+<h4>元数据</h4> - 集数/字数/时长统计`
+    },
+    10: {
+      name: '质量审计',
+      expert: 'quality_auditor',
+      systemPrompt: `你是§7质量审计师，剧本质量评估专家。
+你的核心能力：6维度自动评分——剧情张力/角色深度/对白质量/节奏把控/视觉潜力/商业潜力。
+每项1-10分，逐集独立打分。低于7分标记为"需改稿"。
+改进建议必须具体可执行，不允许空话。
+评估边界：你的评估覆盖内容合规与剧本质量（对应平台过审环节），不涉及签约判定。签约取决于平台商务、市场等外部因素。
+铁律：评分基于文本证据，不凭主观感受。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请对以下剧本进行6维度质量评估：
+
+【创意】${idea}
+【剧本】
+${prevResults[7] || prevResults[9] || '（暂无）'}
+
+请输出：
+<h4>综合评分</h4> - 总分和通过/不通过判定
+<h4>6维度得分</h4> - 每维度1-10分
+<h4>逐集分析</h4> - 每集评分和问题
+<h4>改进建议</h4> - 具体可执行的修改方案`
+    },
+    11: {
+      name: '场景工匠',
+      expert: 'scene_craftsman',
+      systemPrompt: `你是§11场景工匠，场景氛围细化专家。
+核心能力：五感系统（视觉+听觉+嗅觉+触觉+味觉），每场景至少激活3种感官。
+环境叙事：用环境细节暗示角色情绪，不是直接说明。
+文化质感：非遗/地域文化元素融入场景描写。
+铁律：不改对白和情节，只增强环境描写，每场环境描写不超过总字数20%。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请增强以下剧本的场景氛围：
+
+【创意】${idea}
+【当前剧本】
+${prevResults[7] || prevResults[9] || '（暂无）'}
+
+请输出：
+<h4>氛围地图</h4> - 全剧场景氛围概览
+<h4>增强后剧本</h4> - 补充五感细节后的剧本
+<h4>五感覆盖</h4> - 各场景感官激活情况`
+    },
+    12: {
+      name: '改稿编辑',
+      expert: 'revision_editor',
+      systemPrompt: `你是§9改稿编辑，基于质量审计结果针对性修改剧本。
+策略：P0必修（逻辑漏洞/角色矛盾）> P1重要（对白平淡/节奏拖沓）> P2优化（视觉/悬念）。
+每轮改稿不超过总量15%，不引入新角色或新情节线。
+保留原有文风和角色语感。
+铁律：每处修改必须有审计依据，记录before/after。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请基于以下质量审计结果进行改稿：
+
+【创意】${idea}
+【当前剧本】
+${prevResults[7] || prevResults[9] || '（暂无）'}
+【质量审计】
+${prevResults[10] || '（暂无审计结果）'}
+
+请输出：
+<h4>改稿重点</h4> - 本轮要修复的问题
+<h4>修改内容</h4> - 具体修改（标注before/after）
+<h4>预估提升</h4> - 预计评分提升幅度`
+    },
+    13: {
+      name: '实战指挥',
+      expert: 'mission_commander',
+      systemPrompt: `你是§10实战指挥，端到端工作流编排专家。
+核心能力：15个专家按依赖关系有序执行，异常自动重试（最多3次），断点续跑。
+执行顺序：§0→§2→§8→§1→§4→§3→§5→§13→§6→§7→§9→§11→§14→§15
+铁律：不允许跳过§2合规审核和§15品控终审。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请为以下创作任务制定执行计划：
+
+【创意】${idea}
+【集数】${episodes}集
+【风格】${style}
+
+请输出：
+<h4>执行计划</h4> - 15个专家的执行顺序和依赖关系
+<h4>资源预估</h4> - 预计耗时和API调用量
+<h4>风险点</h4> - 可能的异常和恢复策略`
+    },
+    14: {
+      name: '商业操盘',
+      expert: 'business_strategist',
+      systemPrompt: `你是§14商业操盘手，短剧商业分析师。
+核心能力：市场分析（题材热度/竞品/受众画像）、投放策略（平台/节奏/投流）、变现路径（付费/IP/衍生）、风险评估。
+数据必须有依据，变现预估给区间不给精确数字。
+分析边界：你提供的是商业策略建议和可行性评估，不代表实际签约或收益保证。最终商务合作由平台方决定。
+铁律：不给文艺题材推荐纯爽剧平台，风险提示必须诚实。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请为以下剧本进行商业分析：
+
+【创意】${idea}
+【集数】${episodes}集
+【风格】${style}
+【质量评分】${prevResults[10] || '（暂无）'}
+
+请输出：
+<h4>市场分析</h4> - 题材热度、竞品、受众画像
+<h4>投放策略</h4> - 平台选择、发布节奏、投流建议
+<h4>变现路径</h4> - 直接变现+IP延展+文化衍生
+<h4>风险评估</h4> - 风险等级和应对策略`
+    },
+    15: {
+      name: '品控总监',
+      expert: 'quality_director',
+      systemPrompt: `你是§15品控总监，终审把关专家。
+核心能力：全剧一致性校验（角色/时间线/空间/情感）、终审质量关、达标判定。
+通过条件：总分≥7.0、单集≥6.0、0致命问题、≤2警告。
+判定：✅质量达标 / ⚠️有条件通过 / ❌退回改稿。
+注意：品控通过仅代表剧本内容合规且质量达标，不等于平台签约承诺。签约取决于平台商务评估、市场匹配等外部因素。
+铁律：拥有最终否决权，达标判定后不可再改，一致性逐集检查。`,
+      userPrompt: (idea, style, episodes, prevResults) => `请对以下剧本进行终审：
+
+【创意】${idea}
+【最终剧本】
+${prevResults[12] || prevResults[7] || '（暂无）'}
+【质量审计】${prevResults[10] || '（暂无）'}
+
+请输出：
+<h4>终审判定</h4> - ✅质量达标/⚠️有条件通过/❌退回
+<h4>一致性校验</h4> - 角色/时间线/空间/情感检查结果
+<h4>最终评分</h4> - 综合得分和通过状态
+<h4>终审意见</h4> - 终审备注`
     }
   };
 
 
   // Phase mapping: 8 expert steps → 5 visual phases
-  const stepToPhase = {1:1, 2:1, 3:2, 4:3, 5:4, 6:4, 7:5, 8:5};
+  const stepToPhase = {1:1, 2:1, 3:2, 4:3, 5:4, 6:4, 7:5, 8:5, 9:6, 10:6, 11:6, 12:7, 13:7, 14:7, 15:7};
   const phaseExperts = {
     1: ['soul_catcher', 'compliance_guard'],
     2: ['project_configurator'],
     3: ['character_forger'],
     4: ['dialogue_master', 'structure_architect'],
-    5: ['episode_writer', 'visual_director']
+    5: ['episode_writer', 'visual_director'],
+    6: ['format_craftsman', 'quality_auditor', 'scene_craftsman'],
+    7: ['revision_editor', 'mission_commander', 'business_strategist', 'quality_director']
   };
 
   // ====== 调用大模型 API ======
@@ -2440,19 +3345,57 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     if (nameInText) nameInText.textContent = name;
   }
 
+  // 头像上传：将图片转为base64存入localStorage，下次刷新自动恢复
+  function handleAvatarUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert('图片不能超过2MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64 = e.target.result;
+      localStorage.setItem('yunjiang_avatar', base64);
+      const imgEl = document.getElementById('avatarImg');
+      const emojiEl = document.querySelector('.alogon-avatar .avatar-emoji');
+      if (imgEl) {
+        imgEl.src = base64;
+        imgEl.style.display = 'block';
+      }
+      if (emojiEl) emojiEl.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // 初始化头像：优先读取localStorage中的自定义头像
+  function restoreAvatar() {
+    const saved = localStorage.getItem('yunjiang_avatar');
+    if (saved) {
+      const imgEl = document.getElementById('avatarImg');
+      const emojiEl = document.querySelector('.alogon-avatar .avatar-emoji');
+      if (imgEl) {
+        imgEl.src = saved;
+        imgEl.style.display = 'block';
+      }
+      if (emojiEl) emojiEl.style.display = 'none';
+      return true;
+    }
+    return false;
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('creatorName').addEventListener('input', checkCanEnter);
     const aiNameInput = document.getElementById('aiName');
     if (aiNameInput) aiNameInput.addEventListener('input', updateAiName);
     updateAiName();
     
-    // 随机头像 + 对话序列
-    const avatarEmojis = ['🤖','🎬','️','🌸','🎭','🦊','🐱','','⭐','🔮','','📖','💡','','🍃'];
-    const avatarEl = document.querySelector('.alogon-avatar');
-    if (avatarEl) {
+        // 随机头像 + 对话序列（如果已有自定义头像则跳过随机）
+    if (!restoreAvatar()) {
+      const avatarEmojis = ['🤖','🎬','️','🌸','🎭','','🐱','','⭐','🔮','','📖','','','🍃'];
       const emoji = avatarEmojis[Math.floor(Math.random() * avatarEmojis.length)];
-      avatarEl.textContent = emoji;
-      avatarEl.style.cssText = 'width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);box-shadow:0 0 20px rgba(102,126,234,0.3);';
+      const emojiEl = document.querySelector('.alogon-avatar .avatar-emoji');
+      if (emojiEl) emojiEl.textContent = emoji;
     }
 
     // 引导员对话序列
@@ -2927,35 +3870,99 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
   };
 
   let isCreating = false;
+  let pauseRequested = false;
+  let resumeRequested = false;
   let currentStep = 0;
   let stepsCompleted = 0;
+
+  function togglePauseResume() {
+    const btn = document.getElementById('generateBtn');
+    if (!isCreating) return;
+    
+    if (!pauseRequested) {
+      // Pause
+      pauseRequested = true;
+      btn.innerHTML = '<span>已暂停</span><span>⏸</span>';
+    } else {
+      // Resume
+      pauseRequested = false;
+      resumeRequested = true;
+      btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
+    }
+  }
+
 
   function setIdea(text) {
     document.getElementById('ideaInput').value = text;
   }
 
+  // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
+  const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
+
+  // 专家名 → 步骤号映射
+  const expertToStep = {
+    'soul_catcher': 1,
+    'compliance_guard': 2,
+    'project_configurator': 3,
+    'character_forger': 4,
+    'dialogue_master': 5,
+    'structure_architect': 6,
+    'episode_writer': 7,
+    'visual_director': 8,
+    'format_craftsman': 9,
+    'quality_auditor': 10,
+    'scene_craftsman': 11,
+    'revision_editor': 12,
+    'mission_commander': 13,
+    'business_strategist': 14,
+    'quality_director': 15
+  };
+
   // 点击左侧步骤点击切换
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.step-item').forEach(item => {
       item.addEventListener('click', () => {
-      const step = parseInt(item.dataset.step);
-      if (step <= stepsCompleted || step === currentStep) {
-        showStepContent(step);
+      const panelStep = parseInt(item.dataset.step);
+      // 用映射关系找到实际步骤
+      const realStep = panelToStep[panelStep] || panelStep;
+      if (realStep <= stepsCompleted || realStep === currentStep) {
+        showStepContent(realStep);
+      }
+    });
+    });
+
+    // 点击右侧专家步骤查看对应输出
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.addEventListener('click', () => {
+      const expertName = item.dataset.expert;
+      const stepNum = expertToStep[expertName];
+      // 允许点击的条件：步骤已完成 OR 是当前步骤 OR 有生成内容
+      if (stepNum && (stepNum <= stepsCompleted || stepNum === currentStep || (generatedResults && generatedResults[stepNum]))) {
+        showStepContent(stepNum);
       }
     });
     });
   });
 
   function showStepContent(stepNum) {
-    const step = stepData[stepNum];
+    // 获取步骤信息：优先用 stepData，否则从 stepPrompts 构建
+    let step = stepData[stepNum];
+    const prompt = stepPrompts[stepNum];
+    if (!step && prompt) {
+      // 为步骤 9-15 构建动态信息
+      step = {
+        icon: '🔧',
+        title: `步骤 ${stepNum} · ${prompt.name}`,
+        meta: prompt.expert,
+        expert: prompt.expert,
+        content: ''
+      };
+    }
     if (!step) return;
     
     // 更新左侧激活态
     document.querySelectorAll('.step-item').forEach((item, i) => {
       item.classList.remove('active');
-      if (i + 1 === stepNum - 1) {
-        item.classList.add('active');
-      }
     });
     const phaseForStep = stepToPhase[stepNum] || stepNum;
     const phaseEl = document.querySelector(`.step-item[data-step="${phaseForStep}"]`);
@@ -2973,7 +3980,21 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     const hasRealContent = generatedResults && generatedResults[stepNum];
     
     if (hasRealContent) {
-      // 显示真实生成的内容
+      // 显示真实生成的内容（用 renderMarkdown 渲染，避免 Markdown 乱码）
+      let renderedContent = renderMarkdown(generatedResults[stepNum]);
+      // 后处理：剧本元素 CSS 类名（复用和生成时相同的规则）
+      renderedContent = renderedContent.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
+      renderedContent = renderedContent.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
+      renderedContent = renderedContent.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
+      renderedContent = renderedContent.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
+      // 字数统计（步骤7/8 专用）
+      if (stepNum === 7 || stepNum === 8) {
+        const charCount = generatedResults[stepNum].replace(/\s/g, '').length;
+        const episodeMatches = generatedResults[stepNum].match(/第\s*\d+\s*集/g) || [];
+        const epCount = episodeMatches.length;
+        const avg = epCount > 0 ? Math.round(charCount / epCount) : 0;
+        renderedContent += `<div class="script-stats">📊 <strong>剧本统计</strong>：共 <strong>${charCount.toLocaleString()}</strong> 字 · <strong>${epCount}</strong> 集 · 平均每集 <strong>${avg.toLocaleString()}</strong> 字</div>`;
+      }
       outputContainer.innerHTML = `
         <div class="output-card">
           <div class="output-header">
@@ -2982,9 +4003,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
               <div class="output-title">${step.title}</div>
               <div class="output-meta">${step.meta}</div>
             </div>
+            <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
           </div>
-          <div class="output-body">
-            ${generatedResults[stepNum]}
+          <div class="output-body" id="output-body-${stepNum}">
+            ${renderedContent}
           </div>
         </div>
       `;
@@ -3037,11 +4059,14 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     }
     
     isCreating = true;
+    pauseRequested = false;
+    resumeRequested = false;
     stepsCompleted = 0;
     currentStep = 0;
     generatedResults = {};
     const btn = document.getElementById('generateBtn');
-    btn.disabled = true;
+    btn.disabled = false;
+    btn.onclick = togglePauseResume;
     btn.innerHTML = '<span>创作中...</span><span>⏳</span>';
     
     // 隐藏欢迎界面
@@ -3053,7 +4078,14 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     const styleText = styleTextMap[selectedStyle] || '情感流';
     
     // 逐步执行每一步
-    for (let step = 1; step <= 8; step++) {
+    for (let step = 1; step <= 15; step++) {
+      // 跳过非生成步骤（实战指挥、商业操盘只输出规划，不影响剧本内容）
+      // Pause check
+      while (pauseRequested && isCreating) {
+        if (resumeRequested) { resumeRequested = false; break; }
+        await new Promise(r => setTimeout(r, 300));
+      }
+      if (!isCreating) return;
       try {
         await runStepReal(step, idea, styleText, settings.episodeCount);
         // Mark expert as completed
@@ -3066,10 +4098,11 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
       } catch (err) {
         showToast(err.message || '生成失败，请检查API配置', true);
         console.error('Step ' + step + ' failed:', err);
-        // 失败后停止，不再静默回退到演示模式
         btn.innerHTML = '<span>重新开始</span><span>▶</span>';
         btn.disabled = false;
+        btn.onclick = startCreation;
         isCreating = false;
+        pauseRequested = false;
         return;
       }
     }
@@ -3077,7 +4110,9 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     // 完成
     btn.innerHTML = '<span>再来一版</span><span>↻</span>';
     btn.disabled = false;
+    btn.onclick = startCreation;
     isCreating = false;
+    pauseRequested = false;
     
     // 添加最终完成卡片
     addFinalCard();
@@ -3087,6 +4122,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
   async function runStepReal(stepNum, idea, styleText, episodes) {
     const prompt = stepPrompts[stepNum];
     const step = stepData[stepNum]; // 用 stepData 里的图标标题等UI信息
+    if (!step) {
+      // 步骤无UI数据，跳过渲染但仍执行API生成
+      console.log("Step " + stepNum + ": no stepData, skipping UI");
+    }
     const contentArea = document.getElementById('contentArea');
     const outputContainer = document.getElementById('outputContainer');
     
@@ -3097,10 +4136,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
       item.classList.remove('active');
       if (phase < currentPhase) {
         item.classList.add('completed');
-        item.querySelector('.step-status').textContent = '已完成';
+        const st = item.querySelector('.step-status'); if(st) st.textContent = '已完成';
       } else if (phase === currentPhase) {
         item.classList.add('active');
-        item.querySelector('.step-status').textContent = '进行中';
+        const st2 = item.querySelector('.step-status'); if(st2) st2.textContent = '进行中';
       }
     });
     
@@ -3118,10 +4157,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     card.className = 'output-card';
     card.innerHTML = `
       <div class="output-header">
-        <div class="output-icon">${step.icon}</div>
+        <div class="output-icon">${step ? step.icon : "🔧"}</div>
         <div>
-          <div class="output-title">${step.title}</div>
-          <div class="output-meta">${step.meta}</div>
+          <div class="output-title">${step ? step.title : "步骤 " + stepNum}</div>
+          <div class="output-meta">${step ? step.meta : ""}</div>
         </div>
       </div>
       <div class="output-body">
@@ -3141,17 +4180,39 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     
     const targetEl = document.getElementById(`stream-content-${stepNum}`);
     let chunk;
+    let rawText = '';
     while ((chunk = await stream.readNext()) !== null) {
       if (chunk) {
-        targetEl.innerHTML += chunk;
+        rawText += chunk;
+        // 实时将 Markdown 渲染为 HTML（使用内嵌 renderMarkdown，无需外部 CDN）
+        let html = renderMarkdown(rawText);
+        // 后处理：给剧本元素加 CSS 类名
+        // 动作行 △ 开头的段落
+        html = html.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
+        // 场景标题（X-Y 地点名 日/内 格式的 bold 段落）
+        html = html.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
+        // 人物行
+        html = html.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
+        // 角色os 内心独白
+        html = html.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
+        // 字数统计区（步骤7专用）
+        if (stepNum === 7) {
+          const charCount = rawText.replace(/\s/g, '').length;
+          const episodeMatches = rawText.match(/第\s*\d+\s*集/g) || [];
+          const epCount = episodeMatches.length;
+          const avg = epCount > 0 ? Math.round(charCount / epCount) : 0;
+          html += `<div class="script-stats">📊 <strong>剧本统计</strong>：共 <strong>${charCount.toLocaleString()}</strong> 字 · <strong>${epCount}</strong> 集 · 平均每集 <strong>${avg.toLocaleString()}</strong> 字</div>`;
+        }
+        targetEl.innerHTML = html;
         contentArea.scrollTop = contentArea.scrollHeight;
         // 避免阻塞UI
         await new Promise(r => setTimeout(r, 10));
       }
     }
     
-    // 保存结果供后续步骤使用
+    // 保存结果供后续步骤使用（保存原始 Markdown 文本）
     generatedResults[stepNum] = stream.fullText;
+
     
     // 专家完成状态
     currentExpert.classList.remove('working', 'active');
@@ -3164,6 +4225,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
   // 演示模式（原有逻辑）
   async function runStep(stepNum) {
     const step = stepData[stepNum];
+    if (!step) {
+      console.log("Demo step " + stepNum + ": no stepData, skipping");
+      return Promise.resolve();
+    }
     const contentArea = document.getElementById('contentArea');
     const outputContainer = document.getElementById('outputContainer');
     
@@ -3174,10 +4239,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
       item.classList.remove('active');
       if (phase < currentPhase) {
         item.classList.add('completed');
-        item.querySelector('.step-status').textContent = '已完成';
+        const st = item.querySelector('.step-status'); if(st) st.textContent = '已完成';
       } else if (phase === currentPhase) {
         item.classList.add('active');
-        item.querySelector('.step-status').textContent = '进行中';
+        const st2 = item.querySelector('.step-status'); if(st2) st2.textContent = '进行中';
       }
     });
     
@@ -3193,10 +4258,10 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     card.className = 'output-card';
     card.innerHTML = `
       <div class="output-header">
-        <div class="output-icon">${step.icon}</div>
+        <div class="output-icon">${step ? step.icon : "🔧"}</div>
         <div>
-          <div class="output-title">${step.title}</div>
-          <div class="output-meta">${step.meta}</div>
+          <div class="output-title">${step ? step.title : "步骤 " + stepNum}</div>
+          <div class="output-meta">${step ? step.meta : ""}</div>
         </div>
       </div>
       <div class="output-body typing-effect">
@@ -3247,7 +4312,7 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
         <div class="output-icon" style="background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink));">🎉</div>
         <div>
           <div class="output-title">剧本创作完成</div>
-          <div class="output-meta">总计 30 集 · 约 36,000 字 · 非遗题材 · 已通过红果短剧签约审核</div>
+          <div class="output-meta">总计 30 集 · 约 36,000 字 · 非遗题材 · 已通过内容合规与质量终审</div>
         </div>
       </div>
       <div class="output-body">
@@ -3269,8 +4334,11 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
             <div style="font-size: 24px; font-weight: 700; color: var(--accent-pink);">3.2集/次</div>
           </div>
         </div>
+        <div style="font-size: 11px; color: var(--text-muted); background: rgba(var(--accent-purple-rgb, 139,92,246), 0.06); border-left: 2px solid var(--accent-purple); padding: 8px 12px; border-radius: 0 6px 6px 0; margin-bottom: 16px; line-height: 1.6;">
+          <strong style="color: var(--text-secondary);">评估范围说明：</strong>本引擎评估覆盖内容合规与剧本质量维度（对应平台过审环节）。签约与否还取决于平台商务评估、市场排期、受众匹配等外部因素，不在引擎评估范围内。
+        </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; border-radius: 8px; color: white; font-size: 13px; cursor: pointer;">📥 导出完整剧本</button>
+          <button style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; border-radius: 8px; color: white; font-size: 13px; cursor: pointer;" onclick="exportAsTxt()">📥 导出完整剧本 (TXT)</button>
           <button style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">🔄 再创作一版</button>
           <button style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">📝 人工微调</button>
         </div>
@@ -3285,7 +4353,7 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
     document.querySelectorAll('.step-item').forEach(item => {
       item.classList.remove('active');
       item.classList.add('completed');
-      item.querySelector('.step-status').textContent = '已完成';
+      const st = item.querySelector('.step-status'); if(st) st.textContent = '已完成';
     });
   }
 
@@ -3311,6 +4379,379 @@ ${[...Array(8)].map((_, i) => prevResults[i+1] || '').filter(Boolean).join('\n\n
       incrementExportCount();
     }
   });
+
+  // ========== TXT 导出功能 ==========
+  function stripHtml(html) {
+    let text = html;
+    // 1. HTML → 换行
+    text = text
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/p>/gi, '\n')
+      .replace(/<\/h[1-6]>/gi, '\n')
+      .replace(/<\/div>/gi, '\n')
+      .replace(/<\/li>/gi, '\n')
+      .replace(/<li[^>]*>/gi, '  - ')
+      .replace(/<h[1-6][^>]*>/gi, '\n## ')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+    // 2. 清理 Markdown 格式符号
+    text = text
+      .replace(/\*\*([^*]+)\*\*/g, '$1')       // **bold** → bold
+      .replace(/\*([^*]+)\*/g, '$1')             // *italic* → italic
+      .replace(/__([^_]+)__/g, '$1')             // __bold__ → bold
+      .replace(/~~([^~]+)~~/g, '$1')             // ~~strikethrough~~ → text
+      .replace(/^#{1,6}\s+/gm, '')              // ## heading → plain
+      .replace(/^>\s*/gm, '')                   // > blockquote → plain
+      .replace(/`([^`]+)`/g, '$1')              // `code` → text
+      .replace(/^---+$/gm, '─'.repeat(40))       // --- → separator
+      .replace(/^\*\*\*/gm, '');              // *** → empty
+    // 3. 处理 Markdown 表格 → 缩进列表格式
+    text = text.replace(/(^[|\s].*\|.*$\n?)+/gm, function(tableBlock) {
+      const lines = tableBlock.trim().split('\n').filter(l => l.trim());
+      if (lines.length < 2) return tableBlock;
+      // 跳过分隔行 (|---|---|)
+      const dataLines = lines.filter(l => !/^\s*\|?\s*[-:]+\s*\|/.test(l));
+      if (dataLines.length === 0) return tableBlock;
+      // 第一行作为表头
+      const headers = dataLines[0].split('|').map(s => s.trim()).filter(Boolean);
+      let result = '\n';
+      for (let i = 1; i < dataLines.length; i++) {
+        const cells = dataLines[i].split('|').map(s => s.trim()).filter(Boolean);
+        result += '  [' + (cells[0] || '') + ']\n';
+        for (let j = 1; j < cells.length && j < headers.length; j++) {
+          result += '    ' + headers[j] + '：' + cells[j] + '\n';
+        }
+      }
+      return result + '\n';
+    });
+    // 4. 清理多余空行
+    text = text.replace(/\n{3,}/g, '\n\n').trim();
+    return text;
+  }
+
+  function exportAsTxt() {
+    // 检查是否有生成内容
+    const keys = Object.keys(generatedResults);
+    if (keys.length === 0) {
+      showToast('还没有生成内容，请先创作', true);
+      return;
+    }
+
+    const idea = document.getElementById('ideaInput').value.trim() || '未命名剧本';
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' + 
+      String(now.getMonth()+1).padStart(2,'0') + '-' + 
+      String(now.getDate()).padStart(2,'0') + ' ' +
+      String(now.getHours()).padStart(2,'0') + ':' + 
+      String(now.getMinutes()).padStart(2,'0');
+
+    // 步骤标题映射
+    const stepTitles = {
+      1: '§0 灵魂捕手 · 剧本策划',
+      2: '§2 合规守门员 · 合规审核',
+      3: '§8 项目配置 · 角色铸造',
+      4: '§1 对白大师 · 语料风格',
+      5: '§3 结构建筑师 · 全剧骨架',
+      6: '§4 人物塑造 · 角色设定',
+      7: '§5 分集编剧 · 剧本正文',
+      8: '§13 视觉导演 · 视觉系统',
+      9: '§6 格式工匠 · 格式标准化',
+      10: '§7 质量审计 · 6维度评分',
+      11: '§11 场景工匠 · 五感增强',
+      12: '§9 改稿编辑 · 智能改稿',
+      13: '§10 实战指挥 · 执行计划',
+      14: '§14 商业操盘 · 市场分析',
+      15: '§15 品控总监 · 终审达标'
+    };
+
+    let txt = '═══════════════════════════════════════\n';
+    txt += '  云匠 · 精品短剧剧本\n';
+    txt += '═══════════════════════════════════════\n\n';
+    txt += '创意来源：' + idea + '\n';
+    txt += '生成时间：' + dateStr + '\n';
+    txt += '创作引擎：云匠 V3 (1人+15AI专家)\n';
+    txt += '\n───────────────────────────────────────\n\n';
+
+    // 按步骤顺序输出
+    const sortedKeys = keys.map(Number).sort((a,b) => a-b);
+    for (const stepNum of sortedKeys) {
+      const title = stepTitles[stepNum] || ('步骤' + stepNum);
+      txt += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+      txt += '  ' + title + '\n';
+      txt += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+      txt += stripHtml(generatedResults[stepNum]);
+      txt += '\n\n';
+    }
+
+    txt += '═══════════════════════════════════════\n';
+    txt += '  —— 由云匠引擎生成 ——\n';
+    txt += '═══════════════════════════════════════\n';
+
+    // 创建下载
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const safeName = idea.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '_').substring(0, 20);
+    a.download = '云匠剧本_' + safeName + '_' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('剧本已导出为 TXT 文件');
+  }
+
+
+
+  // ===== 主题切换 =====
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    const btn = document.getElementById('themeToggle');
+    btn.textContent = next === 'light' ? '☀️' : '🌙';
+    btn.title = next === 'light' ? '切换到深色模式' : '切换到浅色模式';
+  }
+  
+  // 初始化主题
+  (function() {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = saved === 'light' ? '☀️' : '🌙';
+  })();
+
+  // ===== 编辑功能 =====
+  function toggleEditOutput(stepNum) {
+    const body = document.getElementById('output-body-' + stepNum);
+    if (!body) return;
+    
+    const btn = body.parentElement.querySelector('.output-edit-btn');
+    
+    if (body.contentEditable === 'true') {
+      // Already editing - show save/cancel
+      return;
+    }
+    
+    // Store original content for cancel
+    body.dataset.originalContent = body.innerHTML;
+    body.contentEditable = 'true';
+    body.focus();
+    
+    // Change button to save/cancel
+    btn.outerHTML = `
+      <div class="output-edit-actions">
+        <button class="cancel-btn" onclick="cancelEditOutput(${stepNum})">取消</button>
+        <button class="save-btn" onclick="saveOutput(${stepNum})">保存修改</button>
+      </div>
+    `;
+  }
+  
+  function saveOutput(stepNum) {
+    const body = document.getElementById('output-body-' + stepNum);
+    if (!body) return;
+    
+    // Update stored result
+    generatedResults[stepNum] = body.innerHTML;
+    body.contentEditable = 'false';
+    delete body.dataset.originalContent;
+    
+    // Restore edit button
+    const actions = body.parentElement.querySelector('.output-edit-actions');
+    if (actions) {
+      actions.outerHTML = `<button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>`;
+    }
+    
+    showToast('修改已保存');
+  }
+  
+  function cancelEditOutput(stepNum) {
+    const body = document.getElementById('output-body-' + stepNum);
+    if (!body) return;
+    
+    // Restore original content
+    body.innerHTML = body.dataset.originalContent || '';
+    body.contentEditable = 'false';
+    delete body.dataset.originalContent;
+    
+    // Restore edit button
+    const actions = body.parentElement.querySelector('.output-edit-actions');
+    if (actions) {
+      actions.outerHTML = `<button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>`;
+    }
+  }
+
+
+  // ===== 题材选择器 =====
+  const genreData = {
+    "热门推荐": [
+      ["全部", 17737], ["打脸虐渣", 1356], ["都市", 985], ["大女主", 854],
+      ["Revenge", 791], ["大男主", 760], ["商战", 512], ["Billionaire", 486],
+      ["先婚后爱", 390], ["甜宠", 390], ["Secret-Identity", 381], ["豪门", 349],
+      ["脑洞", 315], ["重生", 307], ["Underdog-Rise", 304]
+    ],
+    "情感关系": [
+      ["Enemies-to-Lovers", 282], ["双向救赎", 268], ["Toxic-Love/Dark-Romance", 255],
+      ["马甲", 246], ["Marriage-of-Convenience", 238], ["强者回归", 232],
+      ["Forbidden-Love", 214], ["追妻火葬场", 107], ["Divorce-Recovery", 95],
+      ["Sports-Romance", 90], ["Forced-Proximity", 88], ["Secret-Baby", 82],
+      ["Vampire", 80], ["神豪", 77], ["仙侠", 74], ["Fake-Relationship", 73],
+      ["Office-Romance", 73], ["High-Society", 71], ["虐恋", 70], ["Urban-Fantasy", 69],
+      ["职场", 66], ["Age-Gap", 64], ["逆袭", 62], ["Mythological/Gods", 62], ["Second-Chance", 59]
+    ],
+    "奇幻科幻": [
+      ["种田", 223], ["异能", 212], ["Werewolf", 209], ["系统", 195],
+      ["穿越", 194], ["科幻", 193], ["奇幻", 191], ["玄幻", 148],
+      ["Mafia", 144], ["Superpower", 124], ["High-Fantasy", 101],
+      ["Reincarnation", 100], ["年代", 95], ["赛博朋克", 8], ["末日", 6]
+    ],
+    "成长逆袭": [
+      ["女性成长", 189], ["现言", 185], ["Transformation/Glow-Up", 166],
+      ["喜剧", 165], ["Corporate-Warfare", 165], ["强强联合", 155],
+      ["古言", 152], ["神医", 123], ["求生", 118], ["古代", 115],
+      ["动作", 104], ["传承觉醒", 103], ["校园", 11], ["家庭伦理", 10],
+      ["无限流", 10], ["反派主角", 10], ["Face-Slapping", 9]
+    ],
+    "悬疑惊悚": [
+      ["悬疑", 172], ["Psychological-Thriller", 53], ["Dark-Romance", 25],
+      ["Dystopian", 25], ["Survival-Adventure", 26], ["Betrayal-Conspiracy", 19],
+      ["Mistaken-Identity", 17], ["白月光", 16], ["Flash-Marriage", 15],
+      ["荒岛", 15], ["Hidden-Identity", 14], ["战神", 13], ["娱乐圈", 12],
+      ["Murder-Mystery", 5], ["前世今生", 4], ["末日求生", 3], ["末世废土", 3]
+    ],
+    "古风历史": [
+      ["古言", 152], ["玄幻", 148], ["古代", 115], ["仙侠", 74],
+      ["High-Fantasy", 101], ["民国", 17], ["宫廷", 6], ["武侠", 6],
+      ["福宝", 6], ["非遗传承", 5], ["灵魂互换", 5], ["穿书", 5],
+      ["修仙", 1], ["种田基建", 2]
+    ],
+    "特色题材": [
+      ["Vampire", 80], ["神豪", 77], ["仙侠", 74], ["Superpower", 124],
+      ["Mafia", 144], ["High-Fantasy", 101], ["Reincarnation", 100],
+      ["Action", 104], ["传承觉醒", 103], ["求生", 118], ["追妻火葬场", 107],
+      ["战神", 13], ["Underground-Street-Empire", 13], ["校园", 11],
+      ["无限流", 10], ["Witchcraft-Coven", 10], ["Virtual-Reality", 10]
+    ]
+  };
+
+  let selectedGenreTags = [];
+
+  function toggleGenrePanel() {
+    const panel = document.getElementById('genrePanel');
+    const arrow = document.getElementById('genreArrow');
+    panel.classList.toggle('open');
+    arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+    if (panel.classList.contains('open') && !panel.children.length) {
+      renderGenrePanel();
+    }
+  }
+
+  // 角色性格标签面板
+  function togglePersonalityPanel() {
+    const panel = document.getElementById('personalityPanel');
+    const arrow = document.getElementById('personalityArrow');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+      arrow.textContent = '▲';
+    } else {
+      panel.style.display = 'none';
+      arrow.textContent = '▼';
+    }
+  }
+
+  function getPersonalityTags() {
+    const tags = [];
+    const zodiac = document.getElementById('charZodiac').value;
+    const animal = document.getElementById('charZodiacAnimal').value;
+    const mbti = document.getElementById('charMBTI').value;
+    if (zodiac) tags.push(zodiac);
+    if (animal) tags.push('属' + animal);
+    if (mbti) tags.push(mbti);
+    return tags;
+  }
+
+  function updatePersonalityTags() {
+    const tags = getPersonalityTags();
+    const el = document.getElementById('selectedPersonalityTags');
+    el.textContent = tags.length ? '已选：' + tags.join(' / ') : '';
+  }
+
+  // 监听三个选择器变化
+  document.getElementById('charZodiac').addEventListener('change', updatePersonalityTags);
+  document.getElementById('charZodiacAnimal').addEventListener('change', updatePersonalityTags);
+  document.getElementById('charMBTI').addEventListener('change', updatePersonalityTags);
+
+  const genreTranslations = {'Revenge': '复仇', 'Billionaire': '亿万富翁', 'Secret-Identity': '隐藏身份', 'Underdog-Rise': '逆袭崛起', 'Enemies-to-Lovers': '仇人变恋人', 'Toxic-Love/Dark-Romance': '暗黑恋爱', 'Marriage-of-Convenience': '契约婚姻', 'Forbidden-Love': '禁忌之恋', 'Divorce-Recovery': '离婚后挽回', 'Sports-Romance': '体育恋爱', 'Forced-Proximity': '被迫同居', 'Secret-Baby': '秘密宝宝', 'Vampire': '吸血鬼', 'Fake-Relationship': '假恋爱', 'Office-Romance': '办公室恋情', 'High-Society': '上流社会', 'Urban-Fantasy': '都市奇幻', 'Age-Gap': '年龄差', 'Mythological/Gods': '神话/神明', 'Second-Chance': '二次机会', 'Werewolf': '狼人', 'Mafia': '黑帮', 'Superpower': '超能力', 'High-Fantasy': '高奇幻', 'Reincarnation': '转世重生', 'Corporate-Warfare': '商战', 'Transformation/Glow-Up': '蜕变', 'Psychological-Thriller': '心理惊悚', 'Dark-Romance': '暗黑恋爱', 'Dystopian': '反乌托邦', 'Survival-Adventure': '生存冒险', 'Betrayal-Conspiracy': '背叛阴谋', 'Mistaken-Identity': '身份误认', 'Flash-Marriage': '闪婚', 'Hidden-Identity': '隐藏身份', 'Underground-Street-Empire': '地下帝国', 'Murder-Mystery': '谋杀悬疑', 'Concealed-Identity': '隐瞒身份', 'Revenge-Thriller': '复仇惊悚', 'Medical-Hospital': '医疗医院', 'Stolen-Identity': '身份盗用', 'Werewolf-Werewolves': '狼人', 'Historical-Period': '历史时期', 'Female-Empowerment': '女性赋权', 'Contract-Marriage': '契约婚姻', 'Mythological': '神话', 'Ancient-Romance': '古代恋爱', 'Fantasy': '奇幻', 'Urban-Romance': '都市恋爱', 'Rural-Ranch-Country': '乡村牧场', 'Billionaire-CEO': '亿万富翁CEO', 'Toxic-In-Laws': '恶毒公婆', 'Harem': '后宫', 'Modern': '现代', 'Fantasy-Paranormal': '奇幻超自然', 'Action': '动作', 'Music-Entertainment': '音乐娱乐', 'Sudden-Wealth': '突然暴富', 'Witchcraft-Coven': '女巫集会', 'Virtual-Reality': '虚拟现实', 'Modern-Romance': '现代恋爱', 'AI-Robot-Romance': 'AI机器人恋爱', 'Blended-Family': '重组家庭', 'Face-Slapping': '打脸', 'Amnesia-Lost-Memory': '失忆', 'Small-Town': '小镇', 'Suspense': '悬疑', 'Domestic-Drama': '家庭剧', 'Reverse-Harem': '逆后宫', 'Cyberpunk': '赛博朋克', 'Sci-Fi': '科幻'};
+
+  function renderGenrePanel() {
+    const panel = document.getElementById('genrePanel');
+    panel.innerHTML = '';
+    for (const [category, genres] of Object.entries(genreData)) {
+      const catDiv = document.createElement('div');
+      catDiv.className = 'genre-category';
+      catDiv.innerHTML = `
+        <div class="genre-category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+          <span>${category} <span style="font-weight:400;font-size:11px;color:var(--text-muted)">(${genres.length})</span></span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="genre-tags">
+          ${genres.map(([name, count]) => {
+            const isEnglish = /[A-Z]/.test(name) && /[a-z]/.test(name);
+            const chineseNote = isEnglish && genreTranslations[name] ? ` (${genreTranslations[name]})` : '';
+            return `
+              <span class="genre-tag${selectedGenreTags.includes(name) ? ' selected' : ''}" 
+                    onclick="toggleGenreTag(this, '${name.replace(/'/g, "\'")}')">
+                ${name}${chineseNote}<span class="count">(${count})</span>
+              </span>
+            `;
+          }).join('')}
+        </div>
+      `;
+      panel.appendChild(catDiv);
+    }
+  }
+
+  function toggleGenreTag(el, name) {
+    if (selectedGenreTags.includes(name)) {
+      selectedGenreTags = selectedGenreTags.filter(t => t !== name);
+      el.classList.remove('selected');
+    } else {
+      selectedGenreTags.push(name);
+      el.classList.add('selected');
+    }
+    updateSelectedGenresDisplay();
+  }
+
+  function updateSelectedGenresDisplay() {
+    const display = document.getElementById('selectedGenres');
+    if (selectedGenreTags.length === 0) {
+      display.textContent = '';
+    } else {
+      display.textContent = `已选 ${selectedGenreTags.length} 个题材`;
+    }
+  }
+
+  function applyGenresToIdea() {
+    if (selectedGenreTags.length === 0) return;
+    const ideaInput = document.getElementById('ideaInput');
+    const genreText = selectedGenreTags.join('、');
+    if (ideaInput.value.trim()) {
+      ideaInput.value += `，题材标签：${genreText}`;
+    } else {
+      ideaInput.value = `题材：${genreText}，`;
+    }
+    selectedGenreTags = [];
+    document.querySelectorAll('.genre-tag.selected').forEach(el => el.classList.remove('selected'));
+    updateSelectedGenresDisplay();
+  }
 
 </script>
 </body>
