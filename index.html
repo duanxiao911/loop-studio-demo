@@ -1421,7 +1421,7 @@
 
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-value">8/15</div>
+          <div class="metric-value">15/15</div>
           <div class="metric-label">专家模块</div>
         </div>
         <div class="metric-card">
@@ -1499,7 +1499,7 @@
     <div class="right-panel">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div class="panel-title">AI 专家团</div>
-        <span style="font-size: 11px; color: var(--text-muted);">8/15 · MVP</span>
+        <span style="font-size: 11px; color: var(--text-muted);">15/15 · 全阵容</span>
       </div>
       
       <!-- MVP专家组 -->
@@ -1570,9 +1570,26 @@
           <div class="expert-status-dot"></div>
         </div>
       </div>
+        <div class="expert-item mvp" data-expert="format_craftsman">
+          <div class="expert-avatar orange" style="background: rgba(249, 115, 22, 0.15);">📐</div>
+          <div class="expert-info">
+            <div class="expert-name">§6 格式工匠 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">行业通用分场剧本格式</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+      </div>
 
       <div class="expert-group">
         <div class="expert-group-title">🎥 视觉呈现组</div>
+        <div class="expert-item mvp" data-expert="scene_craftsman">
+          <div class="expert-avatar" style="background: rgba(139, 92, 246, 0.15);">🎬</div>
+          <div class="expert-info">
+            <div class="expert-name">§11 场景工匠 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">场景描写+氛围营造</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
         <div class="expert-item mvp" data-expert="visual_director">
           <div class="expert-avatar cyan">🎥</div>
           <div class="expert-info">
@@ -1583,17 +1600,53 @@
         </div>
       </div>
 
-      <!-- V2.0 待开发专家 -->
-      <div class="expert-group" style="opacity: 0.5;">
-        <div class="expert-group-title">🔒 V2.0 待解锁 (7位)</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0;">
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§6 质量审计师</span>
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§7 实战指挥官</span>
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§9 知识库管家</span>
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§10 类型适配师</span>
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§11 文化顾问</span>
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§12 音效设计师</span>
-          <span style="font-size: 10px; padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; color: var(--text-muted);">§14 IP衍生师</span>
+            <!-- 质量保障组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">📋 质量保障组</div>
+        <div class="expert-item mvp" data-expert="quality_auditor">
+          <div class="expert-avatar" style="background: rgba(239, 68, 68, 0.15);">🔍</div>
+          <div class="expert-info">
+            <div class="expert-name">§7 质量审计师 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">15维度评估+爆款漏斗</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="revision_editor">
+          <div class="expert-avatar" style="background: rgba(34, 197, 94, 0.15);">✏️</div>
+          <div class="expert-info">
+            <div class="expert-name">§9 改稿编辑 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">针对性修改打磨</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="quality_director">
+          <div class="expert-avatar" style="background: rgba(168, 85, 247, 0.15);">👑</div>
+          <div class="expert-info">
+            <div class="expert-name">§15 品控总监 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">终稿品质把关</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+      </div>
+
+      <!-- 商业策略组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">💼 商业策略组</div>
+        <div class="expert-item mvp" data-expert="mission_commander">
+          <div class="expert-avatar" style="background: rgba(59, 130, 246, 0.15);">🎯</div>
+          <div class="expert-info">
+            <div class="expert-name">§10 实战指挥官 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">全链路调度编排</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="business_strategist">
+          <div class="expert-avatar" style="background: rgba(245, 158, 11, 0.15);">💰</div>
+          <div class="expert-info">
+            <div class="expert-name">§14 商业操盘手 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">市场定位+变现策略</div>
+          </div>
+          <div class="expert-status-dot"></div>
         </div>
       </div>
 
