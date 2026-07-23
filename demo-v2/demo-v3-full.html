@@ -98,6 +98,11 @@
     border-color: rgba(160, 120, 80, 0.2);
     color: #7a5c3a;
   }
+  [data-theme="light"] .chip.selected {
+    border-color: #a07850;
+    color: #a07850;
+    background: rgba(160, 120, 80, 0.1);
+  }
   /* 知识库/状态卡片 */
   [data-theme="light"] .knowledge-card,
   [data-theme="light"] .status-card {
@@ -1029,6 +1034,12 @@
     border-color: var(--accent-purple);
     color: var(--accent-purple);
     background: rgba(139, 92, 246, 0.05);
+  }
+  .chip.selected {
+    border-color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--accent-purple);
+    font-weight: 600;
   }
 
   .generate-btn {
@@ -2245,10 +2256,10 @@ function renderMarkdown(md) {
           </div>
 
           <div class="input-footer">
-            <div class="suggestion-chips">
-              <div class="chip" onclick="setIdea('大理白族少女的扎染非遗传承故事，24集情感短剧')">🔵 非遗题材</div>
-              <div class="chip" onclick="setIdea('职场逆袭：从小透明到操盘手的成长之路，30集')">💼 职场逆袭</div>
-              <div class="chip" onclick="setIdea('悬疑推理：古镇密室连环案件，12集')">🔍 悬疑推理</div>
+            <div class="suggestion-chips" id="episodeChips">
+              <div class="chip episode-chip" onclick="setEpisodeCount(30, this)">30集</div>
+              <div class="chip episode-chip" onclick="setEpisodeCount(60, this)">60集</div>
+              <div class="chip episode-chip" onclick="setEpisodeCount(80, this)">80集</div>
             </div>
             <div class="api-status" id="apiStatus" onclick="toggleSettings()" style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);padding:6px 12px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
               <span id="apiStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
@@ -4071,6 +4082,14 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
 
   function setIdea(text) {
     document.getElementById('ideaInput').value = text;
+  }
+
+  // 设置集数并高亮选中状态
+  function setEpisodeCount(count, el) {
+    document.getElementById('episodeCount').value = count;
+    settings.episodeCount = count;
+    document.querySelectorAll('.episode-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
   }
 
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
