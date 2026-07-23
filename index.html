@@ -2306,15 +2306,15 @@ function renderMarkdown(md) {
 
           <div class="input-footer">
             <div class="episode-type-selector" id="episodeChips">
-              <div class="episode-radio selected" data-count="80" onclick="setEpisodeCount(80, this)" style="pointer-events:auto;">
+              <div class="episode-radio selected" data-count="80" onclick="setEpisodeCount(80, this)" onmousedown="event.preventDefault()" style="pointer-events:auto;">
                 <span class="radio-circle"></span>
                 <span class="radio-label">长篇剧本（80集完稿）</span>
               </div>
-              <div class="episode-radio" data-count="60" onclick="setEpisodeCount(60, this)" style="pointer-events:auto;">
+              <div class="episode-radio" data-count="60" onclick="setEpisodeCount(60, this)" onmousedown="event.preventDefault()" style="pointer-events:auto;">
                 <span class="radio-circle"></span>
                 <span class="radio-label">中短篇剧本（60集完稿）</span>
               </div>
-              <div class="episode-radio" data-count="40" onclick="setEpisodeCount(40, this)" style="pointer-events:auto;">
+              <div class="episode-radio" data-count="40" onclick="setEpisodeCount(40, this)" onmousedown="event.preventDefault()" style="pointer-events:auto;">
                 <span class="radio-circle"></span>
                 <span class="radio-label">短篇剧本（40集完稿）</span>
               </div>
@@ -4145,11 +4145,28 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
 
   // 设置集数并高亮选中状态
   function setEpisodeCount(count, el) {
+    console.log('setEpisodeCount called:', count);
     document.getElementById('episodeCount').value = count;
     settings.episodeCount = count;
     document.querySelectorAll('.episode-radio').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
+    console.log('Selected class added, current episodeCount:', settings.episodeCount);
   }
+
+  // 页面加载后绑定集数选择器事件
+  document.addEventListener('DOMContentLoaded', function() {
+    const episodeOptions = document.querySelectorAll('.episode-radio');
+    episodeOptions.forEach(function(option) {
+      option.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const count = parseInt(this.getAttribute('data-count'));
+        console.log('Episode option clicked:', count);
+        setEpisodeCount(count, this);
+      });
+    });
+    console.log('Episode selector event listeners attached, count:', episodeOptions.length);
+  });
 
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
   const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
