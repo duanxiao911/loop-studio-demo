@@ -2568,6 +2568,9 @@ function renderMarkdown(md) {
     episodeCount: 24
   };
 
+  // 全局settings变量，所有函数共享
+  let settings = loadSettings();
+
   function loadSettings() {
     try {
       const saved = localStorage.getItem('yunjiang_settings');
@@ -2654,13 +2657,14 @@ function renderMarkdown(md) {
   }
 
   function saveSettings() {
-    const settings = {
+    const newSettings = {
       apiBaseUrl: document.getElementById('apiBaseUrl').value.trim() || DEFAULT_SETTINGS.apiBaseUrl,
       apiKey: document.getElementById('apiKey').value.trim(),
       model: document.getElementById('apiModel').value.trim() || DEFAULT_SETTINGS.model,
       episodeCount: parseInt(document.getElementById('episodeCount').value) || DEFAULT_SETTINGS.episodeCount
     };
-    localStorage.setItem('yunjiang_settings', JSON.stringify(settings));
+    settings = newSettings;  // 更新全局settings
+    localStorage.setItem('yunjiang_settings', JSON.stringify(newSettings));
     toggleSettings();
     showToast('设置已保存');
     updateApiStatus();
@@ -4153,21 +4157,6 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     console.log('Selected class added, current episodeCount:', settings.episodeCount);
   }
 
-  // 页面加载后绑定集数选择器事件
-  document.addEventListener('DOMContentLoaded', function() {
-    const episodeOptions = document.querySelectorAll('.episode-radio');
-    episodeOptions.forEach(function(option) {
-      option.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const count = parseInt(this.getAttribute('data-count'));
-        console.log('Episode option clicked:', count);
-        setEpisodeCount(count, this);
-      });
-    });
-    console.log('Episode selector event listeners attached, count:', episodeOptions.length);
-  });
-
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
   const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
 
@@ -5177,13 +5166,36 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     saveHistoryRecord(record);
   }
   
-  // 点击模态框外部关闭
-  document.getElementById('historyModal').addEventListener('click', function(e) {
-    if (e.target === this) hideHistory();
+  // 页面加载后初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    // 绑定集数选择器事件
+    const episodeOptions = document.querySelectorAll('.episode-radio');
+    episodeOptions.forEach(function(option) {
+      option.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const count = parseInt(this.getAttribute('data-count'));
+        console.log('Episode option clicked:', count);
+        setEpisodeCount(count, this);
+      });
+    });
+    console.log('Episode selector initialized, options:', episodeOptions.length);
+
+    // 绑定模态框点击关闭
+    const historyModal = document.getElementById('historyModal');
+    if (historyModal) {
+      historyModal.addEventListener('click', function(e) {
+        if (e.target === this) hideHistory();
+      });
+    }
+    const historyDetailModal = document.getElementById('historyDetailModal');
+    if (historyDetailModal) {
+      historyDetailModal.addEventListener('click', function(e) {
+        if (e.target === this) hideHistoryDetail();
+      });
+    }
   });
-  document.getElementById('historyDetailModal').addEventListener('click', function(e) {
-    if (e.target === this) hideHistoryDetail();
-  });
+
   </script>
   <!-- 历史记录模态框 -->
   <div class="history-modal-overlay" id="historyModal">
