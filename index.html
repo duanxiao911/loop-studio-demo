@@ -3272,12 +3272,97 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
 <h4>一致性校验</h4> - 角色/时间线/空间/情感检查结果
 <h4>最终评分</h4> - 综合得分和通过状态
 <h4>终审意见</h4> - 终审备注`
+    },
+    16: {
+      name: '集纲审核',
+      expert: 'episode_outline_reviewer',
+      systemPrompt: `你是§16集纲审核专家，专精爆款短剧的集纲质量把控。
+核心能力：基于37项爆款漏斗审查标准，对分集大纲进行系统性审核。
+
+【审核维度】
+1. 生死线与情绪核（7项）：核心冲突是否清晰、情绪钩子是否强烈
+2. 钩子与付费卡点（8项）：每集结尾钩子、付费点设计
+3. 节奏与废戏筛查（8项）：节奏紧凑度、废戏识别
+4. 逻辑硬伤与视觉可行性（8项）：逻辑自洽、拍摄可行性
+5. 语境与爆款元素（6项）：题材契合度、爆款元素密度
+
+【评级标准】
+S级：37项全通过，可直接进入分集编剧
+A级：≤3项B级，无C/D级，可小修后进入下一步
+B级：≤5项B级，≤2项C级，需修改后复审
+C级：存在D级项，需重大修改
+D级：出现致命问题，需推倒重来
+
+【铁律】
+- 模块一（生死线）出现❌直接终止审查
+- 每集必须有明确的结尾钩子
+- 付费卡点必须设计在情绪最高点`,
+      userPrompt: (idea, style, episodes, prevResults) => `请对以下分集大纲进行37项爆款漏斗审查：
+
+【创意】${idea}
+【分集大纲】
+${prevResults[6] || '（暂无）'}
+
+请输出：
+<h4>审核总评</h4> - 评级（S/A/B/C/D）+ 通过率
+<h4>模块一：生死线与情绪核</h4> - 7项审查结果
+<h4>模块二：钩子与付费卡点</h4> - 8项审查结果
+<h4>模块三：节奏与废戏筛查</h4> - 8项审查结果
+<h4>模块四：逻辑硬伤与视觉可行性</h4> - 8项审查结果
+<h4>模块五：语境与爆款元素</h4> - 6项审查结果
+<h4>修改建议</h4> - 针对B/C级项的具体修改方向`
+    },
+    17: {
+      name: '剧本审核',
+      expert: 'script_reviewer',
+      systemPrompt: `你是§17剧本审核专家，专精短剧剧本的终极质量把关。
+核心能力：基于12维度量化评估体系，对完整剧本进行系统性审核。
+
+【评估维度】
+1. 市场共鸣：目标受众精准度、题材热度、情绪价值
+2. 原创性：差异化程度、新鲜感、记忆点
+3. 平台契合度：与目标平台调性匹配度
+4. 叙事逻辑：因果链完整性、逻辑自洽
+5. 钩子强度：开篇吸引力、每集钩子、付费点
+6. 爽点设计：爽感密度、情绪释放、满足感
+7. 节奏结构：三幕结构、节奏曲线、高潮分布
+8. 主线连贯性：核心冲突贯穿、主题一致性
+9. 人物塑造：角色弧光、动机合理、成长可见
+10. 对白质量：个性化、潜台词、口语化
+11. 悬念有效性：信息差设计、期待管理
+12. 商业潜力：IP延展性、衍生品潜力、变现路径
+
+【评级标准】
+S级：综合评分≥9.0，全维度优秀，可直接投稿
+A+级：综合评分≥8.5，≤2项低于8.0，小修后可投稿
+A级：综合评分≥8.0，≤3项低于7.5，需针对性修改
+B级：综合评分≥7.0，存在明显短板，需大幅修改
+C级：综合评分<7.0，存在致命问题，需推倒重来
+
+【铁律】
+- 合规性问题一票否决
+- 每集必须有明确的钩子和爽点
+- 人物弧光必须完整可见`,
+      userPrompt: (idea, style, episodes, prevResults) => `请对以下完整剧本进行12维度量化评估：
+
+【创意】${idea}
+【最终剧本】
+${prevResults[12] || prevResults[7] || '（暂无）'}
+【人设卡片】${prevResults[4] || '（暂无）'}
+
+请输出：
+<h4>评估总览</h4> - 综合评分 + 评级（S/A+/A/B/C）
+<h4>市场潜力评估</h4> - 市场共鸣/原创性/平台契合度
+<h4>叙事质量评估</h4> - 叙事逻辑/钩子强度/爽点设计/节奏结构
+<h4>剧本完成度评估</h4> - 主线连贯性/人物塑造/对白质量/悬念有效性
+<h4>商业价值评估</h4> - 商业潜力/变现路径
+<h4>修改优先级</h4> - 按重要性排序的修改建议`
     }
   };
 
 
   // Phase mapping: 8 expert steps → 5 visual phases
-  const stepToPhase = {1:1, 2:1, 3:2, 4:3, 5:4, 6:4, 7:5, 8:5, 9:6, 10:6, 11:6, 12:7, 13:7, 14:7, 15:7};
+  const stepToPhase = {1:1, 2:1, 3:2, 4:3, 5:4, 6:4, 7:5, 8:5, 9:6, 10:6, 11:6, 12:7, 13:7, 14:7, 15:7, 16:8, 17:8};
   const phaseExperts = {
     1: ['soul_catcher', 'compliance_guard'],
     2: ['project_configurator'],
@@ -3285,7 +3370,8 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     4: ['dialogue_master', 'structure_architect'],
     5: ['episode_writer', 'visual_director'],
     6: ['format_craftsman', 'quality_auditor', 'scene_craftsman'],
-    7: ['revision_editor', 'mission_commander', 'business_strategist', 'quality_director']
+    7: ['revision_editor', 'mission_commander', 'business_strategist', 'quality_director'],
+    8: ['episode_outline_reviewer', 'script_reviewer']
   };
 
   // ====== 调用大模型 API ======
@@ -3968,7 +4054,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     'revision_editor': 12,
     'mission_commander': 13,
     'business_strategist': 14,
-    'quality_director': 15
+    'quality_director': 15,
+    'episode_outline_reviewer': 16,
+    'script_reviewer': 17
   };
 
   // 点击左侧步骤点击切换
@@ -4057,7 +4145,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
               <div class="output-meta">${step.meta}</div>
             </div>
             <div style="display:flex;gap:8px;">
-              ${stepsCompleted >= 15 ? '<button class="output-edit-btn" onclick="showAllContent()" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.3);color:var(--accent-purple);">查看全部</button>' : ''}
+              ${stepsCompleted >= 17 ? '<button class="output-edit-btn" onclick="showAllContent()" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.3);color:var(--accent-purple);">查看全部</button>' : ''}
               <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
             </div>
           </div>
@@ -4141,7 +4229,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     }
     
     // 添加最终完成卡片
-    if (stepsCompleted >= 15) {
+    if (stepsCompleted >= 17) {
       addFinalCard();
     }
     
@@ -4191,7 +4279,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     const styleText = styleTextMap[selectedStyle] || '情感流';
     
     // 逐步执行每一步
-    for (let step = 1; step <= 15; step++) {
+    for (let step = 1; step <= 17; step++) {
       // 跳过非生成步骤（实战指挥、商业操盘只输出规划，不影响剧本内容）
       // Pause check
       while (pauseRequested && isCreating) {
