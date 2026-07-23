@@ -4024,7 +4024,10 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
               <div class="output-title">${step.title}</div>
               <div class="output-meta">${step.meta}</div>
             </div>
-            <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
+            <div style="display:flex;gap:8px;">
+              ${stepsCompleted >= 15 ? '<button class="output-edit-btn" onclick="showAllContent()" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.3);color:var(--accent-purple);">查看全部</button>' : ''}
+              <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
+            </div>
           </div>
           <div class="output-body" id="output-body-${stepNum}">
             ${renderedContent}
@@ -4057,6 +4060,63 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     contentArea.scrollTop = 0;
     
     currentStep = stepNum;
+  }
+
+  // 查看全部内容：重新渲染所有已生成的结果
+  function showAllContent() {
+    const outputContainer = document.getElementById('outputContainer');
+    outputContainer.innerHTML = '';
+    
+    // 遍历所有已生成的结果，按顺序渲染
+    for (let stepNum = 1; stepNum <= stepsCompleted; stepNum++) {
+      if (generatedResults[stepNum]) {
+        let step = stepData[stepNum];
+        const prompt = stepPrompts[stepNum];
+        if (!step && prompt) {
+          step = {
+            icon: '🔧',
+            title: `步骤 ${stepNum} · ${prompt.name}`,
+            meta: prompt.expert,
+            expert: prompt.expert,
+            content: ''
+          };
+        }
+        if (!step) continue;
+        
+        let renderedContent = renderMarkdown(generatedResults[stepNum]);
+        renderedContent = renderedContent.replace(/<p>(△[^<]*)<\/p>/g, '<p class="script-action">$1</p>');
+        renderedContent = renderedContent.replace(/<p><strong>(\d+-\d+\s+[^<]+(?:日|夜|晨|黄昏|深夜|傍晚)\/[内外])<\/strong><\/p>/g, '<div class="script-scene"><p class="script-scene-header">$1</p>');
+        renderedContent = renderedContent.replace(/<p><strong>人物：([^<]+)<\/strong><\/p>/g, '<p class="script-action"><strong>人物：</strong>$1</p>');
+        renderedContent = renderedContent.replace(/<p>(\w+os[：:])([^<]*)<\/p>/g, '<p class="script-dialogue"><span class="char-os">$1</span>$2</p>');
+        
+        const card = document.createElement('div');
+        card.className = 'output-card';
+        card.innerHTML = `
+          <div class="output-header">
+            <div class="output-icon">${step.icon}</div>
+            <div>
+              <div class="output-title">${step.title}</div>
+              <div class="output-meta">${step.meta}</div>
+            </div>
+            <button class="output-edit-btn" onclick="toggleEditOutput(${stepNum})">编辑</button>
+          </div>
+          <div class="output-body" id="output-body-${stepNum}">
+            ${renderedContent}
+          </div>
+        `;
+        outputContainer.appendChild(card);
+      }
+    }
+    
+    // 添加最终完成卡片
+    if (stepsCompleted >= 15) {
+      addFinalCard();
+    }
+    
+    const contentArea = document.getElementById('contentArea');
+    contentArea.scrollTop = 0;
+    
+    showToast('已返回全部内容视图');
   }
 
   let generatedResults = {}; // 存储真实生成的结果
