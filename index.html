@@ -1050,10 +1050,7 @@
     color: var(--text-secondary);
     user-select: none;
   }
-  .episode-radio input[type="radio"] {
-    display: none;
-  }
-  .radio-circle {
+  .episode-radio .radio-circle {
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -1062,10 +1059,10 @@
     flex-shrink: 0;
     transition: all 0.2s;
   }
-  .episode-radio input:checked + .radio-circle {
+  .episode-radio.selected .radio-circle {
     border-color: var(--accent-purple);
   }
-  .episode-radio input:checked + .radio-circle::after {
+  .episode-radio.selected .radio-circle::after {
     content: '';
     position: absolute;
     top: 50%; left: 50%;
@@ -1074,7 +1071,7 @@
     border-radius: 50%;
     background: var(--accent-purple);
   }
-  .episode-radio input:checked ~ .radio-label {
+  .episode-radio.selected .radio-label {
     color: var(--text-primary);
   }
   .episode-type-info {
@@ -1086,7 +1083,7 @@
   [data-theme="light"] .episode-radio {
     color: var(--text-secondary);
   }
-  [data-theme="light"] .episode-radio input:checked ~ .radio-label {
+  [data-theme="light"] .episode-radio.selected .radio-label {
     color: var(--text-primary);
   }
 
@@ -2305,21 +2302,18 @@ function renderMarkdown(md) {
 
           <div class="input-footer">
             <div class="episode-type-selector" id="episodeChips">
-              <label class="episode-radio" onclick="setEpisodeCount(80, this)">
-                <input type="radio" name="episodeType" value="80" checked>
+              <div class="episode-radio selected" data-count="80" onclick="setEpisodeCount(80, this)">
                 <span class="radio-circle"></span>
                 <span class="radio-label">长篇剧本（80集完稿）</span>
-              </label>
-              <label class="episode-radio" onclick="setEpisodeCount(60, this)">
-                <input type="radio" name="episodeType" value="60">
+              </div>
+              <div class="episode-radio" data-count="60" onclick="setEpisodeCount(60, this)">
                 <span class="radio-circle"></span>
                 <span class="radio-label">中短篇剧本（60集完稿）</span>
-              </label>
-              <label class="episode-radio" onclick="setEpisodeCount(40, this)">
-                <input type="radio" name="episodeType" value="40">
+              </div>
+              <div class="episode-radio" data-count="40" onclick="setEpisodeCount(40, this)">
                 <span class="radio-circle"></span>
                 <span class="radio-label">短篇剧本（40集完稿）</span>
-              </label>
+              </div>
               <span class="episode-type-info" title="选择剧本集数规格">&#9432;</span>
             </div>
             <div class="api-status" id="apiStatus" onclick="toggleSettings()" style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);padding:6px 12px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
@@ -4149,11 +4143,8 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   function setEpisodeCount(count, el) {
     document.getElementById('episodeCount').value = count;
     settings.episodeCount = count;
-    // 同步radio选中状态
-    const radios = document.querySelectorAll('input[name="episodeType"]');
-    radios.forEach(r => {
-      r.checked = (parseInt(r.value) === count);
-    });
+    document.querySelectorAll('.episode-radio').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
   }
 
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
