@@ -1049,6 +1049,10 @@
     font-size: 13px;
     color: var(--text-secondary);
     user-select: none;
+    pointer-events: auto;
+  }
+  .episode-radio:hover {
+    color: var(--text-primary);
   }
   .episode-radio .radio-circle {
     width: 16px;
@@ -2302,15 +2306,15 @@ function renderMarkdown(md) {
 
           <div class="input-footer">
             <div class="episode-type-selector" id="episodeChips">
-              <div class="episode-radio selected" data-count="80" onclick="setEpisodeCount(80, this)">
+              <div class="episode-radio selected" data-count="80" onclick="setEpisodeCount(80, this)" style="pointer-events:auto;">
                 <span class="radio-circle"></span>
                 <span class="radio-label">长篇剧本（80集完稿）</span>
               </div>
-              <div class="episode-radio" data-count="60" onclick="setEpisodeCount(60, this)">
+              <div class="episode-radio" data-count="60" onclick="setEpisodeCount(60, this)" style="pointer-events:auto;">
                 <span class="radio-circle"></span>
                 <span class="radio-label">中短篇剧本（60集完稿）</span>
               </div>
-              <div class="episode-radio" data-count="40" onclick="setEpisodeCount(40, this)">
+              <div class="episode-radio" data-count="40" onclick="setEpisodeCount(40, this)" style="pointer-events:auto;">
                 <span class="radio-circle"></span>
                 <span class="radio-label">短篇剧本（40集完稿）</span>
               </div>
