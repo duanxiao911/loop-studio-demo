@@ -4409,7 +4409,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       }
       if (!isCreating) return;
       try {
-        await runStepReal(step, idea, styleText, settings.episodeCount);
+        // 集数选择只影响集纲生成（step 6），其他步骤固定30集
+        const stepEpisodes = (step === 6) ? settings.episodeCount : 30;
+        await runStepReal(step, idea, styleText, stepEpisodes);
         // Mark expert as completed
         const completedExpert = document.querySelector(`.expert-item[data-expert="${stepPrompts[step].expert}"]`);
         if (completedExpert) {
