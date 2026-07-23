@@ -2088,7 +2088,7 @@ function renderMarkdown(md) {
 
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-value">15/15</div>
+          <div class="metric-value">17/17</div>
           <div class="metric-label">专家模块</div>
         </div>
         <div class="metric-card">
@@ -2106,7 +2106,7 @@ function renderMarkdown(md) {
           <div class="welcome-icon-large">✨</div>
           <div class="welcome-title">你好，创作者</div>
           <div class="welcome-desc">
-            只需一个想法，15位AI专家将为你打造<br>
+            只需一个想法，17位AI专家将为你打造<br>
             完整的精品短剧剧本——从大纲到定稿，全链路托管
           </div>
           <div class="feature-list">
@@ -2230,7 +2230,7 @@ function renderMarkdown(md) {
     <div class="right-panel">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
         <div class="panel-title">AI 专家团</div>
-        <span style="font-size: 11px; color: var(--text-muted);">15/15 · 全阵容</span>
+        <span style="font-size: 11px; color: var(--text-muted);">17/17 · 全阵容</span>
       </div>
       
       <!-- MVP专家组 -->
@@ -2370,6 +2370,27 @@ function renderMarkdown(md) {
           <div class="expert-info">
             <div class="expert-name">§15 品控总监 <span class="mvp-badge" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">W2</span></div>
             <div class="expert-desc">终审达标把关</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+      </div>
+
+      <!-- 质量审核组 -->
+      <div class="expert-group">
+        <div class="expert-group-title">✅ 质量审核组</div>
+        <div class="expert-item mvp" data-expert="episode_outline_reviewer">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">🔍</div>
+          <div class="expert-info">
+            <div class="expert-name">§16 集纲审核 <span class="mvp-badge" style="background: linear-gradient(135deg, #10b981, #059669);">NEW</span></div>
+            <div class="expert-desc">37项爆款漏斗审查</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="script_reviewer">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📝</div>
+          <div class="expert-info">
+            <div class="expert-name">§17 剧本审核 <span class="mvp-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">NEW</span></div>
+            <div class="expert-desc">12维度量化评估</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
@@ -3163,7 +3184,7 @@ ${prevResults[10] || '（暂无审计结果）'}
       name: '实战指挥',
       expert: 'mission_commander',
       systemPrompt: `你是§10实战指挥，端到端工作流编排专家。
-核心能力：15个专家按依赖关系有序执行，异常自动重试（最多3次），断点续跑。
+核心能力：17个专家按依赖关系有序执行，异常自动重试（最多3次），断点续跑。
 执行顺序：§0→§2→§8→§1→§4→§3→§5→§13→§6→§7→§9→§11→§14→§15
 铁律：不允许跳过§2合规审核和§15品控终审。`,
       userPrompt: (idea, style, episodes, prevResults) => `请为以下创作任务制定执行计划：
@@ -3173,7 +3194,7 @@ ${prevResults[10] || '（暂无审计结果）'}
 【风格】${style}
 
 请输出：
-<h4>执行计划</h4> - 15个专家的执行顺序和依赖关系
+<h4>执行计划</h4> - 17个专家的执行顺序和依赖关系
 <h4>资源预估</h4> - 预计耗时和API调用量
 <h4>风险点</h4> - 可能的异常和恢复策略`
     },
@@ -4474,7 +4495,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     txt += '═══════════════════════════════════════\n\n';
     txt += '创意来源：' + idea + '\n';
     txt += '生成时间：' + dateStr + '\n';
-    txt += '创作引擎：云匠 V3 (1人+15AI专家)\n';
+    txt += '创作引擎：云匠 V3 (1人+17AI专家)\n';
     txt += '\n───────────────────────────────────────\n\n';
 
     // 按步骤顺序输出
