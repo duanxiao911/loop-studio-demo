@@ -98,6 +98,11 @@
     border-color: rgba(160, 120, 80, 0.2);
     color: #7a5c3a;
   }
+  [data-theme="light"] .chip.selected {
+    border-color: #a07850;
+    color: #a07850;
+    background: rgba(160, 120, 80, 0.1);
+  }
   /* 知识库/状态卡片 */
   [data-theme="light"] .knowledge-card,
   [data-theme="light"] .status-card {
@@ -772,6 +777,8 @@
     border-radius: 20px;
     font-size: 12px;
     color: var(--accent-green);
+    cursor: pointer;
+    user-select: none;
   }
 
   .stats-dot {
@@ -1027,6 +1034,60 @@
     border-color: var(--accent-purple);
     color: var(--accent-purple);
     background: rgba(139, 92, 246, 0.05);
+  }
+  /* 剧集类型选择器 */
+  .episode-type-selector {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .episode-radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    user-select: none;
+  }
+  .episode-radio input[type="radio"] {
+    display: none;
+  }
+  .radio-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .episode-radio input:checked + .radio-circle {
+    border-color: var(--accent-purple);
+  }
+  .episode-radio input:checked + .radio-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+  }
+  .episode-radio input:checked ~ .radio-label {
+    color: var(--text-primary);
+  }
+  .episode-type-info {
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: help;
+    margin-left: 4px;
+  }
+  [data-theme="light"] .episode-radio {
+    color: var(--text-secondary);
+  }
+  [data-theme="light"] .episode-radio input:checked ~ .radio-label {
+    color: var(--text-primary);
   }
 
   .generate-btn {
@@ -1582,6 +1643,41 @@
     background: rgba(160, 120, 80, 0.1);
   }
 
+  /* 历史记录模态框 */
+  .stats-link { cursor: pointer; transition: all 0.2s; }
+  .stats-link:hover { opacity: 0.8; }
+  .history-link-text { font-size: 11px; color: var(--accent-purple); margin-left: 6px; opacity: 0.8; transition: opacity 0.2s; }
+  .history-link-text:hover { opacity: 1; }
+  .history-modal-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; }
+  .history-modal-overlay.show { display: flex; }
+  .history-modal { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; width: 600px; max-width: 90vw; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .history-modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .history-modal-header h3 { margin: 0; font-size: 16px; color: var(--text-primary); font-weight: 600; }
+  .history-modal-close { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; }
+  .history-modal-close:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+  .history-modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+  .history-item { padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+  .history-item:hover { border-color: var(--accent-purple); background: var(--glow-purple); }
+  .history-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .history-item-title { font-size: 14px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+  .history-item-time { font-size: 12px; color: var(--text-muted); }
+  .history-item-stats { display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary); }
+  .history-item-stats span { display: flex; align-items: center; gap: 3px; }
+  .history-empty { text-align: center; color: var(--text-muted); padding: 40px 20px; font-size: 14px; }
+  .history-view-btn { margin-top: 6px; padding: 3px 10px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 4px; color: var(--accent-purple); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .history-view-btn:hover { background: rgba(139,92,246,0.25); }
+  .history-clear-btn { margin-left: 8px; padding: 3px 10px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); border-radius: 4px; color: #ef4444; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .history-clear-btn:hover { background: rgba(239,68,68,0.2); }
+  .history-detail-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; }
+  .history-detail-overlay.show { display: flex; }
+  .history-detail-modal { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; width: 800px; max-width: 95vw; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .history-detail-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .history-detail-header h3 { margin: 0; font-size: 16px; color: var(--text-primary); font-weight: 600; }
+  .history-detail-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 14px; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap; }
+  [data-theme="light"] .history-modal,
+  [data-theme="light"] .history-detail-modal { background: var(--bg-secondary); }
+  [data-theme="light"] .history-item { background: rgba(255,255,255,0.6); }
+
 </style>
 <style>
 /* Markdown 渲染样式 — 专业剧本输出格式（清秀版） */
@@ -2029,9 +2125,10 @@ function renderMarkdown(md) {
         </div>
       </div>
       <div class="top-actions">
-        <div class="stats-badge">
+        <div class="stats-badge stats-link" onclick="showHistory()" title="点击查看历史记录">
           <div class="stats-dot"></div>
           <span>已创作 <span id="scriptCount">0</span> 部剧本</span>
+          <span class="history-link-text">查看历史记录</span>
         </div>
         <div class="user-avatar">皛</div>
       </div>
@@ -2207,10 +2304,23 @@ function renderMarkdown(md) {
           </div>
 
           <div class="input-footer">
-            <div class="suggestion-chips">
-              <div class="chip" onclick="setIdea('大理白族少女的扎染非遗传承故事，24集情感短剧')">🔵 非遗题材</div>
-              <div class="chip" onclick="setIdea('职场逆袭：从小透明到操盘手的成长之路，30集')">💼 职场逆袭</div>
-              <div class="chip" onclick="setIdea('悬疑推理：古镇密室连环案件，12集')">🔍 悬疑推理</div>
+            <div class="episode-type-selector" id="episodeChips">
+              <label class="episode-radio" onclick="setEpisodeCount(80, this)">
+                <input type="radio" name="episodeType" value="80" checked>
+                <span class="radio-circle"></span>
+                <span class="radio-label">长篇剧本（80集完稿）</span>
+              </label>
+              <label class="episode-radio" onclick="setEpisodeCount(60, this)">
+                <input type="radio" name="episodeType" value="60">
+                <span class="radio-circle"></span>
+                <span class="radio-label">中短篇剧本（60集完稿）</span>
+              </label>
+              <label class="episode-radio" onclick="setEpisodeCount(40, this)">
+                <input type="radio" name="episodeType" value="40">
+                <span class="radio-circle"></span>
+                <span class="radio-label">短篇剧本（40集完稿）</span>
+              </label>
+              <span class="episode-type-info" title="选择剧本集数规格">&#9432;</span>
             </div>
             <div class="api-status" id="apiStatus" onclick="toggleSettings()" style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);padding:6px 12px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
               <span id="apiStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
@@ -4035,6 +4145,17 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     document.getElementById('ideaInput').value = text;
   }
 
+  // 设置集数并高亮选中状态
+  function setEpisodeCount(count, el) {
+    document.getElementById('episodeCount').value = count;
+    settings.episodeCount = count;
+    // 同步radio选中状态
+    const radios = document.querySelectorAll('input[name="episodeType"]');
+    radios.forEach(r => {
+      r.checked = (parseInt(r.value) === count);
+    });
+  }
+
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
   const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
 
@@ -4288,7 +4409,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       }
       if (!isCreating) return;
       try {
-        await runStepReal(step, idea, styleText, settings.episodeCount);
+        // 集数选择只影响集纲生成（step 6），其他步骤固定30集
+        const stepEpisodes = (step === 6) ? settings.episodeCount : 30;
+        await runStepReal(step, idea, styleText, stepEpisodes);
         // Mark expert as completed
         const completedExpert = document.querySelector(`.expert-item[data-expert="${stepPrompts[step].expert}"]`);
         if (completedExpert) {
@@ -4314,6 +4437,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     btn.onclick = startCreation;
     isCreating = false;
     pauseRequested = false;
+    
+    // 保存历史记录
+    saveCurrentSessionToHistory();
     
     // 添加最终完成卡片
     addFinalCard();
@@ -4955,5 +5081,120 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   }
 
 </script>
+  <script>
+  // ========== 历史记录功能 ==========
+  function getHistoryRecords() {
+    try {
+      return JSON.parse(localStorage.getItem('dramaHistory') || '[]');
+    } catch { return []; }
+  }
+  
+  function saveHistoryRecord(record) {
+    const records = getHistoryRecords();
+    records.unshift(record);
+    if (records.length > 50) records.length = 50;
+    localStorage.setItem('dramaHistory', JSON.stringify(records));
+  }
+  
+  function showHistory() {
+    const records = getHistoryRecords();
+    const listEl = document.getElementById('historyList');
+    if (records.length === 0) {
+      listEl.innerHTML = '<div class="history-empty">暂无历史记录<br>开始创作后记录会自动保存</div>';
+    } else {
+      listEl.innerHTML = records.map((r, i) => `
+        <div class="history-item">
+          <div class="history-item-header">
+            <div class="history-item-title">${r.title || '未命名创作'}</div>
+            <div class="history-item-time">${r.time}</div>
+          </div>
+          <div class="history-item-stats">
+            <span>📄 ${r.episodes || 0} 集</span>
+            <span>📝 ${r.wordCount || 0} 字</span>
+            <span>✅ ${r.completedSteps || 0}/17 步</span>
+          </div>
+          <button class="history-view-btn" onclick="viewHistoryDetail(${i})">查看详情</button>
+        </div>
+      `).join('');
+    }
+    document.getElementById('historyModal').classList.add('show');
+  }
+  
+  function hideHistory() {
+    document.getElementById('historyModal').classList.remove('show');
+  }
+  
+  function viewHistoryDetail(index) {
+    const records = getHistoryRecords();
+    const record = records[index];
+    if (!record) return;
+    document.getElementById('historyDetailTitle').textContent = record.title || '未命名创作';
+    let content = `创作时间：${record.time}\n集数：${record.episodes || 0} 集\n字数：${record.wordCount || 0} 字\n完成步骤：${record.completedSteps || 0}/17\n\n`;
+    if (record.results) {
+      for (const [step, text] of Object.entries(record.results)) {
+        content += `=== 步骤${step} ===\n${text}\n\n`;
+      }
+    }
+    document.getElementById('historyDetailContent').textContent = content;
+    document.getElementById('historyDetailModal').classList.add('show');
+  }
+  
+  function hideHistoryDetail() {
+    document.getElementById('historyDetailModal').classList.remove('show');
+  }
+  
+  function clearHistory() {
+    if (confirm('确定要清空所有历史记录吗？')) {
+      localStorage.removeItem('dramaHistory');
+      showHistory();
+    }
+  }
+  
+  function saveCurrentSessionToHistory() {
+    const idea = document.getElementById('ideaInput').value.trim();
+    const title = idea ? (idea.substring(0, 30) + (idea.length > 30 ? '...' : '')) : '未命名创作';
+    const totalWords = Object.values(generatedResults).reduce((sum, text) => sum + text.replace(/\s/g, '').length, 0);
+    const record = {
+      title: title,
+      time: new Date().toLocaleString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }),
+      episodes: settings.episodeCount || 0,
+      wordCount: totalWords,
+      completedSteps: stepsCompleted,
+      results: { ...generatedResults }
+    };
+    saveHistoryRecord(record);
+  }
+  
+  // 点击模态框外部关闭
+  document.getElementById('historyModal').addEventListener('click', function(e) {
+    if (e.target === this) hideHistory();
+  });
+  document.getElementById('historyDetailModal').addEventListener('click', function(e) {
+    if (e.target === this) hideHistoryDetail();
+  });
+  </script>
+  <!-- 历史记录模态框 -->
+  <div class="history-modal-overlay" id="historyModal">
+    <div class="history-modal">
+      <div class="history-modal-header">
+        <h3>创作历史记录</h3>
+        <div>
+          <button class="history-clear-btn" onclick="clearHistory()" title="清空记录">清空</button>
+          <button class="history-modal-close" onclick="hideHistory()">&times;</button>
+        </div>
+      </div>
+      <div class="history-modal-body" id="historyList"></div>
+    </div>
+  </div>
+  <div class="history-detail-overlay" id="historyDetailModal">
+    <div class="history-detail-modal">
+      <div class="history-detail-header">
+        <h3 id="historyDetailTitle">创作详情</h3>
+        <button class="history-modal-close" onclick="hideHistoryDetail()">&times;</button>
+      </div>
+      <div class="history-detail-body" id="historyDetailContent"></div>
+    </div>
+  </div>
 </body>
 </html>
+
