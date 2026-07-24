@@ -2036,8 +2036,14 @@ function renderMarkdown(md) {
 
       <div class="settings-group">
         <label class="settings-label">集数</label>
-        <input type="number" class="settings-input" id="episodeCount" placeholder="24" value="24" min="12" max="100">
-        <div class="settings-hint">生成的短剧总集数，建议 24-30 集</div>
+        <select class="settings-input" id="episodeCount" onchange="onEpisodeSelectChange()">
+          <option value="80">80 集（长篇剧本）</option>
+          <option value="60" selected>60 集（中短篇剧本）</option>
+          <option value="40">40 集（短篇剧本）</option>
+          <option value="custom">自定义集数</option>
+        </select>
+        <input type="number" id="episodeCountCustom" placeholder="输入集数" min="12" max="200" style="display:none;margin-top:8px;width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-secondary);color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
+        <div class="settings-hint">选择预设集数或自定义，建议 24-80 集</div>
       </div>
 
       <div class="settings-actions">
@@ -2680,11 +2686,19 @@ function renderMarkdown(md) {
   }
 
   function saveSettings() {
-    const newSettings = {
+    var epSelect = document.getElementById('episodeCount');
+    var epCustom = document.getElementById('episodeCountCustom');
+    var epValue;
+    if (epSelect.value === 'custom') {
+      epValue = parseInt(epCustom.value) || DEFAULT_SETTINGS.episodeCount;
+    } else {
+      epValue = parseInt(epSelect.value) || DEFAULT_SETTINGS.episodeCount;
+    }
+    var newSettings = {
       apiBaseUrl: document.getElementById('apiBaseUrl').value.trim() || DEFAULT_SETTINGS.apiBaseUrl,
       apiKey: document.getElementById('apiKey').value.trim(),
       model: document.getElementById('apiModel').value.trim() || DEFAULT_SETTINGS.model,
-      episodeCount: parseInt(document.getElementById('episodeCount').value) || DEFAULT_SETTINGS.episodeCount
+      episodeCount: epValue
     };
     settings = newSettings;  // 更新全局settings
     localStorage.setItem('yunjiang_settings', JSON.stringify(newSettings));
@@ -2703,6 +2717,23 @@ function renderMarkdown(md) {
       document.getElementById('apiKey').value = s.apiKey;
       document.getElementById('apiModel').value = s.model;
       document.getElementById('episodeCount').value = s.episodeCount;
+      // 处理自定义集数显示
+      var epCustom = document.getElementById('episodeCountCustom');
+      if (epCustom) {
+        var epSelect = document.getElementById('episodeCount');
+        var options = epSelect.options;
+        var found = false;
+        for (var i = 0; i < options.length; i++) {
+          if (parseInt(options[i].value) === s.episodeCount) { found = true; break; }
+        }
+        if (!found) {
+          epSelect.value = 'custom';
+          epCustom.style.display = 'block';
+          epCustom.value = s.episodeCount;
+        } else {
+          epCustom.style.display = 'none';
+        }
+      }
       // Show key diagnostic info
       if (s.apiKey && s.apiKey.length > 0) {
         const k = s.apiKey;
@@ -4170,13 +4201,43 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     document.getElementById('ideaInput').value = text;
   }
 
+  // 集数下拉选择变更处理
+  function onEpisodeSelectChange() {
+    var epSelect = document.getElementById('episodeCount');
+    var epCustom = document.getElementById('episodeCountCustom');
+    if (epSelect.value === 'custom') {
+      epCustom.style.display = 'block';
+      epCustom.focus();
+    } else {
+      epCustom.style.display = 'none';
+      var count = parseInt(epSelect.value);
+      setEpisodeCount(count, null);
+    }
+  }
+
   // 设置集数并高亮选中状态
   function setEpisodeCount(count, el) {
     console.log('setEpisodeCount called:', count);
-    document.getElementById('episodeCount').value = count;
+    // 更新设置下拉框
+    var epSelect = document.getElementById('episodeCount');
+    var epCustom = document.getElementById('episodeCountCustom');
+    var found = false;
+    for (var i = 0; i < epSelect.options.length; i++) {
+      if (parseInt(epSelect.options[i].value) === count) {
+        epSelect.value = epSelect.options[i].value;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      epSelect.value = 'custom';
+      if (epCustom) { epCustom.style.display = 'block'; epCustom.value = count; }
+    } else {
+      if (epCustom) epCustom.style.display = 'none';
+    }
     settings.episodeCount = count;
     document.querySelectorAll('.episode-radio').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
+    if (el) el.classList.add('selected');
     console.log('Selected class added, current episodeCount:', settings.episodeCount);
   }
 
@@ -5207,7 +5268,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     // 重置按钮
     const btn = document.getElementById('generateBtn');
     btn.disabled = false;
-    btn.onclick = applyGenresToIdea; // restore original behavior
+    btn.onclick = function() { applyGenresToIdea(); startCreation(); }; // restore original behavior
     btn.innerHTML = '<span>开始创作</span><span>🚀</span>';
     
     // 滚动到创作输入区
