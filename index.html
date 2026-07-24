@@ -2197,6 +2197,15 @@ function renderMarkdown(md) {
         <div class="step-num">05</div>
       </div>
 
+      <div class="step-item" data-step="6" data-phase="6">
+        <div class="step-icon">✅</div>
+        <div class="step-info">
+          <div class="step-name">剧本审核</div>
+          <div class="step-status">待开始</div>
+        </div>
+        <div class="step-num">06</div>
+      </div>
+
       <div class="metrics-grid">
         <div class="metric-card">
           <div class="metric-value">17/17</div>
@@ -2318,18 +2327,7 @@ function renderMarkdown(md) {
           </div>
 
           <div class="input-footer">
-            <div class="episode-type-selector" id="episodeChips">
-              <div class="episode-radio selected" data-count="80">
-                <span>长篇剧本（80集完稿）</span>
-              </div>
-              <div class="episode-radio" data-count="60">
-                <span>中短篇剧本（60集完稿）</span>
-              </div>
-              <div class="episode-radio" data-count="40">
-                <span>短篇剧本（40集完稿）</span>
-              </div>
-              <span class="episode-type-info" title="选择剧本集数规格">&#9432;</span>
-            </div>
+
             <div class="api-status" id="apiStatus" onclick="toggleSettings()" style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);padding:6px 12px;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='transparent'">
               <span id="apiStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
               <span id="apiStatusText">未配置API</span>
@@ -2352,21 +2350,14 @@ function renderMarkdown(md) {
       </div>
       
       <!-- MVP专家组 -->
+      <!-- 01 剧本策划 -->
       <div class="expert-group">
-        <div class="expert-group-title">💡 创意定位组</div>
+        <div class="expert-group-title">📋 01 · 剧本策划</div>
         <div class="expert-item mvp" data-expert="soul_catcher">
           <div class="expert-avatar purple">🫧</div>
           <div class="expert-info">
             <div class="expert-name">§0 灵魂捕手 <span class="mvp-badge">MVP</span></div>
             <div class="expert-desc">追问故事方向</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item mvp" data-expert="compliance_guard">
-          <div class="expert-avatar green">🛡️</div>
-          <div class="expert-info">
-            <div class="expert-name">§2 合规守门员 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">合规扫描</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
@@ -2378,10 +2369,48 @@ function renderMarkdown(md) {
           </div>
           <div class="expert-status-dot"></div>
         </div>
+        <div class="expert-item mvp" data-expert="mission_commander">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">🎯</div>
+          <div class="expert-info">
+            <div class="expert-name">§10 实战指挥 <span class="mvp-badge" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">W2</span></div>
+            <div class="expert-desc">全流程编排调度</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
       </div>
 
+      <!-- 02 剧本大纲 -->
       <div class="expert-group">
-        <div class="expert-group-title">👤 角色塑造组</div>
+        <div class="expert-group-title">📐 02 · 剧本大纲</div>
+        <div class="expert-item mvp" data-expert="structure_architect">
+          <div class="expert-avatar gold">🏗️</div>
+          <div class="expert-info">
+            <div class="expert-name">§3 结构建筑师 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">全剧骨架</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="quality_auditor">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #ef4444, #dc2626);">📊</div>
+          <div class="expert-info">
+            <div class="expert-name">§7 质量审计 <span class="mvp-badge" style="background: linear-gradient(135deg, #ef4444, #dc2626);">W2</span></div>
+            <div class="expert-desc">6维度自动评分</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="episode_outline_reviewer">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">🔍</div>
+          <div class="expert-info">
+            <div class="expert-name">§16 集纲审核 <span class="mvp-badge" style="background: linear-gradient(135deg, #10b981, #059669);">NEW</span></div>
+            <div class="expert-desc">37项爆款漏斗审查</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+      </div>
+
+      <!-- 03 角色设定 -->
+      <div class="expert-group">
+        <div class="expert-group-title">👤 03 · 角色设定</div>
         <div class="expert-item mvp" data-expert="character_forger">
           <div class="expert-avatar blue">👤</div>
           <div class="expert-info">
@@ -2400,73 +2429,9 @@ function renderMarkdown(md) {
         </div>
       </div>
 
+      <!-- 04 世界设定 -->
       <div class="expert-group">
-        <div class="expert-group-title">🏗️ 结构节奏组</div>
-        <div class="expert-item mvp" data-expert="structure_architect">
-          <div class="expert-avatar gold">🏗️</div>
-          <div class="expert-info">
-            <div class="expert-name">§3 结构建筑师 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">全剧骨架</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item mvp" data-expert="episode_writer">
-          <div class="expert-avatar purple">📝</div>
-          <div class="expert-info">
-            <div class="expert-name">§5 分集编剧 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">专业剧本</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-      </div>
-
-      <div class="expert-group">
-        <div class="expert-group-title">🎥 视觉呈现组</div>
-        <div class="expert-item mvp" data-expert="visual_director">
-          <div class="expert-avatar cyan">🎥</div>
-          <div class="expert-info">
-            <div class="expert-name">§13 视觉导演 <span class="mvp-badge">MVP</span></div>
-            <div class="expert-desc">光影+镜头+声音</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-      </div>
-
-      <!-- Wave 2 新增专家 -->
-      <div class="expert-group">
-        <div class="expert-group-title">🔥 Wave 2 新增 (7位)</div>
-        <div class="expert-item mvp" data-expert="format_craftsman">
-          <div class="expert-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📋</div>
-          <div class="expert-info">
-            <div class="expert-name">§6 格式工匠 <span class="mvp-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">W2</span></div>
-            <div class="expert-desc">剧本格式标准化</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item mvp" data-expert="quality_auditor">
-          <div class="expert-avatar" style="background: linear-gradient(135deg, #ef4444, #dc2626);">📊</div>
-          <div class="expert-info">
-            <div class="expert-name">§7 质量审计 <span class="mvp-badge" style="background: linear-gradient(135deg, #ef4444, #dc2626);">W2</span></div>
-            <div class="expert-desc">6维度自动评分</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item mvp" data-expert="revision_editor">
-          <div class="expert-avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">✏️</div>
-          <div class="expert-info">
-            <div class="expert-name">§9 改稿编辑 <span class="mvp-badge" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">W2</span></div>
-            <div class="expert-desc">智能迭代改稿</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
-        <div class="expert-item mvp" data-expert="mission_commander">
-          <div class="expert-avatar" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">🎯</div>
-          <div class="expert-info">
-            <div class="expert-name">§10 实战指挥 <span class="mvp-badge" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">W2</span></div>
-            <div class="expert-desc">全流程编排调度</div>
-          </div>
-          <div class="expert-status-dot"></div>
-        </div>
+        <div class="expert-group-title">🌍 04 · 世界设定</div>
         <div class="expert-item mvp" data-expert="scene_craftsman">
           <div class="expert-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">🌿</div>
           <div class="expert-info">
@@ -2483,24 +2448,61 @@ function renderMarkdown(md) {
           </div>
           <div class="expert-status-dot"></div>
         </div>
-        <div class="expert-item mvp" data-expert="quality_director">
-          <div class="expert-avatar" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">👑</div>
+      </div>
+
+      <!-- 05 1-30集剧本正文 -->
+      <div class="expert-group">
+        <div class="expert-group-title">🎬 05 · 1-30集剧本正文</div>
+        <div class="expert-item mvp" data-expert="episode_writer">
+          <div class="expert-avatar purple">📝</div>
           <div class="expert-info">
-            <div class="expert-name">§15 品控总监 <span class="mvp-badge" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">W2</span></div>
-            <div class="expert-desc">终审达标把关</div>
+            <div class="expert-name">§5 分集编剧 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">专业剧本</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="format_craftsman">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📋</div>
+          <div class="expert-info">
+            <div class="expert-name">§6 格式工匠 <span class="mvp-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">W2</span></div>
+            <div class="expert-desc">剧本格式标准化</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="revision_editor">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">✏️</div>
+          <div class="expert-info">
+            <div class="expert-name">§9 改稿编辑 <span class="mvp-badge" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">W2</span></div>
+            <div class="expert-desc">智能迭代改稿</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="visual_director">
+          <div class="expert-avatar cyan">🎥</div>
+          <div class="expert-info">
+            <div class="expert-name">§13 视觉导演 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">光影+镜头+声音</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
       </div>
 
-      <!-- 质量审核组 -->
+      <!-- 06 剧本审核 -->
       <div class="expert-group">
-        <div class="expert-group-title">✅ 质量审核组</div>
-        <div class="expert-item mvp" data-expert="episode_outline_reviewer">
-          <div class="expert-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">🔍</div>
+        <div class="expert-group-title">✅ 06 · 剧本审核</div>
+        <div class="expert-item mvp" data-expert="compliance_guard">
+          <div class="expert-avatar green">🛡️</div>
           <div class="expert-info">
-            <div class="expert-name">§16 集纲审核 <span class="mvp-badge" style="background: linear-gradient(135deg, #10b981, #059669);">NEW</span></div>
-            <div class="expert-desc">37项爆款漏斗审查</div>
+            <div class="expert-name">§2 合规守门员 <span class="mvp-badge">MVP</span></div>
+            <div class="expert-desc">合规扫描</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item mvp" data-expert="quality_director">
+          <div class="expert-avatar" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">👑</div>
+          <div class="expert-info">
+            <div class="expert-name">§15 品控总监 <span class="mvp-badge" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">W2</span></div>
+            <div class="expert-desc">终审达标把关</div>
           </div>
           <div class="expert-status-dot"></div>
         </div>
