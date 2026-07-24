@@ -1649,6 +1649,29 @@
   .stats-link:hover { opacity: 0.8; }
   .history-link-text { font-size: 11px; color: var(--accent-purple); margin-left: 6px; opacity: 0.8; transition: opacity 0.2s; }
   .history-link-text:hover { opacity: 1; }
+  .name-dialog-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; }
+  .name-dialog-overlay.show { display: flex; }
+  .name-dialog { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; width: 500px; max-width: 90vw; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .name-dialog-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .name-dialog-header h3 { margin: 0; font-size: 16px; color: var(--text-primary); font-weight: 600; }
+  .name-dialog-close { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 4px 8px; }
+  .name-dialog-close:hover { color: var(--text-primary); }
+  .name-dialog-body { padding: 20px; }
+  .name-dialog-sub { padding: 16px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px; }
+  .name-dialog-sub label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+  .name-dialog-sub input[type="text"] { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 14px; box-sizing: border-box; outline: none; }
+  .name-dialog-sub input[type="text"]:focus { border-color: var(--accent-purple); }
+  .name-gen-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 8px 14px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; border-radius: 6px; color: white; font-size: 12px; cursor: pointer; }
+  .name-gen-btn:hover { opacity: 0.9; }
+  .name-gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .name-dialog-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 0 20px 20px; }
+  .name-dialog-actions button { padding: 10px 24px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+  .name-dialog-actions .btn-cancel { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); }
+  .name-dialog-actions .btn-cancel:hover { background: var(--bg-hover); }
+  .name-dialog-actions .btn-confirm { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; color: white; }
+  .name-dialog-actions .btn-confirm:hover { opacity: 0.9; }
+  .name-dialog-actions .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
   .history-modal-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; }
   .history-modal-overlay.show { display: flex; }
   .history-modal { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; width: 600px; max-width: 90vw; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
@@ -4667,8 +4690,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border: none; border-radius: 8px; color: white; font-size: 13px; cursor: pointer;" onclick="exportAsTxt()">📥 导出完整剧本 (TXT)</button>
-          <button style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">🔄 再创作一版</button>
-          <button style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;">📝 人工微调</button>
+          <button id="btnRecreate" style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;" onclick="recreateScript()">🔄 再创作一版</button>
+          <button id="btnFinetune" style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer;" onclick="finetuneScript()">📝 人工微调</button>
+          <button id="btnNextStep" style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink)); border: none; border-radius: 8px; color: white; font-size: 13px; cursor: pointer; font-weight: 600;" onclick="showNameDialog()">➡️ 创作下一步</button>
         </div>
       </div>
     `;
@@ -5161,8 +5185,192 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     saveHistoryRecord(record);
   }
   
+  // ========== 再创作一版 ==========
+  function recreateScript() {
+    // 清除当前输出，重置状态，重新开始
+    isCreating = false;
+    pauseRequested = false;
+    resumeRequested = false;
+    stepsCompleted = 0;
+    currentStep = 0;
+    generatedResults = {};
+    
+    // 清空输出区域
+    document.getElementById('outputContainer').innerHTML = '';
+    
+    // 重置步骤指示器
+    document.querySelectorAll('.step-item').forEach(item => {
+      item.classList.remove('active', 'completed');
+      const st = item.querySelector('.step-status'); if(st) st.textContent = '等待';
+    });
+    
+    // 重置按钮
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = false;
+    btn.onclick = applyGenresToIdea; // restore original behavior
+    btn.innerHTML = '<span>开始创作</span><span>🚀</span>';
+    
+    // 滚动到创作输入区
+    document.getElementById('ideaInput').focus();
+    showToast('已重置，修改想法后点击「开始创作」即可');
+  }
+  
+  // ========== 人工微调 ==========
+  function finetuneScript() {
+    const idea = document.getElementById('ideaInput').value.trim();
+    if (!idea) {
+      showToast('请先输入创作想法再使用微调功能', true);
+      return;
+    }
+    // 提示用户可以在想法框中补充微调方向，然后重新创作
+    showToast('请在上方输入框补充你的微调要求，然后点击「再创作一版」重新开始');
+    // 自动聚焦到想法输入框
+    const ideaEl = document.getElementById('ideaInput');
+    ideaEl.focus();
+    // 追加微调提示文字
+    const currentText = ideaEl.value.trim();
+    if (!currentText.includes('【微调】')) {
+      ideaEl.value = currentText + '\n【微调】';
+      ideaEl.setSelectionRange(ideaEl.value.length, ideaEl.value.length);
+    }
+  }
+  
+  // ========== 剧名对话框 ==========
+  var currentDramaName = '';
+  
+  function showNameDialog() {
+    document.getElementById('dramaNameInput').value = '';
+    document.getElementById('btnConfirmName').disabled = true;
+    document.getElementById('btnAutoName').disabled = false;
+    document.getElementById('nameDialog').classList.add('show');
+  }
+  
+  function hideNameDialog() {
+    document.getElementById('nameDialog').classList.remove('show');
+  }
+  
+  // 监听输入，有内容时启用确定按钮
+  var dramaNameTimer = null;
+  function setupNameInputListener() {
+    var nameInput = document.getElementById('dramaNameInput');
+    if (nameInput) {
+      nameInput.addEventListener('input', function() {
+        var val = this.value.trim();
+        document.getElementById('btnConfirmName').disabled = val.length === 0;
+      });
+    }
+  }
+  
+  // 系统根据剧情生成剧名
+  async function generateDramaName() {
+    var btn = document.getElementById('btnAutoName');
+    var nameInput = document.getElementById('dramaNameInput');
+    btn.disabled = true;
+    btn.textContent = ' 生成中...';
+    
+    // 从已有生成结果中提取关键信息
+    var idea = document.getElementById('ideaInput').value.trim();
+    var topicTags = '';
+    try {
+      topicTags = getSelectedTopicTags().map(function(t) { return t; }).join('、');
+    } catch(e) {}
+    var episodeCount = settings.episodeCount || 30;
+    
+    // 尝试从生成结果中获取题材和主角信息
+    var resultStep1 = generatedResults[1] || ''; // 题材分析
+    var resultStep2 = generatedResults[2] || ''; // 角色设定
+    
+    var contextSummary = '用户想法：' + idea + '\n';
+    if (topicTags) contextSummary += '题材标签：' + topicTags + '\n';
+    contextSummary += '集数：' + episodeCount + '集\n';
+    if (resultStep1) contextSummary += '题材分析：' + resultStep1.substring(0, 200) + '\n';
+    if (resultStep2) contextSummary += '角色设定：' + resultStep2.substring(0, 200) + '\n';
+    
+    var systemPrompt = '你是一个专业的短剧编剧，擅长为短剧起一个吸引人的剧名。';
+    var userPrompt = '请根据以下创作信息，生成3个候选剧名，用 | 分隔：\n' + contextSummary + '\n要求：剧名2-6个字，有吸引力，符合短剧平台命名风格（偏网文感、有悬念感或反差感），直接输出3个剧名用 | 分隔即可，不要其他文字。';
+    
+    try {
+      var response = await callLLM(systemPrompt, userPrompt);
+      var nameText = response.replace(/<[^>]+>/g, '').replace(/\*\*/g, '').trim();
+      // 尝试提取第一个剧名
+      var names = nameText.split('|').map(function(n) { return n.trim(); }).filter(Boolean);
+      if (names.length > 0) {
+        // 取第一个看起来像剧名的
+        for (var i = 0; i < names.length; i++) {
+          var n = names[i].replace(/["""'"]/g, '').trim();
+          if (n.length >= 2 && n.length <= 10) {
+            nameInput.value = n;
+            document.getElementById('btnConfirmName').disabled = false;
+            break;
+          }
+        }
+        // 如果都没匹配上，用第一个
+        if (!nameInput.value && names.length > 0) {
+          nameInput.value = names[0].replace(/["""'"]/g, '').trim();
+          document.getElementById('btnConfirmName').disabled = false;
+        }
+        showToast('已生成候选剧名：' + names.slice(0, 3).join(' / '));
+      } else {
+        nameInput.value = '未命名短剧';
+        document.getElementById('btnConfirmName').disabled = false;
+        showToast('生成结果异常，已使用默认剧名');
+      }
+    } catch(e) {
+      console.error('生成剧名失败:', e);
+      nameInput.value = '未命名短剧';
+      document.getElementById('btnConfirmName').disabled = false;
+      showToast('生成失败，已使用默认剧名');
+    }
+    
+    btn.disabled = false;
+    btn.textContent = '✨ 根据剧情生成剧名';
+  }
+  
+  // 确认剧名，保存到历史记录，并开始下一部创作
+  function confirmNameAndContinue() {
+    var name = document.getElementById('dramaNameInput').value.trim();
+    if (!name) {
+      showToast('请输入剧名', true);
+      return;
+    }
+    currentDramaName = name;
+    
+    // 保存到历史记录，带上剧名
+    saveCurrentSessionToHistoryWithName(name);
+    
+    hideNameDialog();
+    showToast('剧名「' + name + '」已保存');
+    
+    // 自动开始下一部创作：重置状态，保留想法框内容
+    setTimeout(function() {
+      recreateScript();
+    }, 500);
+  }
+  
+  function saveCurrentSessionToHistoryWithName(name) {
+    var idea = document.getElementById('ideaInput').value.trim();
+    var totalWords = 0;
+    for (var key in generatedResults) {
+      if (generatedResults.hasOwnProperty(key)) {
+        totalWords += generatedResults[key].replace(/\s/g, '').length;
+      }
+    }
+    var record = {
+      title: name,
+      time: new Date().toLocaleString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }),
+      episodes: settings.episodeCount || 0,
+      wordCount: totalWords,
+      completedSteps: stepsCompleted,
+      results: JSON.parse(JSON.stringify(generatedResults))
+    };
+    saveHistoryRecord(record);
+  }
+  
   // 页面加载后初始化
   document.addEventListener('DOMContentLoaded', function() {
+    // 剧名输入监听
+    setupNameInputListener();
+    
     // 绑定集数选择器事件
     const episodeOptions = document.querySelectorAll('.episode-radio');
     episodeOptions.forEach(function(option) {
@@ -5183,6 +5391,12 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     if (charMBTI) charMBTI.addEventListener('change', updatePersonalityTags);
 
     // 绑定模态框点击关闭
+    const nameDialogEl = document.getElementById('nameDialog');
+    if (nameDialogEl) {
+      nameDialogEl.addEventListener('click', function(e) {
+        if (e.target === this) hideNameDialog();
+      });
+    }
     const historyModal = document.getElementById('historyModal');
     if (historyModal) {
       historyModal.addEventListener('click', function(e) {
@@ -5198,6 +5412,27 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   });
 
   </script>
+  <!-- 剧名对话框 -->
+  <div class="name-dialog-overlay" id="nameDialog">
+    <div class="name-dialog">
+      <div class="name-dialog-header">
+        <h3>🎬 为剧本命名</h3>
+        <button class="name-dialog-close" onclick="hideNameDialog()">&times;</button>
+      </div>
+      <div class="name-dialog-body">
+        <div class="name-dialog-sub">
+          <label>剧名（手动输入或系统生成）</label>
+          <input type="text" id="dramaNameInput" placeholder="请输入剧名，或点击下方按钮由系统根据剧情自动生成..." />
+          <button class="name-gen-btn" id="btnAutoName" onclick="generateDramaName()"> 根据剧情生成剧名</button>
+        </div>
+      </div>
+      <div class="name-dialog-actions">
+        <button class="btn-cancel" onclick="hideNameDialog()">返回</button>
+        <button class="btn-confirm" id="btnConfirmName" onclick="confirmNameAndContinue()" disabled>确定</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 历史记录模态框 -->
   <div class="history-modal-overlay" id="historyModal">
     <div class="history-modal">
