@@ -4365,8 +4365,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       addFinalCard();
     }
     
-    const contentArea = document.getElementById('contentArea');
-    contentArea.scrollTop = 0;
+    // 滚动到画布顶部（实际滚动容器是 main-panel）
+    const mainPanel = document.querySelector('.main-panel');
+    if (mainPanel) mainPanel.scrollTo({ top: 0, behavior: 'smooth' });
     
     currentStep = stepNum;
   }
@@ -4422,8 +4423,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
       addFinalCard();
     }
     
-    const contentArea = document.getElementById('contentArea');
-    contentArea.scrollTop = 0;
+    // 滚动到画布顶部（实际滚动容器是 main-panel）
+    const mainPanel = document.querySelector('.main-panel');
+    if (mainPanel) mainPanel.scrollTo({ top: 0, behavior: 'smooth' });
     
     showToast('已返回全部内容视图');
   }
