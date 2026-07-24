@@ -2569,7 +2569,7 @@ function renderMarkdown(md) {
   };
 
   // 全局settings变量，所有函数共享
-  let settings = loadSettings();
+  var settings = loadSettings();
 
   function loadSettings() {
     try {
@@ -4120,11 +4120,11 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
 
   };
 
-  let isCreating = false;
+  var isCreating = false;
   let pauseRequested = false;
   let resumeRequested = false;
-  let currentStep = 0;
-  let stepsCompleted = 0;
+  var currentStep = 0;
+  var stepsCompleted = 0;
 
   function togglePauseResume() {
     const btn = document.getElementById('generateBtn');
@@ -4361,7 +4361,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     showToast('已返回全部内容视图');
   }
 
-  let generatedResults = {}; // 存储真实生成的结果
+  var generatedResults = {}; // 存储真实生成的结果
 
   async function startCreation() {
     if (isCreating) return;
