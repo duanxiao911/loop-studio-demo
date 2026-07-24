@@ -4225,7 +4225,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   }
 
   // 面板项 → 应显示的实际步骤映射（每个面板项显示该阶段最终步骤的内容）
-  const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8 };
+  const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8, 6: 17 };
 
   // 专家名 → 步骤号映射
   const expertToStep = {
@@ -5194,15 +5194,48 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     const records = getHistoryRecords();
     const record = records[index];
     if (!record) return;
-    document.getElementById('historyDetailTitle').textContent = record.title || '未命名创作';
-    let content = `创作时间：${record.time}\n集数：${record.episodes || 0} 集\n字数：${record.wordCount || 0} 字\n完成步骤：${record.completedSteps || 0}/17\n\n`;
+    // 关闭历史弹窗
+    hideHistory();
+    // 隐藏欢迎界面
+    document.getElementById('welcomeScreen').style.display = 'none';
+    // 加载历史记录数据到全局变量
+    generatedResults = {};
     if (record.results) {
       for (const [step, text] of Object.entries(record.results)) {
-        content += `=== 步骤${step} ===\n${text}\n\n`;
+        generatedResults[parseInt(step)] = text;
       }
     }
-    document.getElementById('historyDetailContent').textContent = content;
-    document.getElementById('historyDetailModal').classList.add('show');
+    stepsCompleted = record.completedSteps || 0;
+    currentStep = stepsCompleted;
+    // 更新左侧步骤状态
+    document.querySelectorAll('.step-item').forEach((item, i) => {
+      const stepIdx = parseInt(item.dataset.step);
+      const panelToStep = { 1: 2, 2: 3, 3: 4, 4: 6, 5: 8, 6: 17 };
+      const realStep = panelToStep[stepIdx] || stepIdx;
+      const statusEl = item.querySelector('.step-status');
+      if (realStep <= stepsCompleted) {
+        item.classList.add('done');
+        item.classList.remove('active');
+        if (statusEl) statusEl.textContent = '已完成';
+      } else {
+        item.classList.remove('done', 'active');
+        if (statusEl) statusEl.textContent = '待开始';
+      }
+    });
+    // 更新右侧专家状态
+    document.querySelectorAll('.expert-item').forEach(item => {
+      item.classList.remove('active', 'working');
+      const expertName = item.dataset.expert;
+      const expertStep = expertToStep[expertName];
+      if (expertStep && expertStep <= stepsCompleted) {
+        item.classList.add('completed');
+      } else {
+        item.classList.remove('completed');
+      }
+    });
+    // 在画布中渲染全部内容
+    showAllContent();
+    showToast('已加载历史记录：' + (record.title || '未命名创作'));
   }
   
   function hideHistoryDetail() {
