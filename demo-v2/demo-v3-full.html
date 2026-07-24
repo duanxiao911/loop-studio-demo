@@ -1039,44 +1039,28 @@
   .episode-type-selector {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 8px;
   }
   .episode-radio {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    padding: 6px 14px;
     cursor: pointer;
     font-size: 13px;
     color: var(--text-secondary);
     user-select: none;
-    pointer-events: auto;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    transition: all 0.2s;
   }
   .episode-radio:hover {
     color: var(--text-primary);
+    background: var(--bg-tertiary);
   }
-  .episode-radio .radio-circle {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid var(--text-muted);
-    position: relative;
-    flex-shrink: 0;
-    transition: all 0.2s;
-  }
-  .episode-radio.selected .radio-circle {
-    border-color: var(--accent-purple);
-  }
-  .episode-radio.selected .radio-circle::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--accent-purple);
-  }
-  .episode-radio.selected .radio-label {
-    color: var(--text-primary);
+  .episode-radio.selected {
+    color: var(--accent-purple);
+    background: rgba(139,92,246,0.12);
+    font-weight: 500;
   }
   .episode-type-info {
     font-size: 12px;
@@ -1087,8 +1071,8 @@
   [data-theme="light"] .episode-radio {
     color: var(--text-secondary);
   }
-  [data-theme="light"] .episode-radio.selected .radio-label {
-    color: var(--text-primary);
+  [data-theme="light"] .episode-radio.selected {
+    color: var(--accent-purple);
   }
 
   .generate-btn {
@@ -2336,16 +2320,13 @@ function renderMarkdown(md) {
           <div class="input-footer">
             <div class="episode-type-selector" id="episodeChips">
               <div class="episode-radio selected" data-count="80">
-                <span class="radio-circle"></span>
-                <span class="radio-label">长篇剧本（80集完稿）</span>
+                <span>长篇剧本（80集完稿）</span>
               </div>
               <div class="episode-radio" data-count="60">
-                <span class="radio-circle"></span>
-                <span class="radio-label">中短篇剧本（60集完稿）</span>
+                <span>中短篇剧本（60集完稿）</span>
               </div>
               <div class="episode-radio" data-count="40">
-                <span class="radio-circle"></span>
-                <span class="radio-label">短篇剧本（40集完稿）</span>
+                <span>短篇剧本（40集完稿）</span>
               </div>
               <span class="episode-type-info" title="选择剧本集数规格">&#9432;</span>
             </div>
