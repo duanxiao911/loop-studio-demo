@@ -3607,6 +3607,82 @@ function renderMarkdown(md) {
     return text;
   }
 }
+
+  // 验证记录下拉
+  function toggleValidationDropdown() {
+    var panel = document.getElementById('validationPanel');
+    var arrow = document.getElementById('validationArrow');
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+      arrow.style.transform = 'rotate(0deg)';
+    } else {
+      panel.style.display = 'block';
+      arrow.style.transform = 'rotate(180deg)';
+    }
+  }
+  // 点击其他区域关闭验证记录
+  document.addEventListener('click', function(e) {
+    var dd = document.getElementById('validationDropdown');
+    if (dd && !dd.contains(e.target)) {
+      var panel = document.getElementById('validationPanel');
+      var arrow = document.getElementById('validationArrow');
+      if (panel) panel.style.display = 'none';
+      if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+  });
+
+
+  // 题材选择面板
+  function toggleGenrePanel() {
+    var panel = document.getElementById('genrePanel');
+    var arrow = document.getElementById('genreArrow');
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+      if (arrow) arrow.textContent = '▼';
+    } else {
+      panel.style.display = 'block';
+      if (arrow) arrow.textContent = '▲';
+      // 关闭性格面板
+      var pp = document.getElementById('personalityPanel');
+      if (pp) pp.style.display = 'none';
+      var pa = document.getElementById('personalityArrow');
+      if (pa) pa.textContent = '▼';
+    }
+  }
+
+  function togglePersonalityPanel() {
+    var panel = document.getElementById('personalityPanel');
+    var arrow = document.getElementById('personalityArrow');
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+      if (arrow) arrow.textContent = '▼';
+    } else {
+      panel.style.display = 'block';
+      if (arrow) arrow.textContent = '▲';
+      // 关闭题材面板
+      var gp = document.getElementById('genrePanel');
+      if (gp) gp.style.display = 'none';
+      var ga = document.getElementById('genreArrow');
+      if (ga) ga.textContent = '▼';
+    }
+  }
+
+  function applyGenresToIdea() {
+    // placeholder
+  }
+
+  // 查看历史记录
+  function showHistory() {
+    alert('📜 历史记录功能\n\n暂无创作历史记录。\n完成首次创作后，历史记录将在此显示。');
+  }
+
+
+  // 专家分组折叠
+  function toggleExpertGroup(el) {
+    var group = el.closest('.expert-group');
+    if (group) group.classList.toggle('collapsed');
+  }
+
 </script>
 </head>
 <body>
@@ -3814,7 +3890,28 @@ function renderMarkdown(md) {
           <div class="logo-subtitle">精品短剧剧本创作引擎</div>
         </div>
       </div>
+      <div style="margin-left: 12px; padding: 3px 10px; background: linear-gradient(90deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15)); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; font-size: 11px; color: var(--accent-gold); font-weight: 500;">
+          ⭐ AI短剧工业化创作 · 案例演示《蓝白吟》
+        </div>
       <div class="top-actions">
+        <div class="validation-dropdown" id="validationDropdown">
+          <button class="validation-btn" onclick="toggleValidationDropdown()" title="验证记录">
+            <span>📋</span>
+            <span>验证记录</span>
+            <span class="validation-arrow" id="validationArrow">▼</span>
+          </button>
+          <div class="validation-panel" id="validationPanel">
+            <div class="validation-header">验证记录</div>
+            <div class="validation-list" id="validationList">
+              <div class="validation-empty">暂无验证记录<br>开始创作后将自动生成</div>
+            </div>
+          </div>
+        </div>
+        <div class="stats-badge stats-link" onclick="showHistory()" title="点击查看历史记录">
+          <div class="stats-dot"></div>
+          <span>已创作 <span id="scriptCount">0</span> 部剧本</span>
+          <span class="history-link-text">查看历史记录</span>
+        </div>
         <div class="stats-badge" id="sessionBadge" style="display:none;">
           <div class="stats-dot"></div>
           <span id="sessionPhaseText">准备中</span>
@@ -3869,6 +3966,16 @@ function renderMarkdown(md) {
           <div class="metric-label">总修改轮次</div>
         </div>
       </div>
+      <div class="metrics-grid" style="margin-top:8px;">
+        <div class="metric-card">
+          <div class="metric-value">17/17</div>
+          <div class="metric-label">专家模块</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">25min</div>
+          <div class="metric-label">单集耗时</div>
+        </div>
+      </div>
 
       <!-- 引擎状态 -->
       <div style="margin-top:20px;">
@@ -3887,6 +3994,34 @@ function renderMarkdown(md) {
 
     <!-- 中间主内容区 -->
     <div class="main-panel-v7">
+      <!-- 欢迎界面 -->
+      <div class="welcome-illustration" id="welcomeScreen">
+        <div class="welcome-icon-large">✨</div>
+        <div class="welcome-title">你好，豆豆</div>
+        <div class="welcome-desc">
+          17位AI创作专家，陪你把灵感变成剧本<br>
+          从爆款定位到商业审核，全链路AI协作工业化创作
+        </div>
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-text">25分钟出稿</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-text">过审率行业领先</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🏛️</div>
+            <div class="feature-text">全网首创</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🔄</div>
+            <div class="feature-text">全网唯一</div>
+          </div>
+        </div>
+      </div>
+
       <!-- 创意捕手对话区 -->
       <div id="chatSection">
         <div class="auto-mode-check" id="autoModeCheck">
@@ -3897,6 +4032,68 @@ function renderMarkdown(md) {
           <div class="chat-bubble ai">
             <p>你好！我是你的创意捕手 🎯</p>
             <p>告诉我你想创作的短剧想法，比如题材、类型、目标受众等，我会帮你梳理创意方向。</p>
+          </div>
+        </div>
+        <div style="padding: 0 16px 8px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="genre-toggle-btn" onclick="toggleGenrePanel()">
+              <span></span>
+              <span>选择题材</span>
+              <span id="genreArrow">▼</span>
+            </button>
+            <span id="selectedGenres" style="font-size:11px;color:var(--text-muted);"></span>
+          </div>
+          <div class="genre-panel" id="genrePanel"></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <button class="genre-toggle-btn" onclick="togglePersonalityPanel()">
+              <span>🧬</span>
+              <span>角色性格标签</span>
+              <span id="personalityArrow">▼</span>
+            </button>
+            <span id="selectedPersonalityTags" style="font-size:11px;color:var(--text-muted);"></span>
+          </div>
+          <div class="genre-panel" id="personalityPanel" style="display:none;padding:12px 14px;">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">为主角设定性格标签，AI 将自动转化为专业人物性格描写</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">星座</label>
+                <select id="charZodiac" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="白羊座">白羊座</option><option value="金牛座">金牛座</option>
+                  <option value="双子座">双子座</option><option value="巨蟹座">巨蟹座</option>
+                  <option value="狮子座">狮子座</option><option value="处女座">处女座</option>
+                  <option value="天秤座">天秤座</option><option value="天蝎座">天蝎座</option>
+                  <option value="射手座">射手座</option><option value="摩羯座">摩羯座</option>
+                  <option value="水瓶座">水瓶座</option><option value="双鱼座">双鱼座</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">生肖</label>
+                <select id="charZodiacAnimal" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="鼠">鼠</option><option value="牛">牛</option>
+                  <option value="虎">虎</option><option value="兔">兔</option>
+                  <option value="龙">龙</option><option value="蛇">蛇</option>
+                  <option value="马">马</option><option value="羊">羊</option>
+                  <option value="猴">猴</option><option value="鸡">鸡</option>
+                  <option value="狗">狗</option><option value="猪">猪</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">MBTI</label>
+                <select id="charMBTI" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;">
+                  <option value="">不限</option>
+                  <option value="INTJ">INTJ 建筑师</option><option value="INTP">INTP 逻辑学家</option>
+                  <option value="ENTJ">ENTJ 指挥官</option><option value="ENTP">ENTP 辩论家</option>
+                  <option value="INFJ">INFJ 提倡者</option><option value="INFP">INFP 调停者</option>
+                  <option value="ENFJ">ENFJ 主人公</option><option value="ENFP">ENFP 竞选者</option>
+                  <option value="ISTJ">ISTJ 物流师</option><option value="ISFJ">ISFJ 守卫者</option>
+                  <option value="ESTJ">ESTJ 总经理</option><option value="ESFJ">ESFJ 执政官</option>
+                  <option value="ISTP">ISTP 鉴赏家</option><option value="ISFP">ISFP 探险家</option>
+                  <option value="ESTP">ESTP 企业家</option><option value="ESFP">ESFP 表演者</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
         <div class="chat-input-area" id="chatInputArea">
@@ -3952,7 +4149,105 @@ function renderMarkdown(md) {
 
     <!-- 右侧信息面板 -->
     <div class="right-panel-v7">
-      <div class="panel-title">📊 会话信息</div>
+      <!-- AI创作团队 -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div class="panel-title" style="margin-bottom:0;">🤖 AI创作团队</div>
+        <span style="font-size: 11px; color: var(--accent-green); display:flex; align-items:center; gap:4px;"><span style="width:6px;height:6px;background:var(--accent-green);border-radius:50%;display:inline-block;"></span>17在线</span>
+      </div>
+      
+      <!-- 策划组 -->
+      <div class="expert-group">
+        <div class="expert-group-title" onclick="toggleExpertGroup(this)">🎯 策划组 <span class="group-arrow">▼</span></div>
+        <div class="expert-group-body">
+        <div class="expert-item compact mvp" data-expert="soul_catcher">
+          <div class="expert-avatar-sm purple">🫧</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">创意捕手</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="project_configurator">
+          <div class="expert-avatar-sm cyan">🎬</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">项目策划师</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="mission_commander">
+          <div class="expert-avatar-sm" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">🎯</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">故事总监</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="structure_architect">
+          <div class="expert-avatar-sm gold">🏗️</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">剧情架构师</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="quality_auditor">
+          <div class="expert-avatar-sm" style="background: linear-gradient(135deg, #ef4444, #dc2626);">📊</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">爆款评审官</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="episode_outline_reviewer">
+          <div class="expert-avatar-sm" style="background: linear-gradient(135deg, #10b981, #059669);">🔍</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">大纲审校员</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        </div>
+      </div>
+
+      <!-- 创作组 -->
+      <div class="expert-group">
+        <div class="expert-group-title" onclick="toggleExpertGroup(this)">✍️ 创作组 <span class="group-arrow">▼</span></div>
+        <div class="expert-group-body">
+        <div class="expert-item compact mvp" data-expert="character_forger">
+          <div class="expert-avatar-sm blue">👤</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">人物导演</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="dialogue_master">
+          <div class="expert-avatar-sm pink">💬</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">台词打磨师</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="scene_craftsman">
+          <div class="expert-avatar-sm" style="background: linear-gradient(135deg, #10b981, #059669);">🌿</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">场景美术师</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="business_strategist">
+          <div class="expert-avatar-sm" style="background: linear-gradient(135deg, #ec4899, #db2777);">💰</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">商业分析师</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        <div class="expert-item compact mvp" data-expert="episode_writer">
+          <div class="expert-avatar-sm purple">📝</div>
+          <div class="expert-info-sm">
+            <div class="expert-name-sm">编剧助手</div>
+          </div>
+          <div class="expert-status-dot"></div>
+        </div>
+        </div>
+      </div>
+
+      <!-- 会话信息 -->
+      <div class="panel-title" style="margin-top:16px;">📊 会话信息</div>
       <div style="padding:12px;background:var(--bg-tertiary);border-radius:10px;border:1px solid var(--border-color);">
         <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
           <span style="color:var(--text-muted);">会话ID</span>
