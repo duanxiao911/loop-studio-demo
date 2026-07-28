@@ -3608,6 +3608,34 @@ function renderMarkdown(md) {
   }
 }
 
+  // 题材数据
+  const GENRE_DATA = {
+    '都市情感': ['甜宠', '虐恋', '先婚后爱', '破镜重圆', '暗恋', '青梅竹马', '豪门', '职场'],
+    '古装仙侠': ['宫斗', '仙侠', '穿越', '重生', '武侠', '权谋', '修仙', '神话'],
+    '悬疑推理': ['刑侦', '法医', '密室', '心理悬疑', '灵异', '盗墓', '推理', '谍战'],
+    '逆袭爽剧': ['赘婿逆袭', '废柴逆袭', '商战复仇', '扮猪吃虎', '身份反转', '豪门争产'],
+    '青春校园': ['校园甜宠', '成长', '友情', '初恋', '高考', '社团', '学霸学渣'],
+    '家庭伦理': ['婆媳', '婚姻危机', '原生家庭', '亲子', '二胎', '养老', '拆迁'],
+    '奇幻科幻': ['异能', '末世', '时间循环', '系统', '无限流', '赛博朋克', '星际'],
+    '主旋律': ['乡村振兴', '创业', '非遗', '非遗传承', '军旅', '消防', '医疗'],
+  };
+
+  // 初始化题材面板
+  function initGenrePanel() {
+    var panel = document.getElementById('genrePanel');
+    if (!panel) return;
+    var html = '';
+    for (var category in GENRE_DATA) {
+      html += '<div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-weight:500;">' + category + '</div>';
+      html += '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+      GENRE_DATA[category].forEach(function(tag) {
+        html += '<span class="genre-tag" onclick="this.classList.toggle(\'selected\');applyGenresToIdea();">' + tag + '</span>';
+      });
+      html += '</div></div>';
+    }
+    panel.innerHTML = html;
+  }
+
   // 验证记录下拉
   function toggleValidationDropdown() {
     var panel = document.getElementById('validationPanel');
@@ -3668,7 +3696,13 @@ function renderMarkdown(md) {
   }
 
   function applyGenresToIdea() {
-    // placeholder
+    var selected = document.querySelectorAll('#genrePanel .genre-tag.selected');
+    var names = [];
+    selected.forEach(function(el) { names.push(el.textContent); });
+    var display = document.getElementById('selectedGenres');
+    if (display) {
+      display.textContent = names.length > 0 ? '已选: ' + names.join('、') : '';
+    }
   }
 
   // 查看历史记录
@@ -5091,12 +5125,19 @@ function renderMarkdown(md) {
   }
   function handleCustomInput(el) {}
   function handleAvatarUpload(input) {}
-  function onEpisodeSelectChange() {}
+  function onEpisodeSelectChange() {
+    var select = document.getElementById('episodeCount');
+    var custom = document.getElementById('episodeCountCustom');
+    if (select && custom) {
+      custom.style.display = select.value === 'custom' ? 'block' : 'none';
+    }
+  }
 
   // 初始化
   document.addEventListener('DOMContentLoaded', function() {
     updateApiStatus();
     checkEngineStatus();
+    initGenrePanel();
     // creatorName input
     var nameInput = document.getElementById('creatorName');
     if (nameInput) {
