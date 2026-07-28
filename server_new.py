@@ -96,10 +96,9 @@ workflows: Dict[str, Any] = {}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用生命周期"""
+    app.state.http_client = httpx.AsyncClient(timeout=120.0)
     yield
-    # 关闭httpx客户端
-    if hasattr(app.state, 'http_client'):
-        await app.state.http_client.aclose()
+    await app.state.http_client.aclose()
 
 
 def create_app() -> FastAPI:
@@ -132,15 +131,7 @@ def create_app() -> FastAPI:
             return FileResponse(html_path, media_type="text/html")
         return HTMLResponse("<h1>demo-v6-final.html 未找到，请将其放到 server.py 同目录下</h1>", status_code=404)
 
-    # 初始化httpx客户端
-    @app.on_event("startup")
-    async def startup():
-        app.state.http_client = httpx.AsyncClient(timeout=120.0)
-
-    @app.on_event("shutdown")
-    async def shutdown():
-        if hasattr(app.state, 'http_client'):
-            await app.state.http_client.aclose()
+    # 初始化httpx客户端已在lifespan中完成
 
     # ============ 辅助函数 ============
 
