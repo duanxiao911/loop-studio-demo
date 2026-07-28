@@ -245,11 +245,18 @@
   .settings-content {
     width: 100%;
     max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 32px;
+    box-sizing: border-box;
   }
+  .settings-content::-webkit-scrollbar { width: 6px; }
+  .settings-content::-webkit-scrollbar-track { background: transparent; }
+  .settings-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+  .settings-content::-webkit-scrollbar-thumb:hover { background: var(--border-active); }
   .settings-title {
     font-size: 18px;
     font-weight: 600;
@@ -2619,6 +2626,14 @@
   }
   [data-theme="light"] .validation-panel {
     background: rgba(250, 247, 244, 0.95);
+  }
+
+  /* 响应式：横屏 */
+  @media (orientation: landscape) and (max-height: 600px) {
+    .settings-content {
+      max-height: 90vh;
+      padding: 20px 24px;
+    }
   }
 
   /* 响应式：移动端堆叠 */
