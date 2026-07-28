@@ -3588,14 +3588,13 @@ function renderMarkdown(md) {
 
       <div style="margin-top: 16px;">
         <div class="panel-title">引擎状态</div>
-        <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px;">
+        <div id="engine-status-card" style="padding: 12px; background: rgba(107, 114, 128, 0.05); border: 1px solid rgba(107, 114, 128, 0.2); border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <div style="width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s infinite;"></div>
-            <span style="font-size: 12px; color: var(--accent-green); font-weight: 500;">云匠 运行中</span>
+            <div id="engine-status-dot" style="width: 8px; height: 8px; background: var(--text-muted); border-radius: 50%;"></div>
+            <span id="engine-status-title" style="font-size: 12px; color: var(--text-muted); font-weight: 500;">未连接</span>
           </div>
-          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
-            反馈闭环持续进化中<br>
-            知识库 V1.2 · 32模块在线
+          <div id="engine-status-desc" style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+            点击右上角 ⚙️ 配置后端地址后自动检测
           </div>
         </div>
       </div>
@@ -3782,6 +3781,55 @@ function renderMarkdown(md) {
     toggleSettings();
     showToast('设置已保存');
     updateApiStatus();
+    checkEngineStatus();  // 保存设置后检测后端状态
+  }
+
+  // 检测后端引擎状态
+  async function checkEngineStatus() {
+    const dot = document.getElementById('engine-status-dot');
+    const title = document.getElementById('engine-status-title');
+    const desc = document.getElementById('engine-status-desc');
+    const card = document.getElementById('engine-status-card');
+    const s = loadSettings();
+
+    if (!s.backendUrl || !s.backendUrl.trim()) {
+      // 未配置后端
+      dot.style.background = 'var(--text-muted)';
+      title.style.color = 'var(--text-muted)';
+      title.textContent = '未连接';
+      desc.innerHTML = '点击右上角 ⚙️ 配置后端地址后自动检测';
+      card.style.background = 'rgba(107, 114, 128, 0.05)';
+      card.style.borderColor = 'rgba(107, 114, 128, 0.2)';
+      return;
+    }
+
+    try {
+      const url = s.backendUrl.replace(/\/$/, '') + '/health';
+      const resp = await fetch(url, { signal: AbortSignal.timeout(5000) });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+
+      if (data.status === 'healthy') {
+        dot.style.background = 'var(--accent-green)';
+        dot.style.animation = 'pulse 2s infinite';
+        title.style.color = 'var(--accent-green)';
+        title.textContent = '云匠 运行中';
+        const model = data.model || 'default';
+        desc.innerHTML = `模型: ${model}<br>知识库 V1.2 · 17专家在线`;
+        card.style.background = 'rgba(16, 185, 129, 0.05)';
+        card.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+      } else {
+        throw new Error('状态异常');
+      }
+    } catch (e) {
+      dot.style.background = '#ef4444';
+      dot.style.animation = 'none';
+      title.style.color = '#ef4444';
+      title.textContent = '后端未响应';
+      desc.innerHTML = `连接失败: ${e.message}<br>请检查后端是否启动`;
+      card.style.background = 'rgba(239, 68, 68, 0.05)';
+      card.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+    }
   }
 
   function toggleSettings() {
@@ -4840,8 +4888,9 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     const aiNameInput = document.getElementById('aiName');
     if (aiNameInput) aiNameInput.addEventListener('input', updateAiName);
     updateAiName();
-    
-        // 随机头像 + 对话序列（如果已有自定义头像则跳过随机）
+    checkEngineStatus();  // 页面加载时检测后端状态
+
+    // 随机头像 + 对话序列（如果已有自定义头像则跳过随机）
     if (!restoreAvatar()) {
       const avatarEmojis = ['🤖','🎬','️','🌸','🎭','','🐱','','⭐','🔮','','📖','','','🍃'];
       const emoji = avatarEmojis[Math.floor(Math.random() * avatarEmojis.length)];
