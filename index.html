@@ -5607,7 +5607,7 @@ function renderMarkdown(md) {
       
       <div class="settings-group">
         <label class="settings-label">API 接口地址</label>
-        <input type="text" class="settings-input" id="apiBaseUrl" placeholder="https://drama-engine-production.up.railway.app" value="https://drama-engine-production.up.railway.app">
+        <input type="text" class="settings-input" id="apiBaseUrl" placeholder="https://drama-engine-production-3d64.up.railway.app" value="https://drama-engine-production-3d64.up.railway.app">
         <div class="settings-hint">兼容 OpenAI 格式的接口，国内可填中转/代理地址</div>
       </div>
 
@@ -6379,7 +6379,7 @@ function renderMarkdown(md) {
 <script>
   // ====== API 配置相关 ======
   const DEFAULT_SETTINGS = {
-    apiBaseUrl: 'https://drama-engine-production.up.railway.app',
+    apiBaseUrl: 'https://drama-engine-production-3d64.up.railway.app',
     apiKey: 'railway-proxy',
     model: 'deepseek-chat',
     episodeCount: 24,
@@ -6400,7 +6400,7 @@ function renderMarkdown(md) {
   }
 
   async function testApiConnection() {
-    const baseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://drama-engine-production.up.railway.app';
+    const baseUrl = document.getElementById('apiBaseUrl').value.trim() || 'https://drama-engine-production-3d64.up.railway.app';
     const key = document.getElementById('apiKey').value.trim();
     const model = document.getElementById('apiModel').value.trim() || 'deepseek-chat';
     const resultEl = document.getElementById('apiTestResult');
