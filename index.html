@@ -7347,18 +7347,15 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
   // ====== 调用大模型 API ======
   async function callLLM(systemPrompt, userPrompt) {
     const settings = loadSettings();
-    if (!settings.apiKey) {
-      throw new Error('请先在设置中配置 API Key');
-    }
 
     const url = settings.apiBaseUrl.replace(/\/$/, '') + '/chat/completions';
     
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + settings.apiKey
-      },
+      headers: Object.assign(
+        { 'Content-Type': 'application/json' },
+        settings.apiKey ? { 'Authorization': 'Bearer ' + settings.apiKey } : {}
+      ),
       body: JSON.stringify({
         model: settings.model,
         messages: [
@@ -7374,8 +7371,8 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     if (!response.ok) {
       const errText = await response.text().catch(() => '');
       // Diagnostic info: show key length and masked key for debugging
-      const k = settings.apiKey;
-      const keyInfo = '(长度:' + k.length + ',前6:' + k.substring(0,6) + ',末4:' + k.substring(k.length-4) + ')';
+      const k = settings.apiKey || '';
+      const keyInfo = '(长度:' + k.length + ',前6:' + (k.length>=6?k.substring(0,6):'') + ',末4:' + (k.length>=4?k.substring(k.length-4):'') + ')';
       const urlInfo = '[URL:' + url + ']';
       throw new Error('API 调用失败：' + response.status + ' ' + urlInfo + ' ' + keyInfo + ' ' + errText.slice(0, 200));
     }
@@ -8256,7 +8253,7 @@ ${prevResults[12] || prevResults[7] || '（暂无）'}
     
     // 检查 API Key 是否已配置
     const settings = loadSettings();
-    const hasAPI = settings.apiKey && settings.apiKey.length > 0;
+    const hasAPI = true; // 默认使用 Railway 后端
     if (!hasAPI) {
       showToast('请先点击右上角 ⚙️ 配置 API Key', true);
       toggleSettings();
